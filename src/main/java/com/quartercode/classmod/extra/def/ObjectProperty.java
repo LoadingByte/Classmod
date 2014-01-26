@@ -70,7 +70,7 @@ public class ObjectProperty<T> extends AbstractPersistentFeature implements Prop
 
         super(name, holder);
 
-        set(initialValue);
+        object = initialValue;
     }
 
     @Override

@@ -51,7 +51,7 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
      */
     public DefaultFeatureHolder() {
 
-        setLocked(true);
+        locked = true;
     }
 
     @Override
@@ -83,7 +83,6 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
             }
         }
 
-        boolean locked = isLocked();
         F feature = definition.create(this);
         if (feature instanceof LockableClass) {
             ((LockableClass) feature).setLocked(locked);
@@ -180,11 +179,11 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
     @Override
     public String toString() {
 
-        String featureString = "";
+        StringBuffer featureString = new StringBuffer();
         for (Feature feature : features) {
-            featureString += ", " + feature.getName();
+            featureString.append(", ").append(feature.getName());
         }
-        featureString = "{" + (featureString.isEmpty() ? "" : featureString.substring(2)) + "}";
+        featureString.append("{").append(featureString.length() == 0 ? "" : featureString.substring(2)).append("}");
 
         return getClass().getName() + " [features=" + featureString + "]";
     }

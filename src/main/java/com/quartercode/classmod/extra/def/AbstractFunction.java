@@ -91,7 +91,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             this.executors.add(new DefaultFunctionExecutorContainer<R>(executor.getKey(), executor.getValue()));
         }
 
-        setLocked(true);
+        locked = true;
     }
 
     @Override
@@ -148,23 +148,22 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
      */
     protected Set<FunctionExecutorContainer<R>> getExecutableExecutors() {
 
-        Set<DefaultFunctionExecutorContainer<R>> executors = new HashSet<DefaultFunctionExecutorContainer<R>>(this.executors);
+        Set<DefaultFunctionExecutorContainer<R>> executableExecutors = new HashSet<DefaultFunctionExecutorContainer<R>>(this.executors);
 
-        for (DefaultFunctionExecutorContainer<R> executor : new HashSet<DefaultFunctionExecutorContainer<R>>(executors)) {
+        for (DefaultFunctionExecutorContainer<R> executor : new HashSet<DefaultFunctionExecutorContainer<R>>(executableExecutors)) {
             // Lockable
             try {
                 Method invokeMethod = executor.getExecutor().getClass().getMethod("invoke", FeatureHolder.class, Object[].class);
                 if (executor.isLocked() || locked && invokeMethod.isAnnotationPresent(Lockable.class)) {
-                    executors.remove(executor);
+                    executableExecutors.remove(executor);
                 }
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 LOGGER.log(Level.SEVERE, "Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
             }
 
             // Limit
             if (executor.getValue(Limit.class, "value") != null && executor.getInvokationCounter() + 1 > (Integer) executor.getValue(Limit.class, "value")) {
-                executors.remove(executor);
+                executableExecutors.remove(executor);
                 continue;
             }
 
@@ -173,22 +172,22 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             int firstDelay = (Integer) executor.getValue(Delay.class, "firstDelay");
             int delay = (Integer) executor.getValue(Delay.class, "delay");
             if (invokation < firstDelay) {
-                executors.remove(executor);
+                executableExecutors.remove(executor);
                 continue;
             } else if (delay > 0 && (invokation - firstDelay) % (delay + 1) != 0) {
-                executors.remove(executor);
+                executableExecutors.remove(executor);
                 continue;
             }
         }
 
-        return new HashSet<FunctionExecutorContainer<R>>(executors);
+        return new HashSet<FunctionExecutorContainer<R>>(executableExecutors);
     }
 
     @Override
     public R invoke(Object... arguments) throws FunctionExecutionException {
 
         List<R> returnValues = invokeRA(arguments);
-        if (returnValues.size() > 0) {
+        if (!returnValues.isEmpty()) {
             return returnValues.get(0);
         } else {
             return null;
@@ -202,31 +201,28 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
 
         // Argument validation
         try {
-            String errorString = "";
+            StringBuffer errorStringBuffer = new StringBuffer();
             for (Class<?> parameter : parameters) {
-                errorString += ", " + parameter.getSimpleName();
+                errorStringBuffer.append(", ").append(parameter.getSimpleName());
             }
-            errorString = "Wrong arguments: '" + (errorString.isEmpty() ? "" : errorString.substring(2)) + "' required";
+            errorStringBuffer.append("Wrong arguments: '").append(errorStringBuffer.length() == 0 ? "" : errorStringBuffer.substring(2)).append("' required");
+            String errorString = errorStringBuffer.toString();
 
             for (int index = 0; index < parameters.size(); index++) {
                 if (!parameters.get(index).isAssignableFrom(arguments[index].getClass())) {
-                    if (parameters.get(index).isArray()) {
-                        for (int varargIndex = index; varargIndex < arguments.length; varargIndex++) {
-                            Validate.isTrue(parameters.get(index).getComponentType().isAssignableFrom(arguments[varargIndex].getClass()), errorString);
-                        }
-                    } else {
-                        throw new IllegalArgumentException(errorString);
+                    Validate.isTrue(parameters.get(index).isArray(), errorString);
+                    for (int varargIndex = index; varargIndex < arguments.length; varargIndex++) {
+                        Validate.isTrue(parameters.get(index).getComponentType().isAssignableFrom(arguments[varargIndex].getClass()), errorString);
                     }
                 }
             }
-        }
-        catch (IllegalArgumentException e) {
+        } catch (IllegalArgumentException e) {
             throw new FunctionExecutionException(e);
         }
 
         // Check if there are any executable executors
-        Set<FunctionExecutorContainer<R>> executors = getExecutableExecutors();
-        if (executors.isEmpty()) {
+        Set<FunctionExecutorContainer<R>> executableExecutors = getExecutableExecutors();
+        if (executableExecutors.isEmpty()) {
             // Would not do anything -> Don't run unnecessary stuff
             return new ArrayList<R>();
         }
@@ -241,7 +237,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             }
 
         });
-        for (FunctionExecutorContainer<R> executor : executors) {
+        for (FunctionExecutorContainer<R> executor : executableExecutors) {
             int priority = Prioritized.DEFAULT;
 
             // Read custom priorities
@@ -250,8 +246,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
                 if (invokeMethod.isAnnotationPresent(Prioritized.class)) {
                     priority = invokeMethod.getAnnotation(Prioritized.class).value();
                 }
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 LOGGER.log(Level.SEVERE, "Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
             }
 
@@ -267,31 +262,32 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         for (Set<FunctionExecutorContainer<R>> priorityGroup : sortedExecutors.values()) {
             for (FunctionExecutorContainer<R> executor : priorityGroup) {
                 try {
-                    returnValues.add(executor.invoke(getHolder(), arguments));
-                }
-                catch (Exception e) {
-                    if (e instanceof StopExecutionException || e instanceof FunctionExecutionException || e instanceof IllegalArgumentException) {
-                        if (priorityGroup.size() > 1) {
-                            String otherExecutors = "";
-                            for (FunctionExecutorContainer<R> otherExecutor : priorityGroup) {
-                                if (!otherExecutor.equals(executor)) {
-                                    otherExecutors += ", '" + otherExecutor.getExecutor().getClass().getName() + "'";
-                                }
-                            }
-                            otherExecutors = otherExecutors.substring(2);
-                            LOGGER.warning("Function executor '" + executor.getExecutor().getClass().getName() + "' stopped while having the same priority as the executors " + otherExecutors);
-                        }
-
-                        if (e.getCause() == null) {
-                            break invokeExecutors;
-                        } else {
-                            throw new FunctionExecutionException(e.getCause());
-                        }
-                    } else if (e instanceof ReturnNextException) {
-                        continue;
-                    } else {
-                        LOGGER.log(Level.SEVERE, "Function executor '" + executor.getExecutor().getClass().getName() + "' threw an unexpected exception", e);
+                    try {
+                        returnValues.add(executor.invoke(getHolder(), arguments));
+                    } catch (IllegalArgumentException e) {
+                        throw new StopExecutionException(e);
                     }
+                } catch (ReturnNextException e) {
+                    continue;
+                } catch (ExecutorInvokationException e) {
+                    if (priorityGroup.size() > 1) {
+                        String otherExecutors = "";
+                        for (FunctionExecutorContainer<R> otherExecutor : priorityGroup) {
+                            if (!otherExecutor.equals(executor)) {
+                                otherExecutors += ", '" + otherExecutor.getExecutor().getClass().getName() + "'";
+                            }
+                        }
+                        otherExecutors = otherExecutors.substring(2);
+                        LOGGER.warning("Function executor '" + executor.getExecutor().getClass().getName() + "' stopped while having the same priority as the executors " + otherExecutors);
+                    }
+
+                    if (e.getCause() == null) {
+                        break invokeExecutors;
+                    } else {
+                        throw new FunctionExecutionException(e.getCause());
+                    }
+                } catch (RuntimeException e) {
+                    LOGGER.log(Level.SEVERE, "Function executor '" + executor.getExecutor().getClass().getName() + "' threw an unexpected exception", e);
                 }
             }
         }
@@ -360,14 +356,11 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
                             annotationValues.put(valueMethod, value);
                             return value;
                         }
-                    }
-                    catch (NoSuchMethodException e) {
+                    } catch (NoSuchMethodException e) {
                         LOGGER.log(Level.SEVERE, "Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
-                    }
-                    catch (IllegalAccessException e) {
+                    } catch (IllegalAccessException e) {
                         LOGGER.log(Level.SEVERE, "No access to annotation method because it's not public; What the ... ?", e);
-                    }
-                    catch (InvocationTargetException e) {
+                    } catch (InvocationTargetException e) {
                         LOGGER.log(Level.SEVERE, "Can't invoke annotation method", e);
                     }
 
@@ -379,8 +372,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
 
                 // Return stored value
                 return annotationValues.get(valueMethod);
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 LOGGER.log(Level.WARNING, "Tried to access not existing annotation method for getting annotation value", e);
                 return null;
             }
@@ -391,8 +383,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
 
             try {
                 annotationValues.put(type.getMethod(name), value);
-            }
-            catch (NoSuchMethodException e) {
+            } catch (NoSuchMethodException e) {
                 LOGGER.log(Level.WARNING, "Tried to access not existing annotation method for setting annotation value", e);
             }
         }

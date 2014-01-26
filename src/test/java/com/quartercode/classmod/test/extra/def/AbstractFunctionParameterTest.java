@@ -94,8 +94,7 @@ public class AbstractFunctionParameterTest {
             AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), Arrays.asList(parameters), executors);
             function.invoke(arguments);
             actuallyWorks = true;
-        }
-        catch (FunctionExecutionException e) {
+        } catch (FunctionExecutionException e) {
             actuallyWorks = false;
         }
 
