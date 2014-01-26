@@ -6,9 +6,9 @@ Classmod is a library for creating classes which can be modified at runtime.
 License
 -------
 
-Copyright (c) 2013 QuarterCode <http://www.quartercode.com/>
+Copyright (c) 2014 QuarterCode <http://www.quartercode.com/>
 
-Classmod may be used under the terms of either the GNU General Public License (GPL). See the LICENSE.md file for details.
+Classmod may be used under the terms of the GNU Lesser General Public License (LGPL) v3.0. See the LICENSE.md file or https://www.gnu.org/licenses/lgpl-3.0.txt for details.
 
 Compilation
 -----------
