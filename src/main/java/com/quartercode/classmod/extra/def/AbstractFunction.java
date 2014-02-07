@@ -268,17 +268,18 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
                         throw new StopExecutionException(e);
                     }
                 } catch (ReturnNextException e) {
+                    // Return next executor return value -> Just skip this one (already did that) and invoke the next executor
                     continue;
                 } catch (ExecutorInvokationException e) {
+                    // Simply stop the execution
                     if (priorityGroup.size() > 1) {
-                        String otherExecutors = "";
+                        StringBuffer otherExecutors = new StringBuffer();
                         for (FunctionExecutorContainer<R> otherExecutor : priorityGroup) {
                             if (!otherExecutor.equals(executor)) {
-                                otherExecutors += ", '" + otherExecutor.getExecutor().getClass().getName() + "'";
+                                otherExecutors.append(", '").append(otherExecutor.getExecutor().getClass().getName()).append("'");
                             }
                         }
-                        otherExecutors = otherExecutors.substring(2);
-                        LOGGER.warning("Function executor '" + executor.getExecutor().getClass().getName() + "' stopped while having the same priority as the executors " + otherExecutors);
+                        LOGGER.warning("Function executor '" + executor.getExecutor().getClass().getName() + "' stopped while having the same priority as the executors " + otherExecutors.substring(2));
                     }
 
                     if (e.getCause() == null) {
