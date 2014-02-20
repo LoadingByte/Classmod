@@ -25,7 +25,7 @@ package com.quartercode.classmod.extra;
  * 
  * @see FunctionExecutor
  */
-public class ReturnNextException extends ExecutorInvokationException {
+public class ReturnNextException extends ExecutorInvocationException {
 
     private static final long serialVersionUID = 9095191065451797814L;
 

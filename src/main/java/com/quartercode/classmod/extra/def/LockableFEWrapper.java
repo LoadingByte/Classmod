@@ -19,7 +19,7 @@
 package com.quartercode.classmod.extra.def;
 
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Lockable;
 
@@ -57,7 +57,7 @@ public class LockableFEWrapper<R> implements FunctionExecutor<R> {
 
     @Override
     @Lockable
-    public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+    public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
         return executor.invoke(holder, arguments);
     }

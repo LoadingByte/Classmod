@@ -19,13 +19,13 @@
 package com.quartercode.classmod.extra;
 
 /**
- * The stop execution exception is thrown if a {@link FunctionExecutor} wants to quit the invokation queue.
+ * The stop execution exception is thrown if a {@link FunctionExecutor} wants to quit the invocation queue.
  * The algorithm checks the {@link FunctionExecutor} with the highest priority first and then goes down.
  * If any {@link FunctionExecutor} in the line denies the execution of other {@link FunctionExecutor}s, the algorithm stops.
  * 
  * @see FunctionExecutor
  */
-public class StopExecutionException extends ExecutorInvokationException {
+public class StopExecutionException extends ExecutorInvocationException {
 
     private static final long serialVersionUID = -5169233409509164509L;
 

@@ -38,7 +38,7 @@ import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Delay;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutionException;
@@ -67,7 +67,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     private final List<Class<?>>                           parameters;
     private final Set<DefaultFunctionExecutorContainer<R>> executors;
     private boolean                                        locked;
-    private int                                            invokationCounter;
+    private int                                            invocationCounter;
 
     /**
      * Creates a new abstract function with the given name, parent {@link FeatureHolder}, parameters and {@link FunctionExecutor}s.
@@ -111,9 +111,9 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
      * 
      * @return The amount of times the function was invoked.
      */
-    public int getInvokationCounter() {
+    public int getInvocationCounter() {
 
-        return invokationCounter;
+        return invocationCounter;
     }
 
     @Override
@@ -162,19 +162,19 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             }
 
             // Limit
-            if (executor.getValue(Limit.class, "value") != null && executor.getInvokationCounter() + 1 > (Integer) executor.getValue(Limit.class, "value")) {
+            if (executor.getValue(Limit.class, "value") != null && executor.getInvocationCounter() + 1 > (Integer) executor.getValue(Limit.class, "value")) {
                 executableExecutors.remove(executor);
                 continue;
             }
 
             // Delay
-            int invokation = invokationCounter - 1;
+            int invocation = invocationCounter - 1;
             int firstDelay = (Integer) executor.getValue(Delay.class, "firstDelay");
             int delay = (Integer) executor.getValue(Delay.class, "delay");
-            if (invokation < firstDelay) {
+            if (invocation < firstDelay) {
                 executableExecutors.remove(executor);
                 continue;
-            } else if (delay > 0 && (invokation - firstDelay) % (delay + 1) != 0) {
+            } else if (delay > 0 && (invocation - firstDelay) % (delay + 1) != 0) {
                 executableExecutors.remove(executor);
                 continue;
             }
@@ -197,7 +197,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public List<R> invokeRA(Object... arguments) throws FunctionExecutionException {
 
-        invokationCounter++;
+        invocationCounter++;
 
         // Argument validation
         try {
@@ -270,7 +270,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
                 } catch (ReturnNextException e) {
                     // Return next executor return value -> Just skip this one (already did that) and invoke the next executor
                     continue;
-                } catch (ExecutorInvokationException e) {
+                } catch (ExecutorInvocationException e) {
                     // Simply stop the execution
                     if (priorityGroup.size() > 1) {
                         StringBuffer otherExecutors = new StringBuffer();
@@ -315,7 +315,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         private final String              name;
         private final FunctionExecutor<R> executor;
         private final Map<Method, Object> annotationValues  = new HashMap<Method, Object>();
-        private int                       invokationCounter = 0;
+        private int                       invocationCounter = 0;
         private boolean                   locked            = false;
 
         /**
@@ -394,15 +394,15 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
          * 
          * @return The amount of times the {@link FunctionExecutor} was invoked.
          */
-        public int getInvokationCounter() {
+        public int getInvocationCounter() {
 
-            return invokationCounter;
+            return invocationCounter;
         }
 
         @Override
-        public void resetInvokationCounter() {
+        public void resetInvocationCounter() {
 
-            invokationCounter = 0;
+            invocationCounter = 0;
         }
 
         @Override
@@ -419,18 +419,18 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
 
         /**
          * Invokes the stored {@link FunctionExecutor} in the given {@link FeatureHolder} with the given arguments.
-         * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvokationCounter()}.
+         * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocationCounter()}.
          * 
          * @param holder The {@link FeatureHolder} the stored {@link FunctionExecutor} is invoked in.
          * @param arguments Some arguments for the stored {@link FunctionExecutor}.
          * @return The value the invoked {@link FunctionExecutor} returns. Can be null.
-         * @throws ExecutorInvokationException The execution of the invokation queue should stop.
+         * @throws ExecutorInvocationException The execution of the invocation queue should stop.
          */
         @Override
-        public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+        public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
             if (!locked) {
-                invokationCounter++;
+                invocationCounter++;
                 return executor.invoke(holder, arguments);
             } else {
                 return null;
@@ -472,7 +472,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         @Override
         public String toString() {
 
-            return getClass().getName() + " [name=" + name + ", executor=" + executor + ", locked=" + locked + ", invokationCounter=" + invokationCounter + "]";
+            return getClass().getName() + " [name=" + name + ", executor=" + executor + ", locked=" + locked + ", invocationCounter=" + invocationCounter + "]";
         }
 
     }

@@ -19,54 +19,51 @@
 package com.quartercode.classmod.extra;
 
 /**
- * Executor invokation exceptions are the only exceptions which can be thrown by {@link FunctionExecutor}s if something goes wrong (apart from {@link IllegalArgumentException}s).
+ * Executor invocation exceptions are the only exceptions which can be thrown by {@link FunctionExecutor}s if something goes wrong (apart from {@link IllegalArgumentException}s).
  * The exception has several subclasses which require special handling.
  * 
  * @see FunctionExecutor
  * @see StopExecutionException
  * @see ReturnNextException
- * 
- * @deprecated Wrong spelling of "invocation"; use {@link ExecutorInvocationException} instead.
  */
-@Deprecated
-public class ExecutorInvokationException extends Exception {
+public class ExecutorInvocationException extends Exception {
 
-    private static final long serialVersionUID = -5415802666609924794L;
+    private static final long serialVersionUID = 4517688115723795142L;
 
     /**
-     * Creates a new empty executor invokation exception.
+     * Creates a new empty executor invocation exception.
      */
-    public ExecutorInvokationException() {
+    public ExecutorInvocationException() {
 
     }
 
     /**
-     * Creates a new executor invokation exception with the given message.
+     * Creates a new executor invocation exception with the given message.
      * 
      * @param message A detailed message which is assigned to the exception.
      */
-    protected ExecutorInvokationException(String message) {
+    protected ExecutorInvocationException(String message) {
 
         super(message);
     }
 
     /**
-     * Creates a new executor invokation exception with the given causing {@link Throwable}.
+     * Creates a new executor invocation exception with the given causing {@link Throwable}.
      * 
      * @param cause The {@link Throwable} which caused the exception.
      */
-    protected ExecutorInvokationException(Throwable cause) {
+    protected ExecutorInvocationException(Throwable cause) {
 
         super(cause);
     }
 
     /**
-     * Creates a new executor invokation exception with the given message and causing {@link Throwable}.
+     * Creates a new executor invocation exception with the given message and causing {@link Throwable}.
      * 
      * @param message A detailed message which is assigned to the exception.
      * @param cause The {@link Throwable} which caused the exception.
      */
-    protected ExecutorInvokationException(String message, Throwable cause) {
+    protected ExecutorInvocationException(String message, Throwable cause) {
 
         super(message, cause);
     }

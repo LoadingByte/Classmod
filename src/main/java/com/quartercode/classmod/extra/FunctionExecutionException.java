@@ -19,12 +19,12 @@
 package com.quartercode.classmod.extra;
 
 /**
- * The function execution exception is thrown if an {@link Throwable} occurres during the invokation of a {@link FunctionExecutor}.
+ * The function execution exception is thrown if an {@link Throwable} occurres during the invocation of a {@link FunctionExecutor}.
  * It is a wrapper which brings the wrapped {@link Throwable} through the {@link Function#invoke(Object...)} method.
  * 
  * @see Function
  */
-public class FunctionExecutionException extends ExecutorInvokationException {
+public class FunctionExecutionException extends ExecutorInvocationException {
 
     private static final long serialVersionUID = -5515825410776845247L;
 

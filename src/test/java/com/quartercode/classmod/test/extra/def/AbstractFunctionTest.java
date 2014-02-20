@@ -27,7 +27,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.def.AbstractFunction;
@@ -43,7 +43,7 @@ public class AbstractFunctionTest {
         executors.put("default", new FunctionExecutor<Object>() {
 
             @Override
-            public Object invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Object invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 actualArguments.addAll(Arrays.asList(arguments));
                 return returnValue;

@@ -36,7 +36,7 @@ import com.quartercode.classmod.base.FeatureHolder;
 public @interface Limit {
 
     /**
-     * The amount of invokations after the {@link FunctionExecutor} blocks new invokation calls.
+     * The amount of invocations after the {@link FunctionExecutor} blocks new invocation calls.
      * A {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it wont be invoked ever again.
      */
     int value ();

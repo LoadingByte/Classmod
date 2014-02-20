@@ -21,7 +21,7 @@ package com.quartercode.classmod.util;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Property;
 
@@ -45,7 +45,7 @@ public class PropertyAccessorFactory {
         return new FunctionExecutor<T>() {
 
             @Override
-            public T invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public T invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 return holder.get(propertyDefinition).get();
             }
@@ -66,7 +66,7 @@ public class PropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 // Set the parent of the old object to null
                 if (holder.get(propertyDefinition).get() instanceof ChildFeatureHolder) {

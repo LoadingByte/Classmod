@@ -67,18 +67,18 @@ public interface Function<R> extends Feature, LockableClass {
      * 
      * @param arguments Some arguments for the {@link FunctionExecutor}s.
      * @return The value the {@link FunctionExecutor}s with the highest priority returns. May be null.
-     * @throws FunctionExecutionException Something goes wrong during the invokation of a {@link FunctionExecutor}.
+     * @throws FunctionExecutionException Something goes wrong during the invocation of a {@link FunctionExecutor}.
      */
     public R invoke(Object... arguments) throws FunctionExecutionException;
 
     /**
      * Invokes the defined function with the given arguments on all {@link FunctionExecutor}s.
-     * This returns the values the {@link FunctionExecutor}s return in invokation order.
+     * This returns the values the {@link FunctionExecutor}s return in invocation order.
      * If you want the value of the executor with the highest priority, use the index 0 or {@link #invoke(Object...)}.
      * 
      * @param arguments Some arguments for the {@link FunctionExecutor}s.
      * @return The values the invoked {@link FunctionExecutor}s return. Also contains null values.
-     * @throws FunctionExecutionException Something goes wrong during the invokation of a {@link FunctionExecutor}.
+     * @throws FunctionExecutionException Something goes wrong during the invocation of a {@link FunctionExecutor}.
      */
     public List<R> invokeRA(Object... arguments) throws FunctionExecutionException;
 
@@ -129,10 +129,10 @@ public interface Function<R> extends Feature, LockableClass {
         public <A extends Annotation> void setValue(Class<A> type, String name, Object value);
 
         /**
-         * Sets the internal invokation counter for the function executor container to 0.
+         * Sets the internal invocation counter for the function executor container to 0.
          * That allows to use {@link FunctionExecutor}s which are already over their {@link Limit}.
          */
-        public void resetInvokationCounter();
+        public void resetInvocationCounter();
 
         /**
          * Returns if the stored {@link FunctionExecutor} is locked.
@@ -160,9 +160,9 @@ public interface Function<R> extends Feature, LockableClass {
          * @param holder The {@link FeatureHolder} the stored {@link FunctionExecutor} is invoked in.
          * @param arguments Some arguments for the stored {@link FunctionExecutor}.
          * @return The value the invoked {@link FunctionExecutor} returns. Can be null.
-         * @throws ExecutorInvokationException The stored {@link FunctionExecutor} sends a signal.
+         * @throws ExecutorInvocationException The stored {@link FunctionExecutor} sends a signal.
          */
-        public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException;
+        public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException;
 
     }
 

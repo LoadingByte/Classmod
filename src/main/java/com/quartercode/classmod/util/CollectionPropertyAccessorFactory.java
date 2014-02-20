@@ -30,7 +30,7 @@ import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Property;
 
@@ -55,7 +55,7 @@ public class CollectionPropertyAccessorFactory {
         return createGet(propertyDefinition, new CriteriumMatcher<E>() {
 
             @Override
-            public boolean matches(E element, Object... arguments) throws ExecutorInvokationException {
+            public boolean matches(E element, Object... arguments) throws ExecutorInvocationException {
 
                 return true;
             }
@@ -79,7 +79,7 @@ public class CollectionPropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public C invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public C invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 C originalCollection = holder.get(propertyDefinition).get();
 
@@ -118,7 +118,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 for (E element : holder.get(propertyDefinition).get()) {
                     if (matcher.matches(element, arguments)) {
@@ -145,7 +145,7 @@ public class CollectionPropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 for (Object element : arguments) {
                     // Hope that the using FunctionDefinition has the correct parameters
@@ -176,7 +176,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 for (Object element : arguments) {
                     boolean changed = holder.get(propertyDefinition).get().remove(element);
@@ -205,7 +205,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 return holder.get(propertyDefinition).get().peek();
             }
@@ -225,7 +225,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 E element = holder.get(propertyDefinition).get().poll();
 
@@ -251,11 +251,11 @@ public class CollectionPropertyAccessorFactory {
          * Checks if the given element applies to the criterium defined by the matcher.
          * 
          * @param element The element to check.
-         * @param arguments The arguments which were passed during invokation.
+         * @param arguments The arguments which were passed during invocation.
          * @return True if the given element matches, false if not.
-         * @throws ExecutorInvokationException The execution of the current invokation queue should stop.
+         * @throws ExecutorInvocationException The execution of the current invocation queue should stop.
          */
-        public boolean matches(E element, Object... arguments) throws ExecutorInvokationException;
+        public boolean matches(E element, Object... arguments) throws ExecutorInvocationException;
 
     }
 

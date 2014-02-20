@@ -31,7 +31,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -77,14 +77,14 @@ public class AbstractFunctionDefinitionInheritanceTest {
         };
     }
 
-    private FunctionExecutor<Void> createTestExecutor(final boolean[] invokationArray, final int index) {
+    private FunctionExecutor<Void> createTestExecutor(final boolean[] invocationArray, final int index) {
 
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
-                invokationArray[index] = true;
+                invocationArray[index] = true;
                 return null;
             }
 
@@ -95,15 +95,15 @@ public class AbstractFunctionDefinitionInheritanceTest {
     @Test
     public void testCreateFeatureHolder() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
 
-        boolean[] expectedInvokations = new boolean[executors.length];
-        boolean[] actualInvokations = new boolean[executors.length];
+        boolean[] expectedInvocations = new boolean[executors.length];
+        boolean[] actualInvocations = new boolean[executors.length];
 
         int index = 0;
         for (Object[] entry : executors) {
-            expectedInvokations[index] = (Boolean) entry[1];
+            expectedInvocations[index] = (Boolean) entry[1];
 
             Class<? extends FeatureHolder> variant = (Class<? extends FeatureHolder>) entry[0];
-            functionDefinition.addExecutor(variant, "executor" + index, createTestExecutor(actualInvokations, index));
+            functionDefinition.addExecutor(variant, "executor" + index, createTestExecutor(actualInvocations, index));
 
             index++;
         }
@@ -111,7 +111,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
         Function<Void> function = functionDefinition.create(variant.newInstance());
         function.invoke();
 
-        Assert.assertTrue("Invokation pattern doesn't equal", Arrays.equals(expectedInvokations, actualInvokations));
+        Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
     }
 
     private static class Parent extends DefaultFeatureHolder {

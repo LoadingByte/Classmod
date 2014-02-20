@@ -26,7 +26,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Prioritized;
@@ -46,7 +46,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (4)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor1.set(true);
                 throw new ReturnNextException();
@@ -59,7 +59,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (3)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor2.set(true);
                 return 3;
@@ -72,7 +72,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (2)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor3.set(true);
                 throw new StopExecutionException("Test");
@@ -85,7 +85,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (1)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor4.set(true);
                 return 1;
