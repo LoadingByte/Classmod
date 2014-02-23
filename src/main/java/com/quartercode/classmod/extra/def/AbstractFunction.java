@@ -51,7 +51,7 @@ import com.quartercode.classmod.extra.ReturnNextException;
 import com.quartercode.classmod.extra.StopExecutionException;
 
 /**
- * An abstract function makes a method (also called a function) avaiable.
+ * An abstract function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
  * The function object itself stores a set of those {@link FunctionExecutor}s.
  * 

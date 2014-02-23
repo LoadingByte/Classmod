@@ -26,7 +26,7 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Named;
 
 /**
- * A function makes a method (also called a function) avaiable.
+ * A function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
  * The function object itself stores a set of those {@link FunctionExecutor}s.
  * 
