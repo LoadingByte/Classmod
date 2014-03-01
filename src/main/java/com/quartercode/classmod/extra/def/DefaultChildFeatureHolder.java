@@ -72,7 +72,7 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
             try {
                 this.parent = (P) ((Feature) parent).getHolder();
             } catch (ClassCastException e) {
-                throw new IllegalStateException("Unexpected parent type '" + (parent == null ? "null" : parent.getClass().getName()) + "': " + e.getMessage(), e);
+                throw new IllegalStateException("Unexpected parent type '" + parent.getClass().getName() + "': " + e.getMessage(), e);
             }
         }
     }
