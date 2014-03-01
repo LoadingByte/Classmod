@@ -25,17 +25,16 @@ import java.util.List;
 import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
 public class AbstractFunctionTest {
 
     @Test
-    public void testInvoke() throws FunctionExecutionException {
+    public void testInvoke() throws ExecutorInvocationException {
 
         Map<String, FunctionExecutor<Object>> executors = new HashMap<String, FunctionExecutor<Object>>();
         final List<Object> actualArguments = new ArrayList<Object>();
@@ -43,9 +42,10 @@ public class AbstractFunctionTest {
         executors.put("default", new FunctionExecutor<Object>() {
 
             @Override
-            public Object invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Object invoke(FunctionInvocation<Object> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualArguments.addAll(Arrays.asList(arguments));
+                invocation.next(arguments);
                 return returnValue;
             }
 

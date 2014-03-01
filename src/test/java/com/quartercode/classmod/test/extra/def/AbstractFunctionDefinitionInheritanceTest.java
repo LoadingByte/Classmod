@@ -33,8 +33,8 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
@@ -82,10 +82,10 @@ public class AbstractFunctionDefinitionInheritanceTest {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invocationArray[index] = true;
-                return null;
+                return invocation.next(arguments);
             }
 
         };
@@ -93,7 +93,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
 
     @SuppressWarnings ("unchecked")
     @Test
-    public void testCreateFeatureHolder() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
+    public void testCreateFeatureHolder() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
         boolean[] expectedInvocations = new boolean[executors.length];
         boolean[] actualInvocations = new boolean[executors.length];

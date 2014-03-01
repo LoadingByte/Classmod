@@ -31,8 +31,9 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.Function.FunctionExecutorContainer;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorContext;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
@@ -72,9 +73,9 @@ public class AbstractFunctionDefinitionTest {
         FunctionExecutor<Void> executor = new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                return null;
+                return invocation.next(arguments);
             }
 
         };
@@ -87,8 +88,8 @@ public class AbstractFunctionDefinitionTest {
         Set<FunctionExecutor<Void>> expectedExecutors = new HashSet<FunctionExecutor<Void>>();
         expectedExecutors.add(executor);
         Set<FunctionExecutor<Void>> actualExecutors = new HashSet<FunctionExecutor<Void>>();
-        for (FunctionExecutorContainer<Void> container : function.getExecutors()) {
-            actualExecutors.add(container.getExecutor());
+        for (FunctionExecutorContext<Void> context : function.getExecutors()) {
+            actualExecutors.add(context.getExecutor());
         }
         Assert.assertEquals("Function object's parameters", expectedParameters, function.getParameters());
         Assert.assertEquals("Function object's executors", expectedExecutors, actualExecutors);
