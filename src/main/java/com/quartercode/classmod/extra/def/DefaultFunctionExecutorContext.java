@@ -38,13 +38,13 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
  */
 public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContext<R> {
 
-    private static final Logger       LOGGER            = Logger.getLogger(DefaultFunctionExecutorContext.class.getName());
+    private static final Logger       LOGGER           = Logger.getLogger(DefaultFunctionExecutorContext.class.getName());
 
     private final String              name;
     private final FunctionExecutor<R> executor;
-    private final Map<Method, Object> annotationValues  = new HashMap<Method, Object>();
-    private int                       invocationCounter = 0;
-    private boolean                   locked            = false;
+    private final Map<Method, Object> annotationValues = new HashMap<Method, Object>();
+    private int                       invocations      = 0;
+    private boolean                   locked           = false;
 
     /**
      * Creates a new default function executor container and fills in the {@link FunctionExecutor} to store and its name.
@@ -117,20 +117,16 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
         }
     }
 
-    /**
-     * Returns the amount of times the stored {@link FunctionExecutor} was invoked through {@link #invoke(FeatureHolder, Object...)}.
-     * 
-     * @return The amount of times the {@link FunctionExecutor} was invoked.
-     */
-    public int getInvocationCounter() {
+    @Override
+    public int getInvocations() {
 
-        return invocationCounter;
+        return invocations;
     }
 
     @Override
-    public void resetInvocationCounter() {
+    public void resetInvocations() {
 
-        invocationCounter = 0;
+        invocations = 0;
     }
 
     @Override
@@ -145,21 +141,12 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
         this.locked = locked;
     }
 
-    /**
-     * Invokes the stored {@link FunctionExecutor} in the given {@link FeatureHolder} with the given arguments.
-     * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocationCounter()}.
-     * 
-     * @param holder The {@link FeatureHolder} the stored {@link FunctionExecutor} is invoked in.
-     * @param arguments Some arguments for the stored {@link FunctionExecutor}.
-     * @return The value the invoked {@link FunctionExecutor} returns. Can be null.
-     * @throws ExecutorInvocationException The execution of the invocation queue should stop.
-     */
     @Override
     public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
 
         if (!locked) {
-            invocationCounter++;
             return executor.invoke(holder, arguments);
+            invocations++;
         } else {
             return null;
         }
@@ -200,7 +187,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + name + ", executor=" + executor + ", locked=" + locked + ", invocationCounter=" + invocationCounter + "]";
+        return getClass().getName() + " [name=" + name + ", executor=" + executor + ", locked=" + locked + ", invocations=" + invocations + "]";
     }
 
 }

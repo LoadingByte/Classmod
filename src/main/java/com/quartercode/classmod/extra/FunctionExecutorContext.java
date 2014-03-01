@@ -68,10 +68,17 @@ public interface FunctionExecutorContext<R> extends Named, LockableClass {
     public <A extends Annotation> void setValue(Class<A> type, String name, Object value);
 
     /**
+     * Returns the amount of times the stored {@link FunctionExecutor} was invoked.
+     * 
+     * @return How many times the stored {@link FunctionExecutor} was invoked.
+     */
+    public int getInvocations();
+
+    /**
      * Sets the internal invocation counter for the function executor context to 0.
      * That allows to use {@link FunctionExecutor}s which are already over their {@link Limit}.
      */
-    public void resetInvocationCounter();
+    public void resetInvocations();
 
     /**
      * Returns if the stored {@link FunctionExecutor} is locked.
@@ -95,6 +102,7 @@ public interface FunctionExecutorContext<R> extends Named, LockableClass {
 
     /**
      * Invokes the stored {@link FunctionExecutor} inside the given {@link FeatureHolder} with the given arguments.
+     * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocations()}.
      * 
      * @param holder The {@link FeatureHolder} the stored {@link FunctionExecutor} is invoked in.
      * @param arguments Some arguments for the stored {@link FunctionExecutor}.
