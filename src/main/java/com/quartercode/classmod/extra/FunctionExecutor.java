@@ -29,13 +29,13 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface FunctionExecutor<R> {
 
     /**
-     * Invokes the defined function executor in the given {@link FeatureHolder} with the given arguments.
+     * Invokes the defined function executor in the given {@link FunctionInvocation} with the given arguments.
      * 
-     * @param holder The {@link FeatureHolder} the function executor is invoked in.
+     * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the function executor.
      * @return The value the invoked function executor returns. Can be null.
-     * @throws ExecutorInvokationException The function executor sends a signal.
+     * @throws ExecutorInvocationException Something goes wrong while invoking the function executor.
      */
-    public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException;
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException;
 
 }

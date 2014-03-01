@@ -70,7 +70,7 @@ public class ReferenceProperty<T> extends AbstractPersistentFeature implements P
 
         super(name, holder);
 
-        set(initialValue);
+        reference = initialValue;
     }
 
     @Override

@@ -74,4 +74,6 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
         }
     }
 
+    // Don't override hashCode() and equals() because we don't want to check for the parent (that would create a cycle)
+
 }

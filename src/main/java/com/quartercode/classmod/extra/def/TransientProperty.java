@@ -57,7 +57,7 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
 
         super(name, holder);
 
-        set(initialValue);
+        object = initialValue;
     }
 
     @Override

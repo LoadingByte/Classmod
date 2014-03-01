@@ -4,7 +4,7 @@
 
     <groupId>com.quartercode</groupId>
     <artifactId>classmod</artifactId>
-    <version>0.1.1</version>
+    <version>0.2.0</version>
     <packaging>jar</packaging>
 
     <name>Classmod</name>
@@ -84,6 +84,16 @@
 
     <build>
         <plugins>
+            <!-- Gitflow -->
+            <plugin>
+                <groupId>com.atlassian.maven.plugins</groupId>
+                <artifactId>maven-jgitflow-plugin</artifactId>
+                <version>1.0-alpha27</version>
+                <configuration>
+                    <noDeploy>true</noDeploy>
+                </configuration>
+            </plugin>
+
             <!-- License header -->
             <plugin>
                 <groupId>com.mycila.maven-license-plugin</groupId>

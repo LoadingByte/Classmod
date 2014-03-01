@@ -29,11 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Lockable;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
@@ -51,28 +50,28 @@ public class AbstractFunctionLockableTest {
         return data;
     }
 
-    private final boolean[] expectedInvokations;
+    private final boolean[] expectedInvocations;
     private final boolean   locked;
 
-    public AbstractFunctionLockableTest(boolean[] expectedInvokations, boolean locked) {
+    public AbstractFunctionLockableTest(boolean[] expectedInvocations, boolean locked) {
 
-        this.expectedInvokations = expectedInvokations;
+        this.expectedInvocations = expectedInvocations;
         this.locked = locked;
     }
 
     @Test
-    public void testInvoke() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
+    public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
-        final boolean[] actualInvokations = new boolean[2];
+        final boolean[] actualInvocations = new boolean[2];
         Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
 
         executors.put("1", new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                actualInvokations[0] = true;
-                return null;
+                actualInvocations[0] = true;
+                return invocation.next(arguments);
             }
 
         });
@@ -81,10 +80,10 @@ public class AbstractFunctionLockableTest {
 
             @Override
             @Lockable
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                actualInvokations[1] = true;
-                return null;
+                actualInvocations[1] = true;
+                return invocation.next(arguments);
             }
 
         });
@@ -93,7 +92,7 @@ public class AbstractFunctionLockableTest {
         function.setLocked(locked);
         function.invoke();
 
-        Assert.assertTrue("Invokation pattern doesn't equal", Arrays.equals(expectedInvokations, actualInvokations));
+        Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
     }
 
 }

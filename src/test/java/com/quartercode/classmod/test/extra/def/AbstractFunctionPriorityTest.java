@@ -24,20 +24,17 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Assert;
 import org.junit.Test;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvokationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
+import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Prioritized;
-import com.quartercode.classmod.extra.ReturnNextException;
-import com.quartercode.classmod.extra.StopExecutionException;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
 public class AbstractFunctionPriorityTest {
 
     @Test
-    public void testInvoke() throws FunctionExecutionException {
+    public void testInvoke() throws ExecutorInvocationException {
 
         Map<String, FunctionExecutor<Integer>> executors = new HashMap<String, FunctionExecutor<Integer>>();
 
@@ -46,10 +43,10 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (4)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor1.set(true);
-                throw new ReturnNextException();
+                return invocation.next(arguments);
             }
 
         });
@@ -59,9 +56,10 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (3)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor2.set(true);
+                invocation.next(arguments);
                 return 3;
             }
 
@@ -72,10 +70,10 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (2)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor3.set(true);
-                throw new StopExecutionException("Test");
+                return null; // Stop execution
             }
 
         });
@@ -85,9 +83,10 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (1)
-            public Integer invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvokationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor4.set(true);
+                invocation.next(arguments);
                 return 1;
             }
 
