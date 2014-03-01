@@ -59,6 +59,13 @@ public interface Function<R> extends Feature, LockableClass {
     public FunctionExecutorContext<R> getExecutor(String name);
 
     /**
+     * Returns the amount of times the {@link #invoke(Object...)} method was called on the function.
+     * 
+     * @return How many times the function was invoked.
+     */
+    public int getInvocations();
+
+    /**
      * Invokes the defined function with the given arguments on all {@link FunctionExecutor}s.
      * This returns the return value the {@link FunctionExecutor} with the highest priority returns on the end of the invocation chain.
      * 

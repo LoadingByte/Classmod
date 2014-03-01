@@ -111,7 +111,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         }
 
         // Delay
-        int invocation = ((AbstractFunction<R>) source).getInvocationCounter() - 1;
+        int invocation = source.getInvocations() - 1;
         int firstDelay = (Integer) executor.getValue(Delay.class, "firstDelay");
         int delay = (Integer) executor.getValue(Delay.class, "delay");
         if (invocation < firstDelay) {

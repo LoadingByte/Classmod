@@ -50,7 +50,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     private final List<Class<?>>                  parameters;
     private final Set<FunctionExecutorContext<R>> executors;
     private boolean                               locked;
-    private int                                   invocationCounter;
+    private int                                   invocations;
 
     /**
      * Creates a new abstract function with the given name, parent {@link FeatureHolder}, parameters and {@link FunctionExecutor}s.
@@ -89,14 +89,10 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         this.locked = locked;
     }
 
-    /**
-     * Returns the amount of times the {@link #invoke(Object...)} method was called on the function.
-     * 
-     * @return The amount of times the function was invoked.
-     */
-    public int getInvocationCounter() {
+    @Override
+    public int getInvocations() {
 
-        return invocationCounter;
+        return invocations;
     }
 
     @Override
@@ -126,7 +122,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public R invoke(Object... arguments) throws ExecutorInvocationException {
 
-        invocationCounter++;
+        invocations++;
         FunctionInvocation<R> invocation = new DefaultFunctionInvocation<R>(this);
         return invocation.next(arguments);
     }
