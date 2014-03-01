@@ -153,17 +153,17 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
                 }
             }
         } catch (IllegalArgumentException e) {
-            throw new ExecutorInvocationException(e);
+            throw new ExecutorInvocationException("Invalid arguments", e);
         }
 
-        if (remainingExecutors.size() == 0) {
+        if (remainingExecutors.isEmpty()) {
             // Abort because all executors were already invoked
             return null;
         } else {
             try {
                 return remainingExecutors.poll().invoke(this, arguments);
             } catch (RuntimeException e) {
-                throw new ExecutorInvocationException();
+                throw new ExecutorInvocationException("Runtime exception while invoking a function executor", e);
             }
         }
     }

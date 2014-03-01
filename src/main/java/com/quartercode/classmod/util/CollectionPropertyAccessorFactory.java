@@ -234,7 +234,7 @@ public class CollectionPropertyAccessorFactory {
                 E element = invocation.getHolder().get(propertyDefinition).get().poll();
 
                 // Set the parent of the removed (polled) element to null
-                if (element != null && element instanceof ChildFeatureHolder) {
+                if (element instanceof ChildFeatureHolder) {
                     ((ChildFeatureHolder<?>) element).setParent(null);
                 }
 

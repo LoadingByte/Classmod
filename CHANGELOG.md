@@ -1,3 +1,9 @@
+0.3.0
+-----
+
+### Fixes
+* Refactored a whole bunch of code based on automatic suggestions.
+
 0.2.0
 -----
 

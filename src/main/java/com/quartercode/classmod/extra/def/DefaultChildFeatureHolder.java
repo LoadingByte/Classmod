@@ -65,12 +65,15 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
      * @param unmarshaller The unmarshaller which unmarshals this objects.
      * @param parent The object which was unmarshalled as the parent {@link FeatureHolder} from the xml structure.
      */
-    // TODO: Catch the error if someone decided to modifiy the xml file (the current state leads to a ClassCastException if someone uses getParent())
     @SuppressWarnings ("unchecked")
     protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
 
         if (parent instanceof Feature) {
-            this.parent = (P) ((Feature) parent).getHolder();
+            try {
+                this.parent = (P) ((Feature) parent).getHolder();
+            } catch (ClassCastException e) {
+                throw new IllegalStateException("Unexpected parent type '" + (parent == null ? "null" : parent.getClass().getName()) + "': " + e.getMessage(), e);
+            }
         }
     }
 
