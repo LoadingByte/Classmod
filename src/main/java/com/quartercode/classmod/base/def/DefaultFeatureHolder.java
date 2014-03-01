@@ -179,7 +179,7 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
     @Override
     public String toString() {
 
-        StringBuffer featureString = new StringBuffer();
+        StringBuilder featureString = new StringBuilder();
         for (Feature feature : features) {
             featureString.append(", ").append(feature.getName());
         }

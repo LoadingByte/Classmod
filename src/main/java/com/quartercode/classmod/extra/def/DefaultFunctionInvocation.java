@@ -137,11 +137,11 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             List<Class<?>> parameters = source.getParameters();
 
             // Generate error string
-            StringBuffer errorStringBuffer = new StringBuffer();
+            StringBuilder errorStringBuilder = new StringBuilder();
             for (Class<?> parameter : parameters) {
-                errorStringBuffer.append(", ").append(parameter.getSimpleName());
+                errorStringBuilder.append(", ").append(parameter.getSimpleName());
             }
-            String errorString = "Wrong arguments: '" + (errorStringBuffer.length() == 0 ? "" : errorStringBuffer.substring(2)) + "' required";
+            String errorString = "Wrong arguments: '" + (errorStringBuilder.length() == 0 ? "" : errorStringBuilder.substring(2)) + "' required";
 
             // Check all arguments
             for (int index = 0; index < parameters.size(); index++) {
