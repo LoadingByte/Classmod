@@ -25,14 +25,14 @@ import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.def.AbstractFunction.DefaultFunctionExecutorContainer;
+import com.quartercode.classmod.extra.def.DefaultFunctionExecutorContext;
 
-public class DefaultFunctionExecutorContainerTest {
+public class DefaultFunctionExecutorContextTest {
 
     @Test
     public void testGetValueAnnotated() {
 
-        DefaultFunctionExecutorContainer<Void> container = new DefaultFunctionExecutorContainer<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             @TestAnnotation (value1 = 7, value2 = "test")
@@ -49,7 +49,7 @@ public class DefaultFunctionExecutorContainerTest {
     @Test
     public void testGetValueDefault() {
 
-        DefaultFunctionExecutorContainer<Void> container = new DefaultFunctionExecutorContainer<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
@@ -65,7 +65,7 @@ public class DefaultFunctionExecutorContainerTest {
     @Test
     public void testSetValue() {
 
-        DefaultFunctionExecutorContainer<Void> container = new DefaultFunctionExecutorContainer<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
