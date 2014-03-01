@@ -26,9 +26,10 @@ import com.quartercode.classmod.base.Feature;
  * A function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
  * The function object itself stores a set of {@link FunctionExecutorContext}s which wrap around the actual {@link FunctionExecutor}s.
+ * For invoking a function, the object creates a new {@link FunctionInvocation} which takes care of calling all the executors.
  * 
- * @param <R> The type of the return values of the used {@link FunctionExecutor}s. The function returns a {@link List} with these values.
- * @see FunctionExecutor
+ * @param <R> The type of the return value of the used {@link FunctionExecutor}s.
+ * @see FunctionInvocation
  * @see FunctionExecutorContext
  */
 public interface Function<R> extends Feature, LockableClass {
@@ -59,24 +60,12 @@ public interface Function<R> extends Feature, LockableClass {
 
     /**
      * Invokes the defined function with the given arguments on all {@link FunctionExecutor}s.
-     * This returns the return value of the {@link FunctionExecutor}s with the highest priority.
-     * If you want the return values of all executors, use {@link #invokeRA(Object...)}.
+     * This returns the return value the {@link FunctionExecutor} with the highest priority returns on the end of the invocation chain.
      * 
      * @param arguments Some arguments for the {@link FunctionExecutor}s.
-     * @return The value the {@link FunctionExecutor}s with the highest priority returns. May be null.
-     * @throws FunctionExecutionException Something goes wrong during the invocation of a {@link FunctionExecutor}.
+     * @return The return value on the end of the invocation chain. Can be null.
+     * @throws ExecutorInvocationException Something goes wrong during the invocation of a {@link FunctionExecutor}.
      */
-    public R invoke(Object... arguments) throws FunctionExecutionException;
-
-    /**
-     * Invokes the defined function with the given arguments on all {@link FunctionExecutor}s.
-     * This returns the values the {@link FunctionExecutor}s return in invocation order.
-     * If you want the value of the executor with the highest priority, use the index 0 or {@link #invoke(Object...)}.
-     * 
-     * @param arguments Some arguments for the {@link FunctionExecutor}s.
-     * @return The values the invoked {@link FunctionExecutor}s return. Also contains null values.
-     * @throws FunctionExecutionException Something goes wrong during the invocation of a {@link FunctionExecutor}.
-     */
-    public List<R> invokeRA(Object... arguments) throws FunctionExecutionException;
+    public R invoke(Object... arguments) throws ExecutorInvocationException;
 
 }

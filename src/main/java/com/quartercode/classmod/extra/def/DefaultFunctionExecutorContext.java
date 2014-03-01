@@ -25,10 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
+import com.quartercode.classmod.extra.FunctionInvocation;
 
 /**
  * The default implementation of the {@link FunctionExecutorContext} for storing data values along with a {@link FunctionExecutor}.
@@ -79,7 +79,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
             if (!annotationValues.containsKey(valueMethod)) {
                 // Fill in annotation value
                 try {
-                    A annotation = executor.getClass().getMethod("invoke", FeatureHolder.class, Object[].class).getAnnotation(type);
+                    A annotation = executor.getClass().getMethod("invoke", FunctionInvocation.class, Object[].class).getAnnotation(type);
                     if (annotation != null) {
                         Object value = valueMethod.invoke(annotation);
                         annotationValues.put(valueMethod, value);
@@ -142,11 +142,11 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     }
 
     @Override
-    public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException {
 
         if (!locked) {
-            return executor.invoke(holder, arguments);
             invocations++;
+            return executor.invoke(invocation, arguments);
         } else {
             return null;
         }

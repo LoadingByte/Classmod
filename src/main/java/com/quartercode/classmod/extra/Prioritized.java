@@ -185,7 +185,8 @@ public @interface Prioritized {
 
     /**
      * The actual priority the {@link FunctionExecutor} has.
+     * The default priority is {@value #DEFAULT}.
      */
-    int value ();
+    int value () default DEFAULT;
 
 }

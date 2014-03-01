@@ -33,6 +33,7 @@ import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
@@ -72,9 +73,9 @@ public class AbstractFunctionDefinitionTest {
         FunctionExecutor<Void> executor = new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                return null;
+                return invocation.next(arguments);
             }
 
         };

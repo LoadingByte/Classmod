@@ -29,11 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
 @RunWith (Parameterized.class)
@@ -76,15 +75,15 @@ public class AbstractFunctionParameterTest {
     }
 
     @Test
-    public void testInvoke() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
+    public void testInvoke() throws InstantiationException, IllegalAccessException {
 
         Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
         executors.put("default", new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                return null;
+                return invocation.next(arguments);
             }
 
         });
@@ -94,7 +93,7 @@ public class AbstractFunctionParameterTest {
             AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), Arrays.asList(parameters), executors);
             function.invoke(arguments);
             actuallyWorks = true;
-        } catch (FunctionExecutionException e) {
+        } catch (ExecutorInvocationException e) {
             actuallyWorks = false;
         }
 

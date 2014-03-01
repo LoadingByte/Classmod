@@ -29,12 +29,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Delay;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Limit;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
@@ -52,10 +51,10 @@ public class AbstractFunctionLimitsTest {
         data.add(new Object[] { new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 5, 5 });
 
@@ -64,10 +63,10 @@ public class AbstractFunctionLimitsTest {
 
             @Override
             @Delay
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 5, 5 });
 
@@ -76,10 +75,10 @@ public class AbstractFunctionLimitsTest {
 
             @Override
             @Delay (firstDelay = 2)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 5, 3 });
 
@@ -88,20 +87,20 @@ public class AbstractFunctionLimitsTest {
 
             @Override
             @Delay (delay = 2)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 5, 2 });
         data.add(new Object[] { new FunctionExecutor<Void>() {
 
             @Override
             @Delay (delay = 2)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 10, 4 });
 
@@ -110,10 +109,10 @@ public class AbstractFunctionLimitsTest {
 
             @Override
             @Delay (firstDelay = 2, delay = 3)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 20, 5 });
 
@@ -122,10 +121,10 @@ public class AbstractFunctionLimitsTest {
 
             @Override
             @Limit (3)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 5, 3 });
 
@@ -135,10 +134,10 @@ public class AbstractFunctionLimitsTest {
             @Override
             @Delay (firstDelay = 2, delay = 3)
             @Limit (3)
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualTimesInvoked.incrementAndGet();
-                return null;
+                return invocation.next(arguments);
             }
         }, 20, 3 });
 
@@ -157,18 +156,18 @@ public class AbstractFunctionLimitsTest {
     }
 
     @Test
-    public void testInvoke() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
+    public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
         Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
         executors.put("default", executor);
         AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), new ArrayList<Class<?>>(), executors);
 
+        actualTimesInvoked.set(0);
         for (int counter = 0; counter < invocations; counter++) {
             function.invoke();
         }
 
         Assert.assertEquals("Number of invocations", expectedTimesInvoked, actualTimesInvoked.get());
-        actualTimesInvoked.set(0);
     }
 
 }

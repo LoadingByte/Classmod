@@ -19,7 +19,6 @@
 package com.quartercode.classmod.extra;
 
 import java.lang.annotation.Annotation;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Named;
 
 /**
@@ -101,14 +100,14 @@ public interface FunctionExecutorContext<R> extends Named, LockableClass {
     public void setLocked(boolean locked);
 
     /**
-     * Invokes the stored {@link FunctionExecutor} inside the given {@link FeatureHolder} with the given arguments.
+     * Invokes the stored {@link FunctionExecutor} inside the given {@link FunctionInvocation} with the given arguments.
      * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocations()}.
      * 
-     * @param holder The {@link FeatureHolder} the stored {@link FunctionExecutor} is invoked in.
+     * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the stored {@link FunctionExecutor}.
      * @return The value the invoked {@link FunctionExecutor} returns. Can be null.
-     * @throws ExecutorInvocationException The stored {@link FunctionExecutor} sends a signal.
+     * @throws ExecutorInvocationException Something goes wrong while invoking the stored {@link FunctionExecutor}.
      */
-    public R invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException;
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException;
 
 }

@@ -19,12 +19,11 @@
 package com.quartercode.classmod.extra;
 
 /**
- * Executor invocation exceptions are the only exceptions which can be thrown by {@link FunctionExecutor}s if something goes wrong (apart from {@link IllegalArgumentException}s).
- * The exception has several subclasses which require special handling.
+ * Executor invocation exceptions are the only exceptions which can be thrown by {@link FunctionExecutor}s if something goes wrong (apart from {@link RuntimeException}s).
+ * However, such {@link RuntimeException}s are wrapped in executor invocation exceptions when thrown by a {@link FunctionExecutor}.
  * 
  * @see FunctionExecutor
- * @see StopExecutionException
- * @see ReturnNextException
+ * @see Function
  */
 public class ExecutorInvocationException extends Exception {
 
@@ -42,7 +41,7 @@ public class ExecutorInvocationException extends Exception {
      * 
      * @param message A detailed message which is assigned to the exception.
      */
-    protected ExecutorInvocationException(String message) {
+    public ExecutorInvocationException(String message) {
 
         super(message);
     }
@@ -52,7 +51,7 @@ public class ExecutorInvocationException extends Exception {
      * 
      * @param cause The {@link Throwable} which caused the exception.
      */
-    protected ExecutorInvocationException(Throwable cause) {
+    public ExecutorInvocationException(Throwable cause) {
 
         super(cause);
     }
@@ -63,7 +62,7 @@ public class ExecutorInvocationException extends Exception {
      * @param message A detailed message which is assigned to the exception.
      * @param cause The {@link Throwable} which caused the exception.
      */
-    protected ExecutorInvocationException(String message, Throwable cause) {
+    public ExecutorInvocationException(String message, Throwable cause) {
 
         super(message, cause);
     }

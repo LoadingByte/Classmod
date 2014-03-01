@@ -29,11 +29,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
-import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
-import com.quartercode.classmod.extra.FunctionExecutionException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Lockable;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 
@@ -61,7 +60,7 @@ public class AbstractFunctionLockableTest {
     }
 
     @Test
-    public void testInvoke() throws InstantiationException, IllegalAccessException, FunctionExecutionException {
+    public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
         final boolean[] actualInvocations = new boolean[2];
         Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
@@ -69,10 +68,10 @@ public class AbstractFunctionLockableTest {
         executors.put("1", new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualInvocations[0] = true;
-                return null;
+                return invocation.next(arguments);
             }
 
         });
@@ -81,10 +80,10 @@ public class AbstractFunctionLockableTest {
 
             @Override
             @Lockable
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 actualInvocations[1] = true;
-                return null;
+                return invocation.next(arguments);
             }
 
         });

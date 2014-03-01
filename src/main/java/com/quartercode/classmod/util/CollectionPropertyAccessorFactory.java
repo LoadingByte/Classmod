@@ -32,6 +32,7 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
 
 /**
@@ -79,9 +80,9 @@ public class CollectionPropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public C invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public C invoke(FunctionInvocation<C> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                C originalCollection = holder.get(propertyDefinition).get();
+                C originalCollection = invocation.getHolder().get(propertyDefinition).get();
 
                 Collection<E> collection = new ArrayList<E>();
                 for (E element : originalCollection) {
@@ -118,9 +119,9 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                for (E element : holder.get(propertyDefinition).get()) {
+                for (E element : invocation.getHolder().get(propertyDefinition).get()) {
                     if (matcher.matches(element, arguments)) {
                         return element;
                     }
@@ -145,20 +146,20 @@ public class CollectionPropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 for (Object element : arguments) {
                     // Hope that the using FunctionDefinition has the correct parameters
-                    boolean changed = holder.get(propertyDefinition).get().add((E) element);
+                    boolean changed = invocation.getHolder().get(propertyDefinition).get().add((E) element);
 
                     // Set the parent of the added element the new holder
                     if (changed && element instanceof ChildFeatureHolder) {
                         // Is always true because of <P extends FeatureHolder> in ChildFeatureHolder
-                        ((ChildFeatureHolder<FeatureHolder>) element).setParent(holder);
+                        ((ChildFeatureHolder<FeatureHolder>) element).setParent(invocation.getHolder());
                     }
                 }
 
-                return null;
+                return invocation.next(arguments);
             }
 
         };
@@ -176,10 +177,10 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 for (Object element : arguments) {
-                    boolean changed = holder.get(propertyDefinition).get().remove(element);
+                    boolean changed = invocation.getHolder().get(propertyDefinition).get().remove(element);
 
                     // Set the parent of the removed element to null
                     if (changed && element instanceof ChildFeatureHolder) {
@@ -187,7 +188,7 @@ public class CollectionPropertyAccessorFactory {
                     }
                 }
 
-                return null;
+                return invocation.next(arguments);
             }
 
         };
@@ -205,9 +206,10 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                return holder.get(propertyDefinition).get().peek();
+                invocation.next(arguments);
+                return invocation.getHolder().get(propertyDefinition).get().peek();
             }
 
         };
@@ -225,9 +227,11 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                E element = holder.get(propertyDefinition).get().poll();
+                invocation.next(arguments);
+
+                E element = invocation.getHolder().get(propertyDefinition).get().poll();
 
                 // Set the parent of the removed (polled) element to null
                 if (element != null && element instanceof ChildFeatureHolder) {
