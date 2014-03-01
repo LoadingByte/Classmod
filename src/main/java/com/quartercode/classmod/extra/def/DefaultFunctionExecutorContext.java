@@ -47,10 +47,10 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     private boolean                   locked           = false;
 
     /**
-     * Creates a new default function executor container and fills in the {@link FunctionExecutor} to store and its name.
+     * Creates a new default function executor context and fills in the {@link FunctionExecutor} to store and its name.
      * 
      * @param name The name of the {@link FunctionExecutor} to store.
-     * @param executor The {@link FunctionExecutor} which is stored by the container
+     * @param executor The {@link FunctionExecutor} which is stored by the context.
      */
     public DefaultFunctionExecutorContext(String name, FunctionExecutor<R> executor) {
 

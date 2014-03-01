@@ -32,7 +32,7 @@ public class DefaultFunctionExecutorContextTest {
     @Test
     public void testGetValueAnnotated() {
 
-        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             @TestAnnotation (value1 = 7, value2 = "test")
@@ -42,14 +42,14 @@ public class DefaultFunctionExecutorContextTest {
             }
         });
 
-        Assert.assertEquals("First read annotation value", 7, container.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "test", container.getValue(TestAnnotation.class, "value2"));
+        Assert.assertEquals("First read annotation value", 7, context.getValue(TestAnnotation.class, "value1"));
+        Assert.assertEquals("Second read annotation value", "test", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Test
     public void testGetValueDefault() {
 
-        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
@@ -58,14 +58,14 @@ public class DefaultFunctionExecutorContextTest {
             }
         });
 
-        Assert.assertEquals("First read annotation value", 2, container.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "defaultvalue", container.getValue(TestAnnotation.class, "value2"));
+        Assert.assertEquals("First read annotation value", 2, context.getValue(TestAnnotation.class, "value1"));
+        Assert.assertEquals("Second read annotation value", "defaultvalue", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Test
     public void testSetValue() {
 
-        DefaultFunctionExecutorContext<Void> container = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FeatureHolder holder, Object... arguments) throws ExecutorInvocationException {
@@ -74,11 +74,11 @@ public class DefaultFunctionExecutorContextTest {
             }
         });
 
-        container.setValue(TestAnnotation.class, "value1", 17);
-        container.setValue(TestAnnotation.class, "value2", "testvalue");
+        context.setValue(TestAnnotation.class, "value1", 17);
+        context.setValue(TestAnnotation.class, "value2", "testvalue");
 
-        Assert.assertEquals("First read annotation value", 17, container.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "testvalue", container.getValue(TestAnnotation.class, "value2"));
+        Assert.assertEquals("First read annotation value", 17, context.getValue(TestAnnotation.class, "value1"));
+        Assert.assertEquals("Second read annotation value", "testvalue", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Retention (RetentionPolicy.RUNTIME)

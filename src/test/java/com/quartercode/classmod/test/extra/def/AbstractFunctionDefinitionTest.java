@@ -87,8 +87,8 @@ public class AbstractFunctionDefinitionTest {
         Set<FunctionExecutor<Void>> expectedExecutors = new HashSet<FunctionExecutor<Void>>();
         expectedExecutors.add(executor);
         Set<FunctionExecutor<Void>> actualExecutors = new HashSet<FunctionExecutor<Void>>();
-        for (FunctionExecutorContext<Void> container : function.getExecutors()) {
-            actualExecutors.add(container.getExecutor());
+        for (FunctionExecutorContext<Void> context : function.getExecutors()) {
+            actualExecutors.add(context.getExecutor());
         }
         Assert.assertEquals("Function object's parameters", expectedParameters, function.getParameters());
         Assert.assertEquals("Function object's executors", expectedExecutors, actualExecutors);
