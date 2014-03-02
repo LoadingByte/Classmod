@@ -245,9 +245,11 @@ public class CollectionPropertyAccessorFactory {
     }
 
     /**
-     * Criterium matchers are used for limiting the output of {@link CollectionPropertyAccessorFactory#createGet(String, FeatureDefinition, CriteriumMatcher)}.
+     * Criterium matchers are used for limiting the output of {@link FunctionExecutor}s created by the getter utilities.
      * 
      * @param <E> The type of elements the matcher checks.
+     * @see CollectionPropertyAccessorFactory#createGet(FeatureDefinition, CriteriumMatcher)
+     * @see CollectionPropertyAccessorFactory#createGetSingle(FeatureDefinition, CriteriumMatcher)
      */
     public static interface CriteriumMatcher<E> {
 

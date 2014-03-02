@@ -22,12 +22,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.quartercode.classmod.base.FeatureHolder;
 
 /**
  * {@link FunctionExecutor}s which have this annotation are only invoked a given amount of times until they stop.
  * That means that a {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it wont be invoked ever again.
- * This should be annotated at the actual {@link FunctionExecutor#invoke(FeatureHolder, Object...)} method.
+ * This should be annotated at the actual {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
  * 
  * @see FunctionExecutor
  */

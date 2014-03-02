@@ -4,6 +4,15 @@
 ### Fixes
 * Refactored a whole bunch of code based on automatic suggestions.
 
+0.2.1
+-----
+
+### Fixes
+* Resolved many JavaDoc errors.
+
+### Notes
+* Maven will publish the sources and JavaDocs from this version onwards.
+
 0.2.0
 -----
 
