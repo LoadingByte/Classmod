@@ -22,12 +22,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.quartercode.classmod.base.FeatureHolder;
 
 /**
  * {@link FunctionExecutor}s which have this annotation define their priority.
  * The priority is used for determinating the order in which the available {@link FunctionExecutor}s are invoked.
- * This should be annotated at the actual {@link FunctionExecutor#invoke(FeatureHolder, Object...)} method.
+ * This should be annotated at the actual {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
  * 
  * @see FunctionExecutor
  */
