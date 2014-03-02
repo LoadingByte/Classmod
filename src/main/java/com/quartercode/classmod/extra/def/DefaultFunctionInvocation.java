@@ -90,7 +90,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
      * For example, a {@link FunctionExecutor} which already exceeded its invocation limit is not invocable.
      * This can be overriden to modify which {@link FunctionExecutor}s should be invoked.
      * 
-     * @param executorContext The {@link FunctionExecutorContext} to check.
+     * @param executor The {@link FunctionExecutorContext} to check.
      * @return Wether the given {@link FunctionExecutorContext} is invocable.
      */
     protected boolean isExecutorInvocable(FunctionExecutorContext<R> executor) {

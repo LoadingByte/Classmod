@@ -22,13 +22,12 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import com.quartercode.classmod.base.FeatureHolder;
 
 /**
  * {@link FunctionExecutor}s which have this annotation are only invoked after a given numbers of global executions.
  * That means that a {@link FunctionExecutor} with a delay of one is only invoked every second time {@link Function#invoke(Object...)} is called.
  * You can also define an amount of executions the {@link FunctionExecutor} waits until it invokes for the first time.
- * This should be annotated at the actual {@link FunctionExecutor#invoke(FeatureHolder, Object...)} method.
+ * This should be annotated at the actual {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
  * 
  * @see FunctionExecutor
  */
