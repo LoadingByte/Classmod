@@ -1,6 +1,9 @@
 0.3.0
 -----
 
+### Additions
+* The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
+
 ### Fixes
 * Refactored a whole bunch of code based on automatic suggestions.
 

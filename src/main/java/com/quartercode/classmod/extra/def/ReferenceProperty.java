@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlIDREF;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractPersistentFeature;
+import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
 /**
@@ -70,7 +71,7 @@ public class ReferenceProperty<T> extends AbstractPersistentFeature implements P
 
         super(name, holder);
 
-        reference = initialValue;
+        set(initialValue);
     }
 
     @Override
@@ -81,9 +82,18 @@ public class ReferenceProperty<T> extends AbstractPersistentFeature implements P
     }
 
     @Override
+    @SuppressWarnings ("unchecked")
     public void set(T value) {
 
+        if (reference instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) reference).getParent().equals(getHolder())) {
+            ((ChildFeatureHolder<FeatureHolder>) reference).setParent(null);
+        }
+
         reference = value;
+
+        if (reference instanceof ChildFeatureHolder) {
+            ((ChildFeatureHolder<FeatureHolder>) reference).setParent(getHolder());
+        }
     }
 
     @Override

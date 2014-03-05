@@ -19,8 +19,6 @@
 package com.quartercode.classmod.util;
 
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -71,22 +69,8 @@ public class PropertyAccessorFactory {
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                FeatureHolder holder = invocation.getHolder();
-
-                // Set the parent of the old object to null
-                if (holder.get(propertyDefinition).get() instanceof ChildFeatureHolder) {
-                    // Is always true because of <P extends FeatureHolder> in ChildFeatureHolder
-                    ((ChildFeatureHolder<FeatureHolder>) holder.get(propertyDefinition).get()).setParent(null);
-                }
-
                 // Hope that the using FunctionDefinition has the correct parameters
-                holder.get(propertyDefinition).set((T) arguments[0]);
-
-                // Set the parent of the new object the new holder
-                if (arguments[0] instanceof ChildFeatureHolder) {
-                    // Is always true because of <P extends FeatureHolder> in ChildFeatureHolder
-                    ((ChildFeatureHolder<FeatureHolder>) arguments[0]).setParent(holder);
-                }
+                invocation.getHolder().get(propertyDefinition).set((T) arguments[0]);
 
                 return invocation.next(arguments);
             }

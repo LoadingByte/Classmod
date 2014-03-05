@@ -154,7 +154,6 @@ public class CollectionPropertyAccessorFactory {
 
                     // Set the parent of the added element the new holder
                     if (changed && element instanceof ChildFeatureHolder) {
-                        // Is always true because of <P extends FeatureHolder> in ChildFeatureHolder
                         ((ChildFeatureHolder<FeatureHolder>) element).setParent(invocation.getHolder());
                     }
                 }

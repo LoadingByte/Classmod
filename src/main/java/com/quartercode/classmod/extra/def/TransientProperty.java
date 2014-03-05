@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.Set;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
+import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
 /**
@@ -57,7 +58,7 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
 
         super(name, holder);
 
-        object = initialValue;
+        set(initialValue);
     }
 
     @Override
@@ -67,9 +68,18 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
     }
 
     @Override
+    @SuppressWarnings ("unchecked")
     public void set(T value) {
 
+        if (object instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) object).getParent().equals(getHolder())) {
+            ((ChildFeatureHolder<FeatureHolder>) object).setParent(null);
+        }
+
         object = value;
+
+        if (object instanceof ChildFeatureHolder) {
+            ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
+        }
     }
 
     @Override

@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractPersistentFeature;
+import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.util.ObjectAdapter;
 
@@ -70,7 +71,7 @@ public class ObjectProperty<T> extends AbstractPersistentFeature implements Prop
 
         super(name, holder);
 
-        object = initialValue;
+        set(initialValue);
     }
 
     @Override
@@ -82,9 +83,18 @@ public class ObjectProperty<T> extends AbstractPersistentFeature implements Prop
     }
 
     @Override
+    @SuppressWarnings ("unchecked")
     public void set(T value) {
 
+        if (object instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) object).getParent().equals(getHolder())) {
+            ((ChildFeatureHolder<FeatureHolder>) object).setParent(null);
+        }
+
         object = value;
+
+        if (object instanceof ChildFeatureHolder) {
+            ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
+        }
     }
 
     @Override
