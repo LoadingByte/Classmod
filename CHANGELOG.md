@@ -5,6 +5,7 @@
 * The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
 
 ### Fixes
+* The AbstractFunction implementation can now handle null arguments.
 * Refactored a whole bunch of code based on automatic suggestions.
 
 0.2.1

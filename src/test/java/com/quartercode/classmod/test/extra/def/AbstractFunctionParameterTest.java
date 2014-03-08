@@ -60,6 +60,11 @@ public class AbstractFunctionParameterTest {
 
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { new Integer[] { 0, 1, 2 } }, true });
 
+        // Null arguments test
+        data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { null }, true });
+        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "", null }, true });
+        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { null, "" }, false });
+
         return data;
     }
 
