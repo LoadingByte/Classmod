@@ -21,8 +21,8 @@ package com.quartercode.classmod.base.def;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
@@ -72,7 +72,7 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
         }
     }
 
-    // If this doesn't succeed we have a really serious programming problem
+    // If this doesn't succeed we have a really serious design problem
     @SuppressWarnings ("unchecked")
     @Override
     public <F extends Feature> F get(FeatureDefinition<F> definition) {
@@ -92,37 +92,15 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
     }
 
     /**
-     * Returns a set of all {@link Persistent} {@link Feature}s of the default feature holder.
-     * This uses an object set since JAXB can't handle interfaces.
+     * Returns a {@link Set} of all {@link Persistent} {@link Feature}s of the default feature holder.
+     * Additions to the returned {@link Set} are applied back to the feature holder.
      * 
      * @return All {@link Persistent} {@link Feature}s of the default feature holder.
      */
-    @XmlElement (name = "features")
-    public Set<Object> getPersistentFeatures() {
+    @XmlAnyElement (lax = true)
+    public Set<Feature> getPersistentFeatures() {
 
-        Set<Object> persistentFeatures = new HashSet<Object>();
-        for (Feature feature : features) {
-            if (feature.getClass().isAnnotationPresent(Persistent.class)) {
-                persistentFeatures.add(feature);
-            }
-        }
-
-        return persistentFeatures;
-    }
-
-    /**
-     * Adds the given set of {@link Persistent} {@link Feature}s to the default feature holder.
-     * This uses an object set since JAXB can't handle interfaces.
-     * 
-     * @param persistentFeatures The {@link Persistent} {@link Feature}s to add.
-     */
-    public void setPersistentFeatures(Set<Object> persistentFeatures) {
-
-        for (Object persistentFeature : persistentFeatures) {
-            if (persistentFeature instanceof Feature) {
-                features.add((Feature) persistentFeature);
-            }
-        }
+        return new PersistentFeatureSet(this);
     }
 
     @Override
@@ -183,9 +161,37 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
         for (Feature feature : features) {
             featureString.append(", ").append(feature.getName());
         }
-        featureString.append("{").append(featureString.length() == 0 ? "" : featureString.substring(2)).append("}");
 
-        return getClass().getName() + " [features=" + featureString + "]";
+        return getClass().getName() + " [features={" + (featureString.length() == 0 ? "" : featureString.substring(2)) + "}]";
+    }
+
+    // We need to use a custom set because JAXB adds the values using the add() method
+    // We won't ever need to serialize this class (it's private)
+    @SuppressWarnings ("serial")
+    private static class PersistentFeatureSet extends HashSet<Feature> {
+
+        private final DefaultFeatureHolder featureHolder;
+
+        private PersistentFeatureSet(DefaultFeatureHolder featureHolder) {
+
+            this.featureHolder = featureHolder;
+
+            // Add all persistent features
+            for (Feature feature : featureHolder.features) {
+                if (feature.getClass().isAnnotationPresent(Persistent.class)) {
+                    // Don't use the overriden add() because that could have side-effects
+                    super.add(feature);
+                }
+            }
+        }
+
+        @Override
+        public boolean add(Feature feature) {
+
+            featureHolder.features.add(feature);
+            return super.add(feature);
+        }
+
     }
 
 }

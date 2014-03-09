@@ -23,9 +23,10 @@ import java.util.Iterator;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
-import com.quartercode.classmod.base.def.AbstractPersistentFeature;
+import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
@@ -37,8 +38,10 @@ import com.quartercode.classmod.extra.Property;
  * @see Property
  */
 @Persistent
-public class ReferenceProperty<T> extends AbstractPersistentFeature implements Property<T> {
+@XmlRootElement
+public class ReferenceProperty<T> extends AbstractFeature implements Property<T> {
 
+    @XmlIDREF
     private T reference;
 
     /**
@@ -75,7 +78,6 @@ public class ReferenceProperty<T> extends AbstractPersistentFeature implements P
     }
 
     @Override
-    @XmlIDREF
     public T get() {
 
         return reference;

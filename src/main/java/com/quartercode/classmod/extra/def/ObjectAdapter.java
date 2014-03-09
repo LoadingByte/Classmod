@@ -16,10 +16,13 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod.util;
+package com.quartercode.classmod.extra.def;
 
+import java.util.Collection;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
 /**
@@ -27,7 +30,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * There are some bugs in JAXB the adapter works around.
  * 
  * Note: Of course, this way of doing things is really hacky, but there's currently no other solution.
- * Also note that you must add the {@link ClassElement} class to the "classpath" of your {@link JAXBContext}.
+ * Also note that you must add the {@link ClassWrapper} class to the "classpath" of your {@link JAXBContext}.
  */
 public class ObjectAdapter extends XmlAdapter<Object, Object> {
 
@@ -41,8 +44,8 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
     @Override
     public Object unmarshal(Object v) {
 
-        if (v instanceof Element) {
-            return ((Element<?>) v).getObject();
+        if (v instanceof Wrapper) {
+            return ((Wrapper<?>) v).getObject();
         } else {
             return v;
         }
@@ -52,34 +55,60 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
     public Object marshal(Object v) {
 
         if (v instanceof Class) {
-            return new ClassElement((Class<?>) v);
+            return new ClassWrapper((Class<?>) v);
+        } else if (v instanceof Collection) {
+            return new CollectionWrapper((Collection<?>) v);
         } else {
             return v;
         }
     }
 
-    public static interface Element<T> {
+    public static interface Wrapper<T> {
 
         public T getObject();
 
     }
 
-    public static class ClassElement implements Element<Class<?>> {
+    @XmlType (name = "class")
+    public static class ClassWrapper implements Wrapper<Class<?>> {
 
-        @XmlElement (name = "class")
+        @XmlValue
         private Class<?> object;
 
-        protected ClassElement() {
+        protected ClassWrapper() {
 
         }
 
-        public ClassElement(Class<?> object) {
+        public ClassWrapper(Class<?> object) {
 
             this.object = object;
         }
 
         @Override
         public Class<?> getObject() {
+
+            return object;
+        }
+
+    }
+
+    @XmlType (name = "collection")
+    public static class CollectionWrapper implements Wrapper<Collection<?>> {
+
+        @XmlElement (name = "item")
+        private Collection<?> object;
+
+        protected CollectionWrapper() {
+
+        }
+
+        public CollectionWrapper(Collection<?> object) {
+
+            this.object = object;
+        }
+
+        @Override
+        public Collection<?> getObject() {
 
             return object;
         }

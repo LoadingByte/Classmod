@@ -22,13 +22,13 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
-import com.quartercode.classmod.base.def.AbstractPersistentFeature;
+import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
-import com.quartercode.classmod.util.ObjectAdapter;
 
 /**
  * An object property is a simple {@link Property} which stores an object.
@@ -37,8 +37,11 @@ import com.quartercode.classmod.util.ObjectAdapter;
  * @see Property
  */
 @Persistent
-public class ObjectProperty<T> extends AbstractPersistentFeature implements Property<T> {
+@XmlRootElement
+public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
 
+    @XmlElement
+    @XmlJavaTypeAdapter (ObjectAdapter.class)
     private T object;
 
     /**
@@ -75,8 +78,6 @@ public class ObjectProperty<T> extends AbstractPersistentFeature implements Prop
     }
 
     @Override
-    @XmlElement
-    @XmlJavaTypeAdapter (ObjectAdapter.class)
     public T get() {
 
         return object;

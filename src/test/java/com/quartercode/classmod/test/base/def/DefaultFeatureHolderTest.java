@@ -24,6 +24,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
@@ -33,19 +34,19 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 
 public class DefaultFeatureHolderTest {
 
-    private static FeatureDefinition<TestFeature1>    TEST_FEATURE_1;
+    private static FeatureDefinition<TestFeature>     TEST_FEATURE_1;
 
     private static FeatureDefinition<AbstractFeature> TEST_FEATURE_2;
 
     @BeforeClass
     public static void setUpBeforeClass() {
 
-        TEST_FEATURE_1 = new AbstractFeatureDefinition<TestFeature1>("testFeature1") {
+        TEST_FEATURE_1 = new AbstractFeatureDefinition<TestFeature>("testFeature1") {
 
             @Override
-            public TestFeature1 create(FeatureHolder holder) {
+            public TestFeature create(FeatureHolder holder) {
 
-                return new TestFeature1(getName(), holder);
+                return new TestFeature(getName(), holder);
             }
 
         };
@@ -88,24 +89,27 @@ public class DefaultFeatureHolderTest {
     }
 
     @Test
-    public void testSetPersistentFeatures() {
+    public void testGetPersistentFeaturesMod() {
 
-        Set<Object> features = new HashSet<Object>();
-        features.add(new AbstractFeature("testFeature", featureHolder));
-        featureHolder.setPersistentFeatures(features);
+        Feature testFeature = new AbstractFeature("testFeature", featureHolder);
 
-        Set<Object> actualFeatures = new HashSet<Object>();
-        for (Object feature : featureHolder) {
+        // Modify persistent feature set
+        Set<Feature> persistentFeatures = featureHolder.getPersistentFeatures();
+        persistentFeatures.add(testFeature);
+
+        Set<Feature> actualFeatures = new HashSet<Feature>();
+        for (Feature feature : featureHolder) {
             actualFeatures.add(feature);
         }
-
-        Assert.assertEquals("Added features", features, actualFeatures);
+        Set<Object> expectedFeatures = new HashSet<Object>();
+        expectedFeatures.add(testFeature);
+        Assert.assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
     }
 
     @Persistent
-    private static class TestFeature1 extends AbstractFeature {
+    private static class TestFeature extends AbstractFeature {
 
-        public TestFeature1(String name, FeatureHolder holder) {
+        private TestFeature(String name, FeatureHolder holder) {
 
             super(name, holder);
         }

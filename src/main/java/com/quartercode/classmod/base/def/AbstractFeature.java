@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.base.def;
 
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -32,8 +33,16 @@ import com.quartercode.classmod.base.FeatureHolder;
 public class AbstractFeature implements Feature {
 
     @XmlAttribute
-    private final String  name;
+    private String        name;
     private FeatureHolder holder;
+
+    /**
+     * Creates a new empty abstract feature.
+     * This is only recommended for direct field access (e.g. for serialization).
+     */
+    protected AbstractFeature() {
+
+    }
 
     /**
      * Creates a new abstract feature with the given name and {@link FeatureHolder}.
@@ -67,6 +76,19 @@ public class AbstractFeature implements Feature {
     protected void setHolder(FeatureHolder holder) {
 
         this.holder = holder;
+    }
+
+    /**
+     * Resolves the {@link FeatureHolder} which houses the abstract persistent feature.
+     * 
+     * @param unmarshaller The unmarshaller which unmarshals this task.
+     * @param parent The object which was unmarshalled as the parent one from the xml structure.
+     */
+    protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
+
+        if (parent instanceof FeatureHolder) {
+            setHolder((FeatureHolder) parent);
+        }
     }
 
     @Override
