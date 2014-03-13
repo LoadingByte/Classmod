@@ -19,6 +19,7 @@
 package com.quartercode.classmod.extra.def;
 
 import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.annotation.XmlTransient;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -48,6 +49,7 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
     }
 
     @Override
+    @XmlTransient
     public P getParent() {
 
         return parent;
