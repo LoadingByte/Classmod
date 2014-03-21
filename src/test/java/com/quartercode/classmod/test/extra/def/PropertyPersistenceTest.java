@@ -38,8 +38,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.def.ObjectProperty;
@@ -54,61 +52,13 @@ public class PropertyPersistenceTest {
 
         List<Object[]> data = new ArrayList<Object[]>();
 
-        data.add(new Object[] { new FeatureDefinition[] { new AbstractFeatureDefinition<Property<String>>("property") {
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property") } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", "Test") } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", String.class) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3")) } });
 
-            @Override
-            public Property<String> create(FeatureHolder holder) {
-
-                return new ObjectProperty<String>(getName(), holder);
-            }
-
-        } } });
-        data.add(new Object[] { new FeatureDefinition[] { new AbstractFeatureDefinition<Property<String>>("property") {
-
-            @Override
-            public Property<String> create(FeatureHolder holder) {
-
-                return new ObjectProperty<String>(getName(), holder, "Test");
-            }
-
-        } } });
-        data.add(new Object[] { new FeatureDefinition[] { new AbstractFeatureDefinition<Property<Class<?>>>("property") {
-
-            @Override
-            public Property<Class<?>> create(FeatureHolder holder) {
-
-                return new ObjectProperty<Class<?>>(getName(), holder, String.class);
-            }
-
-        } } });
-        data.add(new Object[] { new FeatureDefinition[] { new AbstractFeatureDefinition<Property<List<String>>>("property") {
-
-            @Override
-            public Property<List<String>> create(FeatureHolder holder) {
-
-                return new ObjectProperty<List<String>>(getName(), holder, Arrays.asList("Test1", "Test2", "Test3"));
-            }
-
-        } } });
-
-        final DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
-        data.add(new Object[] { new FeatureDefinition[] { new AbstractFeatureDefinition<Property<DefaultFeatureHolder>>("property") {
-
-            @Override
-            public Property<DefaultFeatureHolder> create(FeatureHolder holder) {
-
-                return new ObjectProperty<DefaultFeatureHolder>(getName(), holder, referencedObject);
-            }
-
-        }, new AbstractFeatureDefinition<Property<DefaultFeatureHolder>>("reference") {
-
-            @Override
-            public Property<DefaultFeatureHolder> create(FeatureHolder holder) {
-
-                return new ReferenceProperty<DefaultFeatureHolder>(getName(), holder, referencedObject);
-            }
-
-        } } });
+        DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", referencedObject), ReferenceProperty.createDefinition("reference", referencedObject) } });
 
         return data;
     }
