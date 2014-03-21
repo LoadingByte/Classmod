@@ -3,9 +3,12 @@
 
 ### Additions
 * The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
+* JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
+* The property implementations provide feature definition factory methods.
 
 ### Fixes
 * The AbstractFunction implementation can now handle null arguments.
+* The JAXB persistence system actually works (a lot of bugfixes done here).
 * Refactored a whole bunch of code based on automatic suggestions.
 
 0.2.1
