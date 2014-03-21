@@ -24,9 +24,11 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractFeature;
+import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
@@ -40,6 +42,45 @@ import com.quartercode.classmod.extra.Property;
 @Persistent
 @XmlRootElement
 public class ReferenceProperty<T> extends AbstractFeature implements Property<T> {
+
+    /**
+     * Creates a new {@link FeatureDefinition} that describes a reference property with the given name.
+     * 
+     * @param name The name of the reference property which the returned {@link FeatureDefinition} describes.
+     * @return A {@link FeatureDefinition} which can be used to describe a reference property.
+     */
+    public static <T> FeatureDefinition<ReferenceProperty<T>> createDefinition(String name) {
+
+        return new AbstractFeatureDefinition<ReferenceProperty<T>>(name) {
+
+            @Override
+            public ReferenceProperty<T> create(FeatureHolder holder) {
+
+                return new ReferenceProperty<T>(getName(), holder);
+            }
+
+        };
+    }
+
+    /**
+     * Creates a new {@link FeatureDefinition} that describes a reference property with the given name and initial value.
+     * 
+     * @param name The name of the reference property which the returned {@link FeatureDefinition} describes.
+     * @param initialValue The initial value of the reference property which the returned {@link FeatureDefinition} describes.
+     * @return A {@link FeatureDefinition} which can be used to describe a reference property.
+     */
+    public static <T> FeatureDefinition<ReferenceProperty<T>> createDefinition(String name, final T initialValue) {
+
+        return new AbstractFeatureDefinition<ReferenceProperty<T>>(name) {
+
+            @Override
+            public ReferenceProperty<T> create(FeatureHolder holder) {
+
+                return new ReferenceProperty<T>(getName(), holder, initialValue);
+            }
+
+        };
+    }
 
     @XmlIDREF
     private T reference;

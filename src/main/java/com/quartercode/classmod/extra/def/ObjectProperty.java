@@ -24,9 +24,11 @@ import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractFeature;
+import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
@@ -39,6 +41,45 @@ import com.quartercode.classmod.extra.Property;
 @Persistent
 @XmlRootElement
 public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
+
+    /**
+     * Creates a new {@link FeatureDefinition} that describes an object property with the given name.
+     * 
+     * @param name The name of the object property which the returned {@link FeatureDefinition} describes.
+     * @return A {@link FeatureDefinition} which can be used to describe an object property.
+     */
+    public static <T> FeatureDefinition<ObjectProperty<T>> createDefinition(String name) {
+
+        return new AbstractFeatureDefinition<ObjectProperty<T>>(name) {
+
+            @Override
+            public ObjectProperty<T> create(FeatureHolder holder) {
+
+                return new ObjectProperty<T>(getName(), holder);
+            }
+
+        };
+    }
+
+    /**
+     * Creates a new {@link FeatureDefinition} that describes an object property with the given name and initial value.
+     * 
+     * @param name The name of the object property which the returned {@link FeatureDefinition} describes.
+     * @param initialValue The initial value of the object property which the returned {@link FeatureDefinition} describes.
+     * @return A {@link FeatureDefinition} which can be used to describe an object property.
+     */
+    public static <T> FeatureDefinition<ObjectProperty<T>> createDefinition(String name, final T initialValue) {
+
+        return new AbstractFeatureDefinition<ObjectProperty<T>>(name) {
+
+            @Override
+            public ObjectProperty<T> create(FeatureHolder holder) {
+
+                return new ObjectProperty<T>(getName(), holder, initialValue);
+            }
+
+        };
+    }
 
     @XmlElement
     @XmlJavaTypeAdapter (ObjectAdapter.class)
