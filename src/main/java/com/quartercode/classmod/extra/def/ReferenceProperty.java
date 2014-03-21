@@ -68,7 +68,7 @@ public class ReferenceProperty<T> extends AbstractFeature implements Property<T>
      * 
      * @param name The name of the reference property.
      * @param holder The feature holder which has and uses the new reference property.
-     * @param initialValue The value the new object property has directly after creation.
+     * @param initialValue The value the new reference property has directly after creation.
      */
     public ReferenceProperty(String name, FeatureHolder holder, T initialValue) {
 
