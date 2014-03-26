@@ -8,6 +8,7 @@
 
 ### Fixes
 * The AbstractFunction implementation can now handle null arguments.
+* The AbstractFunction implementation no longer throws unexpected exceptions if there are less arguments than parameters.
 * The JAXB persistence system actually works (a lot of bugfixes done here).
 * Refactored a whole bunch of code based on automatic suggestions.
 
