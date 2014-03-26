@@ -146,6 +146,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             // Check all arguments
             for (int index = 0; index < parameters.size(); index++) {
                 Class<?> parameter = parameters.get(index);
+                Validate.isTrue(index < arguments.length, errorString);
                 if (arguments[index] != null && !parameter.isAssignableFrom(arguments[index].getClass())) {
                     Validate.isTrue(parameter.isArray(), errorString);
                     for (int varargIndex = index; varargIndex < arguments.length; varargIndex++) {

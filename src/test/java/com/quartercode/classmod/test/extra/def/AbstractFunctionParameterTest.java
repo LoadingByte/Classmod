@@ -65,6 +65,11 @@ public class AbstractFunctionParameterTest {
         data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "", null }, true });
         data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { null, "" }, false });
 
+        // Less arguments than parameters test
+        data.add(new Object[] { new Class<?>[] { String.class }, new Object[] {}, false });
+        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] {}, false });
+        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "testString" }, false });
+
         return data;
     }
 
