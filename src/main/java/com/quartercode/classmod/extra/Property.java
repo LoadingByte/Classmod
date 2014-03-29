@@ -25,7 +25,7 @@ import com.quartercode.classmod.base.Feature;
  * 
  * @param <T> The type of object which can be stored inside the property.
  */
-public interface Property<T> extends Feature, Iterable<T> {
+public interface Property<T> extends Feature {
 
     /**
      * Returns the object which is stored inside the property.

@@ -18,9 +18,6 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
@@ -121,14 +118,6 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
         if (object instanceof ChildFeatureHolder) {
             ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
         }
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-
-        Set<T> set = new HashSet<T>();
-        set.add(object);
-        return set.iterator();
     }
 
     @Override

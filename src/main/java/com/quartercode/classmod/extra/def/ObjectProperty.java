@@ -18,9 +18,6 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
@@ -137,14 +134,6 @@ public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
         if (object instanceof ChildFeatureHolder) {
             ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
         }
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-
-        Set<T> set = new HashSet<T>();
-        set.add(object);
-        return set.iterator();
     }
 
     @Override

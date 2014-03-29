@@ -18,9 +18,6 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -137,14 +134,6 @@ public class ReferenceProperty<T> extends AbstractFeature implements Property<T>
         if (reference instanceof ChildFeatureHolder) {
             ((ChildFeatureHolder<FeatureHolder>) reference).setParent(getHolder());
         }
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-
-        Set<T> set = new HashSet<T>();
-        set.add(reference);
-        return set.iterator();
     }
 
     @Override
