@@ -121,7 +121,7 @@ public class ReferenceProperty<T> extends AbstractProperty<T> {
     @Override
     protected void setInternal(T value) {
 
-        value = reference;
+        reference = value;
     }
 
     @Override
