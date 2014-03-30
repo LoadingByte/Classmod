@@ -6,7 +6,8 @@
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
 * The property implementations provide feature definition factory methods.
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
-* Internal property getters and setters.
+* Properties now support getter and setter function executors; that removes the need for GET_X and SET_X functions.
+* Collection properties are normal properties with add() and remove() methods instead of the set() method.
 
 ### Fixes
 * The DefaultFunctionInvocation implementation can now handle null arguments.
