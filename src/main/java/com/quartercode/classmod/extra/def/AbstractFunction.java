@@ -61,6 +61,11 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     public AbstractFunction(String name, FeatureHolder holder) {
 
         super(name, holder);
+
+        // New feature (first global occurrence) -> copy the locked state of the parent feature holder if it is also lockable
+        if (holder instanceof LockableClass) {
+            locked = ((LockableClass) holder).isLocked();
+        }
     }
 
     @Override

@@ -110,11 +110,6 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
                 e.printStackTrace();
                 throw new IllegalArgumentException("Unknown generics error with feature definition '" + definition.getName() + "' and its created feature (Initializable cast)", e);
             }
-
-            // Temp: Set the locked status (TODO: Remove)
-            if (feature instanceof LockableClass) {
-                ((LockableClass) feature).setLocked(locked);
-            }
         }
 
         return feature;
