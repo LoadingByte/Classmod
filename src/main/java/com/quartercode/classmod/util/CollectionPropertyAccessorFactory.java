@@ -30,6 +30,7 @@ import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
+import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -51,7 +52,7 @@ public class CollectionPropertyAccessorFactory {
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Collection} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <C extends Collection<E>, E> FunctionExecutor<C> createGet(final FeatureDefinition<? extends Property<? extends C>> propertyDefinition) {
+    public static <E, C extends Collection<E>> FunctionExecutor<C> createGet(final CollectionPropertyDefinition<E, C> propertyDefinition) {
 
         return createGet(propertyDefinition, new CriteriumMatcher<E>() {
 
@@ -74,7 +75,7 @@ public class CollectionPropertyAccessorFactory {
      * @param matcher The {@link CriteriumMatcher} for checking if certain elements should be returned.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <C extends Collection<E>, E> FunctionExecutor<C> createGet(final FeatureDefinition<? extends Property<? extends C>> propertyDefinition, final CriteriumMatcher<E> matcher) {
+    public static <E, C extends Collection<E>> FunctionExecutor<C> createGet(final CollectionPropertyDefinition<E, C> propertyDefinition, final CriteriumMatcher<E> matcher) {
 
         return new FunctionExecutor<C>() {
 
@@ -116,7 +117,7 @@ public class CollectionPropertyAccessorFactory {
      * @param matcher The {@link CriteriumMatcher} for checking the elements.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <E> FunctionExecutor<E> createGetSingle(final FeatureDefinition<? extends Property<? extends Collection<E>>> propertyDefinition, final CriteriumMatcher<E> matcher) {
+    public static <E> FunctionExecutor<E> createGetSingle(final CollectionPropertyDefinition<E, ? extends Collection<E>> propertyDefinition, final CriteriumMatcher<E> matcher) {
 
         return new FunctionExecutor<E>() {
 
@@ -139,13 +140,13 @@ public class CollectionPropertyAccessorFactory {
 
     /**
      * Creates a new adder {@link FunctionExecutor} for the given {@link Collection} {@link Property} definition.
-     * An adder function adds elements to the {@link Collection} of a {@link Property}.
-     * The array of elements that should be added must be supplied as first argument.
+     * An adder function adds an element to the {@link Collection} of a {@link Property}.
+     * The element that should be added must be supplied as first argument.
      * 
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Collection} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <E> FunctionExecutor<Void> createAdd(final FeatureDefinition<? extends Property<? extends Collection<E>>> propertyDefinition) {
+    public static <E> FunctionExecutor<Void> createAdd(final CollectionPropertyDefinition<E, ? extends Collection<E>> propertyDefinition) {
 
         return new FunctionExecutor<Void>() {
 
@@ -153,14 +154,14 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                for (Object element : (Object[]) arguments[0]) {
-                    // Hope that the using FunctionDefinition has the correct parameters
-                    boolean changed = invocation.getHolder().get(propertyDefinition).get().add((E) element);
+                Object element = arguments[0];
 
-                    // Set the parent of the added element the new holder
-                    if (changed && element instanceof ChildFeatureHolder) {
-                        ((ChildFeatureHolder<FeatureHolder>) element).setParent(invocation.getHolder());
-                    }
+                // Hope that the using FunctionDefinition has the correct parameters
+                boolean changed = invocation.getHolder().get(propertyDefinition).get().add((E) element);
+
+                // Set the parent of the added element the new holder
+                if (changed && element instanceof ChildFeatureHolder) {
+                    ((ChildFeatureHolder<FeatureHolder>) element).setParent(invocation.getHolder());
                 }
 
                 return invocation.next(arguments);
@@ -171,26 +172,26 @@ public class CollectionPropertyAccessorFactory {
 
     /**
      * Creates a new remover {@link FunctionExecutor} for the given {@link Collection} {@link Property} definition.
-     * A remover function removes elements from the {@link Collection} of a {@link Property}.
-     * The array of elements that should be removed must be supplied as first argument.
+     * A remover function removes an element from the {@link Collection} of a {@link Property}.
+     * The element that should be removed must be supplied as first argument.
      * 
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Collection} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <E> FunctionExecutor<Void> createRemove(final FeatureDefinition<? extends Property<? extends Collection<E>>> propertyDefinition) {
+    public static <E> FunctionExecutor<Void> createRemove(final CollectionPropertyDefinition<E, ? extends Collection<E>> propertyDefinition) {
 
         return new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                for (Object element : (Object[]) arguments[0]) {
-                    boolean changed = invocation.getHolder().get(propertyDefinition).get().remove(element);
+                Object element = arguments[0];
 
-                    // Set the parent of the removed element to null
-                    if (changed && element instanceof ChildFeatureHolder) {
-                        ((ChildFeatureHolder<?>) element).setParent(null);
-                    }
+                boolean changed = invocation.getHolder().get(propertyDefinition).get().remove(element);
+
+                // Set the parent of the removed element to null
+                if (changed && element instanceof ChildFeatureHolder) {
+                    ((ChildFeatureHolder<?>) element).setParent(null);
                 }
 
                 return invocation.next(arguments);
@@ -206,7 +207,7 @@ public class CollectionPropertyAccessorFactory {
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Queue} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <E> FunctionExecutor<E> createPeek(final FeatureDefinition<? extends Property<? extends Queue<E>>> propertyDefinition) {
+    public static <E> FunctionExecutor<E> createPeek(final CollectionPropertyDefinition<E, ? extends Queue<E>> propertyDefinition) {
 
         return new FunctionExecutor<E>() {
 
@@ -227,7 +228,7 @@ public class CollectionPropertyAccessorFactory {
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Queue} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <E> FunctionExecutor<E> createPoll(final FeatureDefinition<? extends Property<? extends Queue<E>>> propertyDefinition) {
+    public static <E> FunctionExecutor<E> createPoll(final CollectionPropertyDefinition<E, ? extends Queue<E>> propertyDefinition) {
 
         return new FunctionExecutor<E>() {
 

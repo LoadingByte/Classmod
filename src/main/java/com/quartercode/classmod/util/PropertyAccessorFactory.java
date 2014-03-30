@@ -23,6 +23,7 @@ import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
  * A utility class for creating {@link FunctionExecutor}s which can access simple {@link Property}s (like getters or setters).
@@ -39,7 +40,7 @@ public class PropertyAccessorFactory {
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <T> FunctionExecutor<T> createGet(final FeatureDefinition<? extends Property<T>> propertyDefinition) {
+    public static <T> FunctionExecutor<T> createGet(final PropertyDefinition<T> propertyDefinition) {
 
         return new FunctionExecutor<T>() {
 
@@ -62,7 +63,7 @@ public class PropertyAccessorFactory {
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
      */
-    public static <T> FunctionExecutor<Void> createSet(final FeatureDefinition<? extends Property<T>> propertyDefinition) {
+    public static <T> FunctionExecutor<Void> createSet(final PropertyDefinition<T> propertyDefinition) {
 
         return new FunctionExecutor<Void>() {
 
