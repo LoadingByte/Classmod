@@ -148,7 +148,7 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                for (Object element : arguments) {
+                for (Object element : (Object[]) arguments[0]) {
                     // Hope that the using FunctionDefinition has the correct parameters
                     boolean changed = invocation.getHolder().get(propertyDefinition).get().add((E) element);
 
@@ -178,7 +178,7 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                for (Object element : arguments) {
+                for (Object element : (Object[]) arguments[0]) {
                     boolean changed = invocation.getHolder().get(propertyDefinition).get().remove(element);
 
                     // Set the parent of the removed element to null

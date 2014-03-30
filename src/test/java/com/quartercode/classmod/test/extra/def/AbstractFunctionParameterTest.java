@@ -43,22 +43,33 @@ public class AbstractFunctionParameterTest {
 
         List<Object[]> data = new ArrayList<Object[]>();
 
-        data.add(new Object[] { new Class<?>[] {}, new Object[] { 0 }, true });
-
+        // Simple arguments test
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { "" }, true });
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { 0 }, false });
-
         data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "", 0 }, true });
         data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "", "" }, false });
 
+        // Inheritance test
+        data.add(new Object[] { new Class<?>[] { Number.class }, new Object[] { (int) 0 }, true });
+        data.add(new Object[] { new Class<?>[] { Integer.class }, new Object[] { (short) 0 }, false });
+
+        // Vararg test
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { 0 }, true });
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { 0, 1, 2 }, true });
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { "" }, false });
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { "", "" }, false });
+        data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { 0, 1, "" }, false });
         data.add(new Object[] { new Class<?>[] { String.class, Integer[].class }, new Object[] { "", 0, 1, 2 }, true });
         data.add(new Object[] { new Class<?>[] { String.class, Integer[].class }, new Object[] { "", "", 0, 1, 2 }, false });
 
+        // Vararg inheritance test
+        data.add(new Object[] { new Class<?>[] { Number[].class }, new Object[] { (int) 0, (short) 0 }, true });
+        data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { (int) 0, (short) 0 }, false });
+
+        // Array test
         data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { new Integer[] { 0, 1, 2 } }, true });
+        data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { new Object[] { 0, 1, 2 } }, false });
+        data.add(new Object[] { new Class<?>[] { Integer[].class }, new Object[] { new Object[] { 0, 1, "" } }, false });
 
         // Null arguments test
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { null }, true });
@@ -68,7 +79,12 @@ public class AbstractFunctionParameterTest {
         // Less arguments than parameters test
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] {}, false });
         data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] {}, false });
-        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "testString" }, false });
+        data.add(new Object[] { new Class<?>[] { String.class, Integer.class }, new Object[] { "" }, false });
+
+        // Less parameters than arguments test
+        data.add(new Object[] { new Class<?>[] {}, new Object[] { "" }, false });
+        data.add(new Object[] { new Class<?>[] {}, new Object[] { "", 0 }, false });
+        data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { "", 10 }, false });
 
         return data;
     }
@@ -107,7 +123,7 @@ public class AbstractFunctionParameterTest {
             actuallyWorks = false;
         }
 
-        Assert.assertTrue("Function call " + (works ? "doesn't work" : "works"), actuallyWorks == works);
+        Assert.assertTrue("Function call " + (works ? "doesn't work" : "works") + "; parameters rejected", actuallyWorks == works);
     }
 
 }

@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
@@ -132,28 +133,12 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     @Override
     public R next(Object... arguments) throws ExecutorInvocationException {
 
-        // Argument validation
+        // Use a clone of the argument array in order to prevent it from outside modification
+        arguments = arguments.clone();
+
+        // Validate the arguments and transform varargs to arrays
         try {
-            List<Class<?>> parameters = source.getParameters();
-
-            // Generate error string
-            StringBuilder errorStringBuilder = new StringBuilder();
-            for (Class<?> parameter : parameters) {
-                errorStringBuilder.append(", ").append(parameter.getSimpleName());
-            }
-            String errorString = "Wrong arguments: '" + (errorStringBuilder.length() == 0 ? "" : errorStringBuilder.substring(2)) + "' required";
-
-            // Check all arguments
-            for (int index = 0; index < parameters.size(); index++) {
-                Class<?> parameter = parameters.get(index);
-                Validate.isTrue(index < arguments.length, errorString);
-                if (arguments[index] != null && !parameter.isAssignableFrom(arguments[index].getClass())) {
-                    Validate.isTrue(parameter.isArray(), errorString);
-                    for (int varargIndex = index; varargIndex < arguments.length; varargIndex++) {
-                        Validate.isTrue(parameter.getComponentType().isAssignableFrom(arguments[varargIndex].getClass()), errorString);
-                    }
-                }
-            }
+            arguments = checkArguments(arguments);
         } catch (IllegalArgumentException e) {
             throw new ExecutorInvocationException("Invalid arguments", e);
         }
@@ -167,6 +152,77 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             } catch (RuntimeException e) {
                 throw new ExecutorInvocationException("Runtime exception while invoking a function executor", e);
             }
+        }
+    }
+
+    private Object[] checkArguments(Object[] arguments) {
+
+        List<Class<?>> parameters = source.getParameters();
+
+        // Generate error message
+        StringBuilder errorStringBuilder = new StringBuilder();
+        for (Class<?> parameter : parameters) {
+            errorStringBuilder.append(", ").append(parameter.getSimpleName());
+        }
+        String errorString = "Wrong arguments: '" + (errorStringBuilder.length() == 0 ? "" : errorStringBuilder.substring(2)) + "' required";
+
+        // Abort check if there are no parameters
+        if (parameters.isEmpty()) {
+            // Throw an error if there are arguments while there are no parameters
+            if (arguments.length != 0) {
+                throw new IllegalArgumentException(errorString);
+            } else {
+                return arguments;
+            }
+        }
+
+        // Determine whether the last parameter could be a vararg and the last arguments verify that assumption
+        boolean hasVararg = true;
+        if (!parameters.get(parameters.size() - 1).isArray()) {
+            hasVararg = false;
+        } else if (arguments.length == parameters.size() && arguments[arguments.length - 1].getClass().isArray()) {
+            hasVararg = false;
+        }
+        // Check whether there is a correct argument count (if there is a vararg, we don't need to check)
+        Validate.isTrue(hasVararg || parameters.size() == arguments.length, errorString);
+        // Check all parameters; if there is a vararg, don't check the last one
+        for (int index = 0; index < parameters.size() - (hasVararg ? 1 : 0); index++) {
+            Class<?> parameter = parameters.get(index);
+            // Check whether the argument matches the parameter
+            Validate.isTrue(arguments[index] == null || parameter.isAssignableFrom(arguments[index].getClass()), errorString);
+        }
+
+        // Vararg validation
+        if (hasVararg) {
+            // Calculate the amount of vararg arguments
+            int varargArgumentCount = arguments.length - parameters.size() + 1;
+            // Determine the type of the vararg
+            Class<?> varargType = parameters.get(parameters.size() - 1).getComponentType();
+
+            // Fill a new array with the vararg arguments
+            Object[] varargArguments = (Object[]) Array.newInstance(varargType, varargArgumentCount);
+            for (int index = 0; index < varargArguments.length; index++) {
+                try {
+                    varargArguments[index] = arguments[parameters.size() + index - 1];
+                } catch (ArrayStoreException e) {
+                    // The vararg argument has no the same type as the vararg
+                    throw new IllegalArgumentException(errorString);
+                }
+            }
+
+            // Check whether all vararg arguments are of the actual vararg type
+            for (Object varargArgument : varargArguments) {
+                Validate.isTrue(varargType.isAssignableFrom(varargArgument.getClass()), errorString);
+            }
+
+            // Create a new array with an array containing the vararg arguments at the last index
+            // Transforms [ "val1", 2, 3, 4 ] to [ "val1", [ 2, 3, 4] ]
+            Object[] newArguments = new Object[parameters.size()];
+            System.arraycopy(arguments, 0, newArguments, 0, newArguments.length - 1);
+            newArguments[newArguments.length - 1] = varargArguments;
+            return newArguments;
+        } else {
+            return arguments;
         }
     }
 
