@@ -91,6 +91,8 @@ public class CollectionPropertyAccessorFactory {
                     }
                 }
 
+                invocation.next(arguments);
+
                 // These casts always return the right value IF C is no implementation (e.g. ArrayList instead of just List)
                 if (originalCollection instanceof List) {
                     return (C) Collections.unmodifiableList(new ArrayList<E>(collection));
@@ -121,13 +123,15 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
+                E result = null;
                 for (E element : invocation.getHolder().get(propertyDefinition).get()) {
                     if (matcher.matches(element, arguments)) {
-                        return element;
+                        result = element;
                     }
                 }
 
-                return null;
+                invocation.next(arguments);
+                return result;
             }
 
         };
@@ -136,6 +140,7 @@ public class CollectionPropertyAccessorFactory {
     /**
      * Creates a new adder {@link FunctionExecutor} for the given {@link Collection} {@link Property} definition.
      * An adder function adds elements to the {@link Collection} of a {@link Property}.
+     * The array of elements that should be added must be supplied as first argument.
      * 
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Collection} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
@@ -167,6 +172,7 @@ public class CollectionPropertyAccessorFactory {
     /**
      * Creates a new remover {@link FunctionExecutor} for the given {@link Collection} {@link Property} definition.
      * A remover function removes elements from the {@link Collection} of a {@link Property}.
+     * The array of elements that should be removed must be supplied as first argument.
      * 
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Collection} {@link Property} to access.
      * @return The created {@link FunctionExecutor}.
@@ -228,8 +234,6 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                invocation.next(arguments);
-
                 E element = invocation.getHolder().get(propertyDefinition).get().poll();
 
                 // Set the parent of the removed (polled) element to null
@@ -237,6 +241,7 @@ public class CollectionPropertyAccessorFactory {
                     ((ChildFeatureHolder<?>) element).setParent(null);
                 }
 
+                invocation.next(arguments);
                 return element;
             }
 

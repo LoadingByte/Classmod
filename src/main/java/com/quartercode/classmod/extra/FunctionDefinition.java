@@ -24,8 +24,8 @@ import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 
 /**
- * A function definition is used to get a {@link Function} from a {@link FeatureHolder}.
- * The function definition also stores some {@link FunctionExecutor}s which are used for the {@link Function} object.
+ * A function definition is used to retrieve a {@link Function} from a {@link FeatureHolder}.
+ * The function definition also stores the parameters and {@link FunctionExecutor}s which are used for the {@link Function} object.
  * 
  * @param <R> The type of the return value of the defined {@link Function}.
  * @see Function
@@ -67,7 +67,7 @@ public interface FunctionDefinition<R> extends FeatureDefinition<Function<R>> {
 
     /**
      * Registers a new {@link FunctionExecutor} under the given variant and name to the definition.
-     * Registered {@link FunctionExecutor} should transfer to created {@link Function}s.
+     * The registered {@link FunctionExecutor} transfers to all newly created {@link Function}s.
      * 
      * @param variant The class the {@link FunctionExecutor} is used for. It will also be used for every subclass of this class.
      * @param name The name of the {@link FunctionExecutor} to register. You can use that name to unregister the {@link FunctionExecutor} through {@link #removeExecutor(Class, String)}.
@@ -77,10 +77,10 @@ public interface FunctionDefinition<R> extends FeatureDefinition<Function<R>> {
 
     /**
      * Unregisters an {@link FunctionExecutor} which is registered under the given variant and name from the definition.
-     * The unregistered {@link FunctionExecutor} wont transfer into new {@link Function}s, but it will stay in the ones which are already created.
+     * The unregistered {@link FunctionExecutor} won't transfer into new {@link Function}s, but it will stay in the ones which are already created.
      * 
      * @param variant The class the {@link FunctionExecutor} for removal is used for.
-     * @param name The name the {@link FunctionExecutor} to unregister has. You used that name for {@link #addExecutor(Class, String, FunctionExecutor)}.
+     * @param name The name the {@link FunctionExecutor} to unregister has. You have used that name for {@link #addExecutor(Class, String, FunctionExecutor)}.
      */
     public void removeExecutor(Class<? extends FeatureHolder> variant, String name);
 

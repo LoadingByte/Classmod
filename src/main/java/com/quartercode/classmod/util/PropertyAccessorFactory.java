@@ -57,6 +57,7 @@ public class PropertyAccessorFactory {
     /**
      * Creates a new setter {@link FunctionExecutor} for the given {@link Property} definition.
      * A setter function changes the value of a {@link Property}.
+     * The new value must be supplied as first argument.
      * 
      * @param propertyDefinition The {@link FeatureDefinition} of the {@link Property} to access.
      * @return The created {@link FunctionExecutor}.

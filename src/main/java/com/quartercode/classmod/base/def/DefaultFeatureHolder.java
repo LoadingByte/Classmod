@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.base.def;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -134,7 +135,7 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
     @Override
     public Iterator<Feature> iterator() {
 
-        return features.iterator();
+        return Collections.unmodifiableSet(features).iterator();
     }
 
     /**

@@ -31,9 +31,10 @@ import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 
 /**
- * An abstract function definition is used to get a {@link Function} from a {@link FeatureHolder}.
- * It's an implementation of the {@link FunctionDefinition} interface.
- * It contains the name of the {@link Function} and the {@link FunctionExecutor}s which are used.
+ * An abstract function definition is used to retrieve a {@link Function} from a {@link FeatureHolder}.
+ * It's an implementation of the {@link FunctionDefinition} interface.<br>
+ * <br>
+ * Every definition contains the name of the {@link Function}, the parameters and the {@link FunctionExecutor}s that are used.
  * You can use an abstract function definition to construct a new instance of the defined {@link Function} through {@link #create(FeatureHolder)}.
  * 
  * @param <R> The type of the return value of the defined {@link Function}.

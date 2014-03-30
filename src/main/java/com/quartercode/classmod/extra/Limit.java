@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 
 /**
  * {@link FunctionExecutor}s which have this annotation are only invoked a given amount of times until they stop.
- * That means that a {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it wont be invoked ever again.
+ * That means that a {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it won't be invoked ever again.
  * This should be annotated at the actual {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
  * 
  * @see FunctionExecutor
@@ -36,7 +36,7 @@ public @interface Limit {
 
     /**
      * The amount of invocations after the {@link FunctionExecutor} blocks new invocation calls.
-     * A {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it wont be invoked ever again.
+     * A {@link FunctionExecutor} with a limit of one is only invoked one time. After that, it won't be invoked ever again.
      */
     int value () default Integer.MAX_VALUE;
 
