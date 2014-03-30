@@ -27,6 +27,7 @@ import javax.xml.bind.annotation.XmlID;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Initializable;
 import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.extra.LockableClass;
 
@@ -72,22 +73,49 @@ public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
         }
     }
 
-    // If this doesn't succeed we have a really serious design problem
-    @SuppressWarnings ("unchecked")
     @Override
+    /*
+     * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
+     * Sadly, this method needs to perform unchecked casts in order to keep the whole type system consistent.
+     */
+    @SuppressWarnings ("unchecked")
     public <F extends Feature> F get(FeatureDefinition<F> definition) {
 
-        for (Feature feature : features) {
-            if (feature.getName().equals(definition.getName())) {
-                return (F) feature;
+        F feature = null;
+
+        // Retrieve existing feature
+        for (Feature availableFeature : features) {
+            if (availableFeature.getName().equals(definition.getName())) {
+                try {
+                    feature = (F) availableFeature;
+                    break;
+                } catch (ClassCastException e) {
+                    throw new IllegalArgumentException("Generic type argument of feature definition '" + definition.getName() + "' doesn't match existing feature", e);
+                }
             }
         }
 
-        F feature = definition.create(this);
-        if (feature instanceof LockableClass) {
-            ((LockableClass) feature).setLocked(locked);
+        // Create a new feature if the defined feature doesn't exist yet
+        if (feature == null) {
+            feature = definition.create(this);
+            features.add(feature);
         }
-        features.add(feature);
+
+        // Initialize the feature if it hasn't been done yet
+        if (feature instanceof Initializable && ! ((Initializable<?>) feature).isInitialized()) {
+            try {
+                ((Initializable<FeatureDefinition<F>>) feature).initialize(definition);
+            } catch (ClassCastException e) {
+                e.printStackTrace();
+                throw new IllegalArgumentException("Unknown generics error with feature definition '" + definition.getName() + "' and its created feature (Initializable cast)", e);
+            }
+
+            // Temp: Set the locked status (TODO: Remove)
+            if (feature instanceof LockableClass) {
+                ((LockableClass) feature).setLocked(locked);
+            }
+        }
+
         return feature;
     }
 

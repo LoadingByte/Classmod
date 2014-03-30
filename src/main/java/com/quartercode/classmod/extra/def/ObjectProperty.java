@@ -20,14 +20,12 @@ package com.quartercode.classmod.extra.def;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Persistent;
-import com.quartercode.classmod.base.def.AbstractFeature;
-import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
-import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
  * An object property is a simple {@link Property} which stores an object.
@@ -37,20 +35,20 @@ import com.quartercode.classmod.extra.Property;
  */
 @Persistent
 @XmlRootElement
-public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
+public class ObjectProperty<T> extends AbstractProperty<T> {
 
     /**
-     * Creates a new {@link FeatureDefinition} that describes an object property with the given name.
+     * Creates a new {@link PropertyDefinition} that describes an object property with the given name.
      * 
-     * @param name The name of the object property which the returned {@link FeatureDefinition} describes.
-     * @return A {@link FeatureDefinition} which can be used to describe an object property.
+     * @param name The name of the object property which the returned {@link PropertyDefinition} describes.
+     * @return A {@link PropertyDefinition} which can be used to describe an object property.
      */
-    public static <T> FeatureDefinition<ObjectProperty<T>> createDefinition(String name) {
+    public static <T> PropertyDefinition<T> createDefinition(String name) {
 
-        return new AbstractFeatureDefinition<ObjectProperty<T>>(name) {
+        return new AbstractPropertyDefinition<T>(name) {
 
             @Override
-            public ObjectProperty<T> create(FeatureHolder holder) {
+            public Property<T> create(FeatureHolder holder) {
 
                 return new ObjectProperty<T>(getName(), holder);
             }
@@ -59,18 +57,18 @@ public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
     }
 
     /**
-     * Creates a new {@link FeatureDefinition} that describes an object property with the given name and initial value.
+     * Creates a new {@link PropertyDefinition} that describes an object property with the given name and initial value.
      * 
-     * @param name The name of the object property which the returned {@link FeatureDefinition} describes.
-     * @param initialValue The initial value of the object property which the returned {@link FeatureDefinition} describes.
-     * @return A {@link FeatureDefinition} which can be used to describe an object property.
+     * @param name The name of the object property which the returned {@link PropertyDefinition} describes.
+     * @param initialValue The initial value of the object property which the returned {@link PropertyDefinition} describes.
+     * @return A {@link PropertyDefinition} which can be used to describe an object property.
      */
-    public static <T> FeatureDefinition<ObjectProperty<T>> createDefinition(String name, final T initialValue) {
+    public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue) {
 
-        return new AbstractFeatureDefinition<ObjectProperty<T>>(name) {
+        return new AbstractPropertyDefinition<T>(name) {
 
             @Override
-            public ObjectProperty<T> create(FeatureHolder holder) {
+            public Property<T> create(FeatureHolder holder) {
 
                 return new ObjectProperty<T>(getName(), holder, initialValue);
             }
@@ -110,30 +108,20 @@ public class ObjectProperty<T> extends AbstractFeature implements Property<T> {
      */
     public ObjectProperty(String name, FeatureHolder holder, T initialValue) {
 
-        super(name, holder);
-
-        set(initialValue);
+        super(name, holder, initialValue);
     }
 
     @Override
-    public T get() {
+    @XmlTransient
+    protected T getInternal() {
 
         return object;
     }
 
     @Override
-    @SuppressWarnings ("unchecked")
-    public void set(T value) {
-
-        if (object instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) object).getParent().equals(getHolder())) {
-            ((ChildFeatureHolder<FeatureHolder>) object).setParent(null);
-        }
+    protected void setInternal(T value) {
 
         object = value;
-
-        if (object instanceof ChildFeatureHolder) {
-            ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
-        }
     }
 
     @Override

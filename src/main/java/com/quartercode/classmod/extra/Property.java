@@ -19,26 +19,31 @@
 package com.quartercode.classmod.extra;
 
 import com.quartercode.classmod.base.Feature;
+import com.quartercode.classmod.base.Initializable;
 
 /**
  * A property is a simple {@link Feature} which stores an object.
  * 
  * @param <T> The type of object which can be stored inside the property.
  */
-public interface Property<T> extends Feature {
+public interface Property<T> extends Feature, Initializable<PropertyDefinition<T>> {
 
     /**
      * Returns the object which is stored inside the property.
+     * Note that all getter function executors are invoked when this is called.
      * 
      * @return The stored object.
+     * @throws ExecutorInvocationException Something goes wrong while invoking a getter function executor.
      */
-    public T get();
+    public T get() throws ExecutorInvocationException;
 
     /**
      * Changes the object which is stored inside the property.
+     * Note that all setter function executors are invoked when this is called.
      * 
      * @param value The new stored object.
+     * @throws ExecutorInvocationException Something goes wrong while invoking a setter function executor.
      */
-    public void set(T value);
+    public void set(T value) throws ExecutorInvocationException;
 
 }

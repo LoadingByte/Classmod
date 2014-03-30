@@ -18,8 +18,6 @@
 
 package com.quartercode.classmod.util;
 
-import java.util.List;
-import java.util.Map;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
@@ -47,9 +45,9 @@ public class FunctionDefinitionFactory {
         return new AbstractFunctionDefinition<R>(name) {
 
             @Override
-            protected Function<R> create(FeatureHolder holder, List<Class<?>> parameters, Map<String, FunctionExecutor<R>> executors) {
+            public Function<R> create(FeatureHolder holder) {
 
-                return new AbstractFunction<R>(getName(), holder, parameters, executors);
+                return new AbstractFunction<R>(getName(), holder);
             }
 
         };
@@ -70,9 +68,9 @@ public class FunctionDefinitionFactory {
         FunctionDefinition<R> definition = new AbstractFunctionDefinition<R>(name, parameters) {
 
             @Override
-            protected Function<R> create(FeatureHolder holder, List<Class<?>> parameters, Map<String, FunctionExecutor<R>> executors) {
+            public Function<R> create(FeatureHolder holder) {
 
-                return new AbstractFunction<R>(getName(), holder, parameters, executors);
+                return new AbstractFunction<R>(getName(), holder);
             }
 
         };

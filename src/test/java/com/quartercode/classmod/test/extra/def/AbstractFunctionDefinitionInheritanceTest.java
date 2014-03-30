@@ -22,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -69,9 +68,9 @@ public class AbstractFunctionDefinitionInheritanceTest {
         functionDefinition = new AbstractFunctionDefinition<Void>("testFunctionDefinition") {
 
             @Override
-            protected Function<Void> create(FeatureHolder holder, List<Class<?>> parameters, Map<String, FunctionExecutor<Void>> executors) {
+            public Function<Void> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Void>(getName(), holder, parameters, executors);
+                return new AbstractFunction<Void>(getName(), holder);
             }
 
         };
@@ -108,7 +107,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
             index++;
         }
 
-        Function<Void> function = functionDefinition.create(variant.newInstance());
+        Function<Void> function = variant.newInstance().get(functionDefinition);
         function.invoke();
 
         Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));

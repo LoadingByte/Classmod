@@ -21,6 +21,7 @@ package com.quartercode.classmod.extra;
 import java.util.List;
 import java.util.Set;
 import com.quartercode.classmod.base.Feature;
+import com.quartercode.classmod.base.Initializable;
 
 /**
  * A function makes a method (also called a function) available.
@@ -32,7 +33,7 @@ import com.quartercode.classmod.base.Feature;
  * @see FunctionInvocation
  * @see FunctionExecutorContext
  */
-public interface Function<R> extends Feature, LockableClass {
+public interface Function<R> extends Feature, Initializable<FunctionDefinition<R>>, LockableClass {
 
     /**
      * Returns a list of all parameters which are used by the {@link FunctionExecutor}s.

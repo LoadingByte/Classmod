@@ -18,28 +18,37 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.Assert;
 import org.junit.Test;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
+import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Prioritized;
 import com.quartercode.classmod.extra.def.AbstractFunction;
+import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
 public class AbstractFunctionPriorityTest {
 
     @Test
     public void testInvoke() throws ExecutorInvocationException {
 
-        Map<String, FunctionExecutor<Integer>> executors = new HashMap<String, FunctionExecutor<Integer>>();
+        FunctionDefinition<Integer> definition = new AbstractFunctionDefinition<Integer>("testFunction") {
+
+            @Override
+            public Function<Integer> create(FeatureHolder holder) {
+
+                return new AbstractFunction<Integer>(getName(), holder);
+            }
+
+        };
 
         final AtomicBoolean invokedFunctionExecutor1 = new AtomicBoolean();
-        executors.put("4", new FunctionExecutor<Integer>() {
+        definition.addExecutor(FeatureHolder.class, "1", new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (4)
@@ -52,34 +61,34 @@ public class AbstractFunctionPriorityTest {
         });
 
         final AtomicBoolean invokedFunctionExecutor2 = new AtomicBoolean();
-        executors.put("1", new FunctionExecutor<Integer>() {
+        definition.addExecutor(FeatureHolder.class, "2", new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (3)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor2.set(true);
-                invocation.next(arguments);
-                return 3;
+                invocation.next(arguments); // Execute next, but don't return next value
+                return 2;
             }
 
         });
 
         final AtomicBoolean invokedFunctionExecutor3 = new AtomicBoolean();
-        executors.put("2", new FunctionExecutor<Integer>() {
+        definition.addExecutor(FeatureHolder.class, "3", new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (2)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
 
                 invokedFunctionExecutor3.set(true);
-                return null; // Stop execution
+                return 3; // Do not even execute next
             }
 
         });
 
         final AtomicBoolean invokedFunctionExecutor4 = new AtomicBoolean();
-        executors.put("3", new FunctionExecutor<Integer>() {
+        definition.addExecutor(FeatureHolder.class, "4", new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (1)
@@ -87,19 +96,20 @@ public class AbstractFunctionPriorityTest {
 
                 invokedFunctionExecutor4.set(true);
                 invocation.next(arguments);
-                return 1;
+                return 4;
             }
 
         });
 
-        AbstractFunction<Integer> function = new AbstractFunction<Integer>("testFunction", new DefaultFeatureHolder(), new ArrayList<Class<?>>(), executors);
+        Function<Integer> function = new DefaultFeatureHolder().get(definition);
+
         int result = function.invoke();
 
         Assert.assertTrue("Executor 1 wasn't invoked", invokedFunctionExecutor1.get());
         Assert.assertTrue("Executor 2 wasn't invoked", invokedFunctionExecutor2.get());
         Assert.assertTrue("Executor 3 wasn't invoked", invokedFunctionExecutor3.get());
         Assert.assertFalse("Executor 4 was invoked", invokedFunctionExecutor4.get());
-        Assert.assertEquals("Return value", 3, result);
+        Assert.assertEquals("Return value", 2, result);
     }
 
 }

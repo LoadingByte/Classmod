@@ -18,12 +18,9 @@
 
 package com.quartercode.classmod.extra.def;
 
-import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.def.AbstractFeature;
-import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
-import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
  * A transient property is a simple {@link Property} which stores an object and can't be serialized by JAXB.
@@ -31,20 +28,20 @@ import com.quartercode.classmod.extra.Property;
  * @param <T> The type of object which can be stored inside the transient property.
  * @see Property
  */
-public class TransientProperty<T> extends AbstractFeature implements Property<T> {
+public class TransientProperty<T> extends AbstractProperty<T> {
 
     /**
-     * Creates a new {@link FeatureDefinition} that describes a transient property with the given name.
+     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name.
      * 
-     * @param name The name of the transient property which the returned {@link FeatureDefinition} describes.
-     * @return A {@link FeatureDefinition} which can be used to describe a transient property.
+     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
+     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
      */
-    public static <T> FeatureDefinition<TransientProperty<T>> createDefinition(String name) {
+    public static <T> PropertyDefinition<T> createDefinition(String name) {
 
-        return new AbstractFeatureDefinition<TransientProperty<T>>(name) {
+        return new AbstractPropertyDefinition<T>(name) {
 
             @Override
-            public TransientProperty<T> create(FeatureHolder holder) {
+            public Property<T> create(FeatureHolder holder) {
 
                 return new TransientProperty<T>(getName(), holder);
             }
@@ -53,18 +50,18 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
     }
 
     /**
-     * Creates a new {@link FeatureDefinition} that describes a transient property with the given name and initial value.
+     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name and initial value.
      * 
-     * @param name The name of the transient property which the returned {@link FeatureDefinition} describes.
-     * @param initialValue The initial value of the transient property which the returned {@link FeatureDefinition} describes.
-     * @return A {@link FeatureDefinition} which can be used to describe a transient property.
+     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
+     * @param initialValue The initial value of the transient property which the returned {@link PropertyDefinition} describes.
+     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
      */
-    public static <T> FeatureDefinition<TransientProperty<T>> createDefinition(String name, final T initialValue) {
+    public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue) {
 
-        return new AbstractFeatureDefinition<TransientProperty<T>>(name) {
+        return new AbstractPropertyDefinition<T>(name) {
 
             @Override
-            public TransientProperty<T> create(FeatureHolder holder) {
+            public Property<T> create(FeatureHolder holder) {
 
                 return new TransientProperty<T>(getName(), holder, initialValue);
             }
@@ -94,30 +91,19 @@ public class TransientProperty<T> extends AbstractFeature implements Property<T>
      */
     public TransientProperty(String name, FeatureHolder holder, T initialValue) {
 
-        super(name, holder);
-
-        set(initialValue);
+        super(name, holder, initialValue);
     }
 
     @Override
-    public T get() {
+    protected T getInternal() {
 
         return object;
     }
 
     @Override
-    @SuppressWarnings ("unchecked")
-    public void set(T value) {
-
-        if (object instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) object).getParent().equals(getHolder())) {
-            ((ChildFeatureHolder<FeatureHolder>) object).setParent(null);
-        }
+    protected void setInternal(T value) {
 
         object = value;
-
-        if (object instanceof ChildFeatureHolder) {
-            ((ChildFeatureHolder<FeatureHolder>) object).setParent(getHolder());
-        }
     }
 
     @Override

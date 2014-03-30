@@ -20,26 +20,40 @@ package com.quartercode.classmod.test.extra.def;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
+import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
+import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
 public class AbstractFunctionTest {
 
     @Test
     public void testInvoke() throws ExecutorInvocationException {
 
-        Map<String, FunctionExecutor<Object>> executors = new HashMap<String, FunctionExecutor<Object>>();
+        FunctionDefinition<Object> definition = new AbstractFunctionDefinition<Object>("testFunction") {
+
+            @Override
+            public Function<Object> create(FeatureHolder holder) {
+
+                return new AbstractFunction<Object>(getName(), holder);
+            }
+
+        };
+        definition.setParameter(0, String.class);
+        definition.setParameter(1, Class.class);
+        definition.setParameter(2, Object[].class);
+
         final List<Object> actualArguments = new ArrayList<Object>();
         final Object returnValue = "ReturnValue";
-        executors.put("default", new FunctionExecutor<Object>() {
+        definition.addExecutor(FeatureHolder.class, "default", new FunctionExecutor<Object>() {
 
             @Override
             public Object invoke(FunctionInvocation<Object> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -51,15 +65,12 @@ public class AbstractFunctionTest {
 
         });
 
-        AbstractFunction<Object> function = new AbstractFunction<Object>("testFunction", new DefaultFeatureHolder(), new ArrayList<Class<?>>(), executors);
+        Function<Object> function = new DefaultFeatureHolder().get(definition);
 
-        List<Object> arguments = new ArrayList<Object>();
-        arguments.add("Test");
-        arguments.add(String.class);
-        arguments.add(new Object[] { "Test", 12345, true });
-        Object actualReturnValue = function.invoke(arguments.toArray(new Object[arguments.size()]));
+        Object[] arguments = { "Test", String.class, new Object[] { "Test", 12345, true } };
+        Object actualReturnValue = function.invoke(arguments);
 
-        Assert.assertEquals("Received arguments", arguments, actualArguments);
+        Assert.assertArrayEquals("Received arguments", arguments, actualArguments.toArray(new Object[actualArguments.size()]));
         Assert.assertEquals("Received return value", returnValue, actualReturnValue);
     }
 

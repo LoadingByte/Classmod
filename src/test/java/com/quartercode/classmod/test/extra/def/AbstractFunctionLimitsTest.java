@@ -20,22 +20,24 @@ package com.quartercode.classmod.test.extra.def;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Delay;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
+import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Limit;
 import com.quartercode.classmod.extra.def.AbstractFunction;
+import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
 @RunWith (Parameterized.class)
 public class AbstractFunctionLimitsTest {
@@ -158,9 +160,17 @@ public class AbstractFunctionLimitsTest {
     @Test
     public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
-        Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
-        executors.put("default", executor);
-        AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), new ArrayList<Class<?>>(), executors);
+        FunctionDefinition<Void> definition = new AbstractFunctionDefinition<Void>("testFunction") {
+
+            @Override
+            public Function<Void> create(FeatureHolder holder) {
+
+                return new AbstractFunction<Void>(getName(), holder);
+            }
+
+        };
+        definition.addExecutor(FeatureHolder.class, "default", executor);
+        Function<Void> function = new DefaultFeatureHolder().get(definition);
 
         actualTimesInvoked.set(0);
         for (int counter = 0; counter < invocations; counter++) {

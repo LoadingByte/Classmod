@@ -19,6 +19,7 @@
 package com.quartercode.classmod.extra;
 
 import java.util.List;
+import java.util.Map;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 
@@ -54,6 +55,15 @@ public interface FunctionDefinition<R> extends FeatureDefinition<Function<R>> {
      * @param type The type the argument for the parameter must have. null removes the parameter.
      */
     public void setParameter(int index, Class<?> type);
+
+    /**
+     * Returns the {@link FunctionExecutor}s that are registered for the given variant and all supervariants.
+     * The variant class was set on the {@link #addExecutor(Class, String, FunctionExecutor)} call.
+     * 
+     * @param variant The variant whose {@link FunctionExecutor}s should be returned.
+     * @return The {@link FunctionExecutor}s that belong to the given variant or any of its supervariants.
+     */
+    public Map<String, FunctionExecutor<R>> getExecutorsForVariant(Class<? extends FeatureHolder> variant);
 
     /**
      * Registers a new {@link FunctionExecutor} under the given variant and name to the definition.

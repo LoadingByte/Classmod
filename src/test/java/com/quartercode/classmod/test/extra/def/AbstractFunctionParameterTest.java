@@ -19,21 +19,22 @@
 package com.quartercode.classmod.test.extra.def;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
+import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunction;
+import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
 @RunWith (Parameterized.class)
 public class AbstractFunctionParameterTest {
@@ -103,8 +104,19 @@ public class AbstractFunctionParameterTest {
     @Test
     public void testInvoke() throws InstantiationException, IllegalAccessException {
 
-        Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
-        executors.put("default", new FunctionExecutor<Void>() {
+        FunctionDefinition<Void> definition = new AbstractFunctionDefinition<Void>("testFunction") {
+
+            @Override
+            public Function<Void> create(FeatureHolder holder) {
+
+                return new AbstractFunction<Void>(getName(), holder);
+            }
+
+        };
+        for (int parameter = 0; parameter < parameters.length; parameter++) {
+            definition.setParameter(parameter, parameters[parameter]);
+        }
+        definition.addExecutor(FeatureHolder.class, "default", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -113,10 +125,10 @@ public class AbstractFunctionParameterTest {
             }
 
         });
+        Function<Void> function = new DefaultFeatureHolder().get(definition);
 
         boolean actuallyWorks;
         try {
-            AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), Arrays.asList(parameters), executors);
             function.invoke(arguments);
             actuallyWorks = true;
         } catch (ExecutorInvocationException e) {

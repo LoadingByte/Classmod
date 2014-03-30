@@ -21,7 +21,6 @@ package com.quartercode.classmod.extra.def;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import org.apache.commons.lang.Validate;
@@ -47,34 +46,45 @@ import com.quartercode.classmod.extra.LockableClass;
  */
 public class AbstractFunction<R> extends AbstractFeature implements Function<R> {
 
-    private final List<Class<?>>                  parameters;
-    private final Set<FunctionExecutorContext<R>> executors;
-    private boolean                               locked;
-    private int                                   invocations;
+    private boolean                         initialized;
+    private List<Class<?>>                  parameters;
+    private Set<FunctionExecutorContext<R>> executors;
+    private boolean                         locked;
+    private int                             invocations;
 
     /**
-     * Creates a new abstract function with the given name, parent {@link FeatureHolder}, parameters and {@link FunctionExecutor}s.
+     * Creates a new abstract function with the given name and parent {@link FeatureHolder}.
      * 
      * @param name The name of the abstract function.
      * @param holder The {@link FeatureHolder} which has and uses the new abstract function.
-     * @param parameters The argument types an {@link #invoke(Object...)} call must have (see {@link FunctionDefinition#setParameter(int, Class)} for further explanation).
-     * @param executors The {@link FunctionExecutor}s which will be executing the function calls for this particular function.
      */
-    public AbstractFunction(String name, FeatureHolder holder, List<Class<?>> parameters, Map<String, FunctionExecutor<R>> executors) {
+    public AbstractFunction(String name, FeatureHolder holder) {
 
         super(name, holder);
+    }
 
+    @Override
+    public void initialize(FunctionDefinition<R> definition) {
+
+        initialized = true;
+
+        parameters = definition.getParameters();
         for (Class<?> parameter : parameters) {
-            Validate.isTrue(parameter != null, "Null parameters are not allowed");
-        }
-        this.parameters = parameters;
-
-        this.executors = new HashSet<FunctionExecutorContext<R>>();
-        for (Entry<String, FunctionExecutor<R>> executor : executors.entrySet()) {
-            this.executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
+            Validate.notNull(parameter, "Null parameters are not allowed");
         }
 
-        locked = true;
+        executors = new HashSet<FunctionExecutorContext<R>>();
+        for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
+            executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
+        }
+
+        setLocked(true);
+    }
+
+    @Override
+    public boolean isInitialized() {
+
+        return initialized;
     }
 
     @Override

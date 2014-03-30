@@ -21,20 +21,22 @@ package com.quartercode.classmod.test.extra.def;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
+import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Lockable;
 import com.quartercode.classmod.extra.def.AbstractFunction;
+import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
 @RunWith (Parameterized.class)
 public class AbstractFunctionLockableTest {
@@ -62,10 +64,18 @@ public class AbstractFunctionLockableTest {
     @Test
     public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
 
-        final boolean[] actualInvocations = new boolean[2];
-        Map<String, FunctionExecutor<Void>> executors = new HashMap<String, FunctionExecutor<Void>>();
+        FunctionDefinition<Void> definition = new AbstractFunctionDefinition<Void>("testFunction") {
 
-        executors.put("1", new FunctionExecutor<Void>() {
+            @Override
+            public Function<Void> create(FeatureHolder holder) {
+
+                return new AbstractFunction<Void>(getName(), holder);
+            }
+
+        };
+
+        final boolean[] actualInvocations = new boolean[2];
+        definition.addExecutor(FeatureHolder.class, "1", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -75,8 +85,7 @@ public class AbstractFunctionLockableTest {
             }
 
         });
-
-        executors.put("2", new FunctionExecutor<Void>() {
+        definition.addExecutor(FeatureHolder.class, "2", new FunctionExecutor<Void>() {
 
             @Override
             @Lockable
@@ -88,7 +97,7 @@ public class AbstractFunctionLockableTest {
 
         });
 
-        AbstractFunction<Void> function = new AbstractFunction<Void>("testFunction", new DefaultFeatureHolder(), new ArrayList<Class<?>>(), executors);
+        Function<Void> function = new DefaultFeatureHolder().get(definition);
         function.setLocked(locked);
         function.invoke();
 
