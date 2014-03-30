@@ -28,7 +28,7 @@ import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
- * An object property is a simple {@link Property} which stores an object.
+ * An object property is a simple persistent {@link Property} which stores an object.
  * 
  * @param <T> The type of object which can be stored inside the object property.
  * @see Property

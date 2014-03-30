@@ -56,7 +56,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     }
 
     /**
-     * Creates a new abstract property with the given name, {@link FeatureHolder} and getter/setter {@link FunctionExecutor}s.
+     * Creates a new abstract property with the given name and {@link FeatureHolder}.
      * 
      * @param name The name of the abstract property.
      * @param holder The feature holder which has and uses the new abstract property.
@@ -67,7 +67,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     }
 
     /**
-     * Creates a new abstract property with the given name, {@link FeatureHolder} and getter/setter {@link FunctionExecutor}s. Also sets the stored object.
+     * Creates a new abstract property with the given name and {@link FeatureHolder}. Also sets the initially stored object.
      * 
      * @param name The name of the abstract property.
      * @param holder The feature holder which has and uses the new abstract property.

@@ -28,8 +28,9 @@ import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
- * A reference property is a simple {@link Property} which stores an object.
- * During serialization, there is only an id reference serialized. That means that the referenced object has to have an {@link XmlID} annotation.
+ * A reference property is a simple persistent {@link Property} which stores an object.
+ * During serialization, only an id reference of the stored object is serialized.
+ * That means that the referenced object must have an {@link XmlID} annotation.
  * 
  * @param <T> The type of object which can be stored inside the reference property.
  * @see Property
