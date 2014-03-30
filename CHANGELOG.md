@@ -5,12 +5,16 @@
 * The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
 * The property implementations provide feature definition factory methods.
+* Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
+* Internal property getters and setters.
 
 ### Fixes
-* The AbstractFunction implementation can now handle null arguments.
-* The AbstractFunction implementation no longer throws unexpected exceptions if there are less arguments than parameters.
+* The DefaultFunctionInvocation implementation can now handle null arguments.
+* The DefaultFunctionInvocation implementation no longer throws unexpected exceptions if there are less arguments than parameters.
+* The DefaultFunctionInvocation implementation now transforms varargs into arrays (["testString", 0, 1, 2] -> ["testString", [0, 1, 2]]).
 * The JAXB persistence system actually works (a lot of bugfixes done here).
 * Refactored a whole bunch of code based on automatic suggestions.
+* The LockableClass initialization is now done in the actual lockable classes instead of the feature holder.
 
 0.2.1
 -----
