@@ -42,7 +42,7 @@ public class FunctionDefinitionFactory {
      */
     public static <R> FunctionDefinition<R> create(String name, Class<?>... parameters) {
 
-        return new AbstractFunctionDefinition<R>(name) {
+        return new AbstractFunctionDefinition<R>(name, parameters) {
 
             @Override
             public Function<R> create(FeatureHolder holder) {
