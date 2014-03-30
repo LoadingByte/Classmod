@@ -124,42 +124,4 @@ public class ReferenceProperty<T> extends AbstractProperty<T> {
         reference = value;
     }
 
-    @Override
-    public int hashCode() {
-
-        final int prime = 31;
-        int result = super.hashCode();
-        result = prime * result + (reference == null ? 0 : reference.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        ReferenceProperty<?> other = (ReferenceProperty<?>) obj;
-        if (reference == null) {
-            if (other.reference != null) {
-                return false;
-            }
-        } else if (!reference.equals(other.reference)) {
-            return false;
-        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-
-        return getClass().getName() + " [name=" + getName() + ", reference=" + reference + "]";
-    }
-
 }

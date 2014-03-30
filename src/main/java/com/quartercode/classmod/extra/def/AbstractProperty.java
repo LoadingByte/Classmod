@@ -171,4 +171,43 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
      */
     protected abstract void setInternal(T value);
 
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = super.hashCode();
+        Object content = getInternal();
+        result = prime * result + (content == null ? 0 : content.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        }
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        AbstractProperty<?> other = (AbstractProperty<?>) obj;
+        if (this.getInternal() == null) {
+            if (other.getInternal() != null) {
+                return false;
+            }
+        } else if (!this.getInternal().equals(other.getInternal())) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public String toString() {
+
+        return getClass().getName() + " [name=" + getName() + ", content=" + getInternal() + "]";
+    }
+
 }
