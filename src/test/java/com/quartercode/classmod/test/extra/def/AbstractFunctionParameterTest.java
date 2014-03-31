@@ -116,7 +116,7 @@ public class AbstractFunctionParameterTest {
         for (int parameter = 0; parameter < parameters.length; parameter++) {
             definition.setParameter(parameter, parameters[parameter]);
         }
-        definition.addExecutor(FeatureHolder.class, "default", new FunctionExecutor<Void>() {
+        definition.addExecutor("default", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {

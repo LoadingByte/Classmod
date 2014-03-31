@@ -48,7 +48,7 @@ public class AbstractFunctionPriorityTest {
         };
 
         final AtomicBoolean invokedFunctionExecutor1 = new AtomicBoolean();
-        definition.addExecutor(FeatureHolder.class, "1", new FunctionExecutor<Integer>() {
+        definition.addExecutor("1", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (4)
@@ -61,7 +61,7 @@ public class AbstractFunctionPriorityTest {
         });
 
         final AtomicBoolean invokedFunctionExecutor2 = new AtomicBoolean();
-        definition.addExecutor(FeatureHolder.class, "2", new FunctionExecutor<Integer>() {
+        definition.addExecutor("2", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (3)
@@ -75,7 +75,7 @@ public class AbstractFunctionPriorityTest {
         });
 
         final AtomicBoolean invokedFunctionExecutor3 = new AtomicBoolean();
-        definition.addExecutor(FeatureHolder.class, "3", new FunctionExecutor<Integer>() {
+        definition.addExecutor("3", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (2)
@@ -88,7 +88,7 @@ public class AbstractFunctionPriorityTest {
         });
 
         final AtomicBoolean invokedFunctionExecutor4 = new AtomicBoolean();
-        definition.addExecutor(FeatureHolder.class, "4", new FunctionExecutor<Integer>() {
+        definition.addExecutor("4", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (1)

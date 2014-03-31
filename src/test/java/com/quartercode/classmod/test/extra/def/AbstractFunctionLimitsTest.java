@@ -169,7 +169,7 @@ public class AbstractFunctionLimitsTest {
             }
 
         };
-        definition.addExecutor(FeatureHolder.class, "default", executor);
+        definition.addExecutor("default", FeatureHolder.class, executor);
         Function<Void> function = new DefaultFeatureHolder().get(definition);
 
         actualTimesInvoked.set(0);

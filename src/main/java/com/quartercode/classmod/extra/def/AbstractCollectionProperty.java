@@ -94,20 +94,20 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         // Add the custom getter/adder/remover executors
         for (Entry<String, FunctionExecutor<C>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+            getterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getAdderExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            adderDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+            adderDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getRemoverExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            removerDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+            removerDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
         }
 
         // Use a random value as name for the internal executor so no one can override it
         String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
 
         // Add getter executor
-        getterDefinition.addExecutor(FeatureHolder.class, internalExecutorName, new FunctionExecutor<C>() {
+        getterDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<C>() {
 
             @Override
             public C invoke(FunctionInvocation<C> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -135,7 +135,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         });
 
         // Add adder executor
-        adderDefinition.addExecutor(FeatureHolder.class, internalExecutorName, new FunctionExecutor<Void>() {
+        adderDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -161,7 +161,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         });
 
         // Add remover executor
-        removerDefinition.addExecutor(FeatureHolder.class, internalExecutorName, new FunctionExecutor<Void>() {
+        removerDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {

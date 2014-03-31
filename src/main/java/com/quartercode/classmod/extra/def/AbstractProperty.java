@@ -94,17 +94,17 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
         // Add the custom getter/setter executors
         for (Entry<String, FunctionExecutor<T>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+            getterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getSetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            setterDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+            setterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
         }
 
         // Use a random value as name for the internal executor so no one can override it
         String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
 
         // Add getter executor
-        getterDefinition.addExecutor(getHolder().getClass(), internalExecutorName, new FunctionExecutor<T>() {
+        getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<T>() {
 
             @Override
             public T invoke(FunctionInvocation<T> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -117,7 +117,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         });
 
         // Add setter executor
-        setterDefinition.addExecutor(FeatureHolder.class, internalExecutorName, new FunctionExecutor<Void>() {
+        setterDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {

@@ -38,7 +38,7 @@ public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>> {
 
     /**
      * Returns all registered getter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.
-     * The variant class was set on the {@link #addGetterExecutor(Class, String, FunctionExecutor)} call.
+     * The variant class was set on the {@link #addGetterExecutor(String, Class, FunctionExecutor)} call.
      * Modifications to the returned map do not affect the storage of the definition.
      * 
      * @param variant The variant whose getter {@link FunctionExecutor}s should be returned.
@@ -50,26 +50,26 @@ public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>> {
      * Registers a new getter {@link FunctionExecutor} under the given name and variant to the definition.
      * The registered getter {@link FunctionExecutor} transfers to the getters of all newly created {@link Property}s.
      * 
-     * @param variant The class the getter {@link FunctionExecutor} is used for. It will also be used for every subclass of this class.
      * @param name The name of the getter {@link FunctionExecutor} to register.
-     *        You can use that name to unregister the getter {@link FunctionExecutor} through {@link #removeGetterExecutor(Class, String)}.
+     *        You can use that name to unregister the getter {@link FunctionExecutor} through {@link #removeGetterExecutor(String, Class)}.
+     * @param variant The class the getter {@link FunctionExecutor} is used for. It will also be used for every subclass of this class.
      * @param executor The actual getter {@link FunctionExecutor} object to register.
      */
-    public void addGetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<T> executor);
+    public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor);
 
     /**
      * Unregisters an getter {@link FunctionExecutor} which is registered under the given name and variant from the definition.
      * The unregistered getter {@link FunctionExecutor} won't transfer into new {@link Property}s, but it will stay in the ones which are already created.
      * 
-     * @param variant The class the getter {@link FunctionExecutor} was used for.
      * @param name The name the getter {@link FunctionExecutor} to unregister has.
-     *        You have used that name for {@link #addGetterExecutor(Class, String, FunctionExecutor)}.
+     *        You have used that name for {@link #addGetterExecutor(String, Class, FunctionExecutor)}.
+     * @param variant The class the getter {@link FunctionExecutor} was used for.
      */
-    public void removeGetterExecutor(Class<? extends FeatureHolder> variant, String name);
+    public void removeGetterExecutor(String name, Class<? extends FeatureHolder> variant);
 
     /**
      * Returns all registered setter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.
-     * The variant class was set on the {@link #addSetterExecutor(Class, String, FunctionExecutor)} call.
+     * The variant class was set on the {@link #addSetterExecutor(String, Class, FunctionExecutor)} call.
      * Modifications to the returned map do not affect the storage of the definition.
      * 
      * @param variant The variant whose setter {@link FunctionExecutor}s should be returned.
@@ -81,21 +81,21 @@ public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>> {
      * Registers a new setter {@link FunctionExecutor} under the given name and variant to the definition.
      * The registered setter {@link FunctionExecutor} transfers to the setters of all newly created {@link Property}s.
      * 
-     * @param variant The class the setter {@link FunctionExecutor} is used for.It will also be used for every subclass of this class.
      * @param name The name of the setter {@link FunctionExecutor} to register.
-     *        You can use that name to unregister the setter {@link FunctionExecutor} through {@link #removeSetterExecutor(Class, String)}.
+     *        You can use that name to unregister the setter {@link FunctionExecutor} through {@link #removeSetterExecutor(String, Class)}.
+     * @param variant The class the setter {@link FunctionExecutor} is used for.It will also be used for every subclass of this class.
      * @param executor The actual setter {@link FunctionExecutor} object to register.
      */
-    public void addSetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor);
+    public void addSetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor);
 
     /**
      * Unregisters an setter {@link FunctionExecutor} which is registered under the given name and variant from the definition.
      * The unregistered setter {@link FunctionExecutor} won't transfer into new {@link Property}s, but it will stay in the ones which are already created.
      * 
-     * @param variant The class the setter {@link FunctionExecutor} was used for.
      * @param name The name the setter {@link FunctionExecutor} to unregister has.
-     *        You have used that name for {@link #addSetterExecutor(Class, String, FunctionExecutor)}.
+     *        You have used that name for {@link #addSetterExecutor(String, Class, FunctionExecutor)}.
+     * @param variant The class the setter {@link FunctionExecutor} was used for.
      */
-    public void removeSetterExecutor(Class<? extends FeatureHolder> variant, String name);
+    public void removeSetterExecutor(String name, Class<? extends FeatureHolder> variant);
 
 }

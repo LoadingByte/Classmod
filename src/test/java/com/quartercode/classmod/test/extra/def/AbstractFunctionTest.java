@@ -53,7 +53,7 @@ public class AbstractFunctionTest {
 
         final List<Object> actualArguments = new ArrayList<Object>();
         final Object returnValue = "ReturnValue";
-        definition.addExecutor(FeatureHolder.class, "default", new FunctionExecutor<Object>() {
+        definition.addExecutor("default", FeatureHolder.class, new FunctionExecutor<Object>() {
 
             @Override
             public Object invoke(FunctionInvocation<Object> invocation, Object... arguments) throws ExecutorInvocationException {

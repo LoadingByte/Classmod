@@ -75,7 +75,7 @@ public class AbstractFunctionLockableTest {
         };
 
         final boolean[] actualInvocations = new boolean[2];
-        definition.addExecutor(FeatureHolder.class, "1", new FunctionExecutor<Void>() {
+        definition.addExecutor("1", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -85,7 +85,7 @@ public class AbstractFunctionLockableTest {
             }
 
         });
-        definition.addExecutor(FeatureHolder.class, "2", new FunctionExecutor<Void>() {
+        definition.addExecutor("2", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             @Lockable

@@ -105,7 +105,7 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     }
 
     @Override
-    public void addExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<R> executor) {
+    public void addExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor) {
 
         if (!executors.containsKey(name)) {
             executors.put(name, new HashMap<Class<? extends FeatureHolder>, FunctionExecutor<R>>());
@@ -115,7 +115,7 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     }
 
     @Override
-    public void removeExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeExecutor(String name, Class<? extends FeatureHolder> variant) {
 
         if (executors.containsKey(name)) {
             executors.get(name).remove(variant);

@@ -78,7 +78,7 @@ public class AbstractFunctionDefinitionTest {
             }
 
         };
-        functionDefinition.addExecutor(FeatureHolder.class, "default", executor);
+        functionDefinition.addExecutor("default", FeatureHolder.class, executor);
         functionDefinition.setParameter(0, String.class);
         Function<Void> function = new DefaultFeatureHolder().get(functionDefinition);
 

@@ -64,15 +64,15 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     @Override
-    public void addGetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<T> executor) {
+    public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor) {
 
-        getter.addExecutor(variant, name, executor);
+        getter.addExecutor(name, variant, executor);
     }
 
     @Override
-    public void removeGetterExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeGetterExecutor(String name, Class<? extends FeatureHolder> variant) {
 
-        getter.removeExecutor(variant, name);
+        getter.removeExecutor(name, variant);
     }
 
     @Override
@@ -82,15 +82,15 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     @Override
-    public void addSetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor) {
+    public void addSetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        setter.addExecutor(variant, name, executor);
+        setter.addExecutor(name, variant, executor);
     }
 
     @Override
-    public void removeSetterExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeSetterExecutor(String name, Class<? extends FeatureHolder> variant) {
 
-        setter.removeExecutor(variant, name);
+        setter.removeExecutor(name, variant);
     }
 
 }

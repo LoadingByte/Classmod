@@ -75,7 +75,7 @@ public class FunctionDefinitionFactory {
 
         };
 
-        definition.addExecutor(defaultVariation, "default", defaultExecutor);
+        definition.addExecutor("default", defaultVariation, defaultExecutor);
 
         return definition;
     }

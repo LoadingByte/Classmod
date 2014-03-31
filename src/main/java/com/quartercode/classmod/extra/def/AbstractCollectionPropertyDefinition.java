@@ -69,15 +69,15 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public void addGetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<C> executor) {
+    public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<C> executor) {
 
-        getter.addExecutor(variant, name, executor);
+        getter.addExecutor(name, variant, executor);
     }
 
     @Override
-    public void removeGetterExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeGetterExecutor(String name, Class<? extends FeatureHolder> variant) {
 
-        getter.removeExecutor(variant, name);
+        getter.removeExecutor(name, variant);
     }
 
     @Override
@@ -87,15 +87,15 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public void addAdderExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor) {
+    public void addAdderExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        adder.addExecutor(variant, name, executor);
+        adder.addExecutor(name, variant, executor);
     }
 
     @Override
-    public void removeAdderExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeAdderExecutor(String name, Class<? extends FeatureHolder> variant) {
 
-        adder.removeExecutor(variant, name);
+        adder.removeExecutor(name, variant);
     }
 
     @Override
@@ -105,15 +105,15 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public void addRemoverExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor) {
+    public void addRemoverExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        remover.addExecutor(variant, name, executor);
+        remover.addExecutor(name, variant, executor);
     }
 
     @Override
-    public void removeRemoverExecutor(Class<? extends FeatureHolder> variant, String name) {
+    public void removeRemoverExecutor(String name, Class<? extends FeatureHolder> variant) {
 
-        remover.removeExecutor(variant, name);
+        remover.removeExecutor(name, variant);
     }
 
 }

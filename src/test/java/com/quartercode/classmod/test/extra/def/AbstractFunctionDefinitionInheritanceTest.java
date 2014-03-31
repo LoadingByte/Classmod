@@ -114,7 +114,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
 
             Class<? extends FeatureHolder> variant = (Class<? extends FeatureHolder>) entry[0];
             String executorName = "testExecutor" + (differentExecutorNames ? index : "");
-            functionDefinition.addExecutor(variant, executorName, createTestExecutor(actualInvocations, index));
+            functionDefinition.addExecutor(executorName, variant, createTestExecutor(actualInvocations, index));
 
             index++;
         }
