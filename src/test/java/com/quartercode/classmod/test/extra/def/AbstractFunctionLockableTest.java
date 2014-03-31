@@ -18,15 +18,9 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
@@ -34,37 +28,17 @@ import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Lockable;
 import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 
-@RunWith (Parameterized.class)
 public class AbstractFunctionLockableTest {
 
-    @Parameters
-    public static Collection<Object[]> data() {
+    private FunctionDefinition<Void> definition;
 
-        List<Object[]> data = new ArrayList<Object[]>();
+    @Before
+    public void setUp() {
 
-        data.add(new Object[] { new boolean[] { true, true }, false });
-        data.add(new Object[] { new boolean[] { true, false }, true });
-
-        return data;
-    }
-
-    private final boolean[] expectedInvocations;
-    private final boolean   locked;
-
-    public AbstractFunctionLockableTest(boolean[] expectedInvocations, boolean locked) {
-
-        this.expectedInvocations = expectedInvocations;
-        this.locked = locked;
-    }
-
-    @Test
-    public void testInvoke() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
-
-        FunctionDefinition<Void> definition = new AbstractFunctionDefinition<Void>("testFunction") {
+        definition = new AbstractFunctionDefinition<Void>("testFunction") {
 
             @Override
             public Function<Void> create(FeatureHolder holder) {
@@ -73,14 +47,18 @@ public class AbstractFunctionLockableTest {
             }
 
         };
+    }
 
-        final boolean[] actualInvocations = new boolean[2];
+    @Test
+    public void testInvoke() throws ExecutorInvocationException {
+
+        final boolean[] invocations = new boolean[2];
         definition.addExecutor("1", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                actualInvocations[0] = true;
+                invocations[0] = true;
                 return invocation.next(arguments);
             }
 
@@ -88,20 +66,20 @@ public class AbstractFunctionLockableTest {
         definition.addExecutor("2", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
-            @Lockable
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                actualInvocations[1] = true;
+                invocations[1] = true;
                 return invocation.next(arguments);
             }
 
         });
 
         Function<Void> function = new DefaultFeatureHolder().get(definition);
-        function.setLocked(locked);
+        function.getExecutor("1").setLocked(true);
         function.invoke();
 
-        Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
+        Assert.assertTrue("Locked executor was invoked", !invocations[0]);
+        Assert.assertTrue("Not locked executor wasn't invoked", invocations[1]);
     }
 
 }

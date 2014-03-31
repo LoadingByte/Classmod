@@ -33,7 +33,7 @@ import com.quartercode.classmod.base.Initializable;
  * @see FunctionInvocation
  * @see FunctionExecutorContext
  */
-public interface Function<R> extends Feature, Initializable<FunctionDefinition<R>>, LockableClass {
+public interface Function<R> extends Feature, Initializable<FunctionDefinition<R>> {
 
     /**
      * Returns a list of all parameters which are used by the {@link FunctionExecutor}s.

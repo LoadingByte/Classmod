@@ -30,7 +30,6 @@ import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Initializable;
 import com.quartercode.classmod.base.Persistent;
-import com.quartercode.classmod.extra.LockableClass;
 
 /**
  * A default feature holder is a class which is modifiable through {@link Feature}s.
@@ -41,37 +40,16 @@ import com.quartercode.classmod.extra.LockableClass;
  * @see FeatureHolder
  * @see Feature
  * @see FeatureDefinition
- * @see LockableClass
  */
-public class DefaultFeatureHolder implements FeatureHolder, LockableClass {
+public class DefaultFeatureHolder implements FeatureHolder {
 
     private final Set<Feature> features = new HashSet<Feature>();
-    private boolean            locked;
 
     /**
      * Creates a new default feature holder.
      */
     public DefaultFeatureHolder() {
 
-        locked = true;
-    }
-
-    @Override
-    public boolean isLocked() {
-
-        return locked;
-    }
-
-    @Override
-    public void setLocked(boolean locked) {
-
-        this.locked = locked;
-
-        for (Feature feature : this) {
-            if (feature instanceof LockableClass) {
-                ((LockableClass) feature).setLocked(locked);
-            }
-        }
     }
 
     @Override

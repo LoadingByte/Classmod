@@ -32,7 +32,6 @@ import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.LockableClass;
 
 /**
  * An abstract function makes a method (also called a function) available.
@@ -42,14 +41,12 @@ import com.quartercode.classmod.extra.LockableClass;
  * @param <R> The type of the return value of the used {@link FunctionExecutor}s. The function returns a {@link List} with these values.
  * @see FunctionExecutor
  * @see Function
- * @see LockableClass
  */
 public class AbstractFunction<R> extends AbstractFeature implements Function<R> {
 
     private boolean                         initialized;
     private List<Class<?>>                  parameters;
     private Set<FunctionExecutorContext<R>> executors;
-    private boolean                         locked;
     private int                             invocations;
 
     /**
@@ -61,11 +58,6 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     public AbstractFunction(String name, FeatureHolder holder) {
 
         super(name, holder);
-
-        // New feature (first global occurrence) -> copy the locked state of the parent feature holder if it is also lockable
-        if (holder instanceof LockableClass) {
-            locked = ((LockableClass) holder).isLocked();
-        }
     }
 
     @Override
@@ -82,26 +74,12 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
             executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
         }
-
-        setLocked(true);
     }
 
     @Override
     public boolean isInitialized() {
 
         return initialized;
-    }
-
-    @Override
-    public boolean isLocked() {
-
-        return locked;
-    }
-
-    @Override
-    public void setLocked(boolean locked) {
-
-        this.locked = locked;
     }
 
     @Override
@@ -145,7 +123,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + getName() + ", " + getExecutors().size() + " executors, locked=" + locked + "]";
+        return getClass().getName() + " [name=" + getName() + ", " + getExecutors().size() + " executors]";
     }
 
 }

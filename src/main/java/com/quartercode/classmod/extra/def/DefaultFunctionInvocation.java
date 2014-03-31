@@ -19,14 +19,11 @@
 package com.quartercode.classmod.extra.def;
 
 import java.lang.reflect.Array;
-import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Delay;
@@ -36,7 +33,6 @@ import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Limit;
-import com.quartercode.classmod.extra.Lockable;
 import com.quartercode.classmod.extra.Prioritized;
 
 /**
@@ -47,8 +43,6 @@ import com.quartercode.classmod.extra.Prioritized;
  * @see Function
  */
 public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
-
-    private static final Logger                     LOGGER = Logger.getLogger(DefaultFunctionInvocation.class.getName());
 
     private final Function<R>                       source;
     private final Queue<FunctionExecutorContext<R>> remainingExecutors;
@@ -96,14 +90,9 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
      */
     protected boolean isExecutorInvocable(FunctionExecutorContext<R> executor) {
 
-        // Lockable
-        try {
-            Method invokeMethod = executor.getExecutor().getClass().getMethod("invoke", FunctionInvocation.class, Object[].class);
-            if (executor.isLocked() || source.isLocked() && invokeMethod.isAnnotationPresent(Lockable.class)) {
-                return false;
-            }
-        } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.SEVERE, "Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
+        // Locked
+        if (executor.isLocked()) {
+            return false;
         }
 
         // Limit

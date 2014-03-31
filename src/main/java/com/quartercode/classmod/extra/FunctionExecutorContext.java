@@ -28,7 +28,7 @@ import com.quartercode.classmod.base.Named;
  * @param <R> The type of the value the stored {@link FunctionExecutor} returns.
  * @see FunctionExecutor
  */
-public interface FunctionExecutorContext<R> extends Named, LockableClass {
+public interface FunctionExecutorContext<R> extends Named {
 
     /**
      * Returns the name of the {@link FunctionExecutor} which is stored by the context.
@@ -80,28 +80,26 @@ public interface FunctionExecutorContext<R> extends Named, LockableClass {
     public void resetInvocations();
 
     /**
-     * Returns if the stored {@link FunctionExecutor} is locked.
-     * The {@link FunctionExecutor} doesn't need to be {@link Lockable} for this to work.
-     * The check algorithm ignores the {@link Lockable} annotation and locks every {@link FunctionExecutor}.
+     * Returns if the stored {@link FunctionExecutor} is locked. <br>
+     * Locked executors are <b>not</b> invoked when the function that is using them is called.
+     * The lock status of executors can be changed through {@link #setLocked(boolean)}.
      * 
      * @return True if the stored {@link FunctionExecutor} is locked, false if not.
      */
-    @Override
     public boolean isLocked();
 
     /**
-     * Changes if the stored {@link FunctionExecutor} is locked.
-     * The {@link FunctionExecutor} doesn't need to be {@link Lockable} for this to work.
-     * The check algorithm ignores the {@link Lockable} annotation and locks every {@link FunctionExecutor}.
+     * Changes if the stored {@link FunctionExecutor} is locked.<br>
+     * Locked executors are <b>not</b> invoked when the function that is using them is called.
      * 
      * @param locked True if the stored {@link FunctionExecutor} should be locked, false if not.
      */
-    @Override
     public void setLocked(boolean locked);
 
     /**
      * Invokes the stored {@link FunctionExecutor} inside the given {@link FunctionInvocation} with the given arguments.
      * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocations()}.
+     * Please not that this method does nothing if {@link #isLocked()} is true.
      * 
      * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the stored {@link FunctionExecutor}.
