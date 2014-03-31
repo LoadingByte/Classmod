@@ -18,6 +18,8 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.Map.Entry;
+import java.util.Random;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -90,8 +92,19 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         // Using any object as parameter here; safe since the setter is only called through the set() method that has the correct type as parameter
         FunctionDefinition<Void> setterDefinition = FunctionDefinitionFactory.create("set", Object.class);
 
+        // Add the custom getter/setter executors
+        for (Entry<String, FunctionExecutor<T>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
+            getterDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+        }
+        for (Entry<String, FunctionExecutor<Void>> executor : definition.getSetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
+            setterDefinition.addExecutor(getHolder().getClass(), executor.getKey(), executor.getValue());
+        }
+
+        // Use a random value as name for the internal executor so no one can override it
+        String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
+
         // Add getter executor
-        getterDefinition.addExecutor(FeatureHolder.class, "getInternal", new FunctionExecutor<T>() {
+        getterDefinition.addExecutor(getHolder().getClass(), internalExecutorName, new FunctionExecutor<T>() {
 
             @Override
             public T invoke(FunctionInvocation<T> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -104,7 +117,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         });
 
         // Add setter executor
-        setterDefinition.addExecutor(FeatureHolder.class, "setInternal", new FunctionExecutor<Void>() {
+        setterDefinition.addExecutor(FeatureHolder.class, internalExecutorName, new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {

@@ -19,14 +19,15 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract collection property definition is used to retrieve a {@link CollectionProperty} from a {@link FeatureHolder}.
@@ -43,9 +44,9 @@ import com.quartercode.classmod.extra.Property;
  */
 public abstract class AbstractCollectionPropertyDefinition<E, C extends Collection<E>> extends AbstractFeatureDefinition<CollectionProperty<E, C>> implements CollectionPropertyDefinition<E, C> {
 
-    private final Map<String, FunctionExecutor<C>>    getterExecutors  = new HashMap<String, FunctionExecutor<C>>();
-    private final Map<String, FunctionExecutor<Void>> adderExecutors   = new HashMap<String, FunctionExecutor<Void>>();
-    private final Map<String, FunctionExecutor<Void>> removerExecutors = new HashMap<String, FunctionExecutor<Void>>();
+    private final FunctionDefinition<C>    getter;
+    private final FunctionDefinition<Void> adder;
+    private final FunctionDefinition<Void> remover;
 
     /**
      * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name.
@@ -55,60 +56,64 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     public AbstractCollectionPropertyDefinition(String name) {
 
         super(name);
+
+        getter = FunctionDefinitionFactory.create(name);
+        adder = FunctionDefinitionFactory.create(name, Object.class);
+        remover = FunctionDefinitionFactory.create(name, Object.class);
     }
 
     @Override
-    public Map<String, FunctionExecutor<C>> getGetterExecutors() {
+    public Map<String, FunctionExecutor<C>> getGetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
-        return new HashMap<String, FunctionExecutor<C>>(getterExecutors);
+        return getter.getExecutorsForVariant(variant);
     }
 
     @Override
-    public void addGetterExecutor(String name, FunctionExecutor<C> executor) {
+    public void addGetterExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<C> executor) {
 
-        getterExecutors.put(name, executor);
+        getter.addExecutor(variant, name, executor);
     }
 
     @Override
-    public void removeGetterExecutor(String name) {
+    public void removeGetterExecutor(Class<? extends FeatureHolder> variant, String name) {
 
-        getterExecutors.remove(name);
+        getter.removeExecutor(variant, name);
     }
 
     @Override
-    public Map<String, FunctionExecutor<Void>> getAdderExecutors() {
+    public Map<String, FunctionExecutor<Void>> getAdderExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
-        return new HashMap<String, FunctionExecutor<Void>>(adderExecutors);
+        return adder.getExecutorsForVariant(variant);
     }
 
     @Override
-    public void addAdderExecutor(String name, FunctionExecutor<Void> executor) {
+    public void addAdderExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor) {
 
-        adderExecutors.put(name, executor);
+        adder.addExecutor(variant, name, executor);
     }
 
     @Override
-    public void removeAdderExecutor(String name) {
+    public void removeAdderExecutor(Class<? extends FeatureHolder> variant, String name) {
 
-        adderExecutors.remove(name);
+        adder.removeExecutor(variant, name);
     }
 
     @Override
-    public Map<String, FunctionExecutor<Void>> getRemoverExecutors() {
+    public Map<String, FunctionExecutor<Void>> getRemoverExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
-        return new HashMap<String, FunctionExecutor<Void>>(removerExecutors);
+        return remover.getExecutorsForVariant(variant);
     }
 
     @Override
-    public void addRemoverExecutor(String name, FunctionExecutor<Void> executor) {
+    public void addRemoverExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<Void> executor) {
 
-        removerExecutors.put(name, executor);
+        remover.addExecutor(variant, name, executor);
     }
 
     @Override
-    public void removeRemoverExecutor(String name) {
+    public void removeRemoverExecutor(Class<? extends FeatureHolder> variant, String name) {
 
-        removerExecutors.remove(name);
+        remover.removeExecutor(variant, name);
     }
 
 }
