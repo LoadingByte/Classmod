@@ -8,6 +8,10 @@
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
 * Properties now support getter and setter function executors; that removes the need for GET_X and SET_X functions.
 * Collection properties are normal properties with add() and remove() methods instead of the set() method.
+* The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
+
+### Removals
+* Removed the parts of the lock system that didn't belong to function executors; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
 
 ### Fixes
 * The DefaultFunctionInvocation implementation can now handle null arguments.
@@ -16,6 +20,10 @@
 * The JAXB persistence system actually works (a lot of bugfixes done here).
 * Refactored a whole bunch of code based on automatic suggestions.
 * The LockableClass initialization is now done in the actual lockable classes instead of the feature holder.
+
+### Notes
+* The update changed the parameter order of every add/removeExecutor method to (name, variant, executor) in order to logically conform the new function executor override feature. Users of the function system must be refactored.
+* Some setLocked() statements and all Lockable annotations must be removed in order to conform with the new update (see the removals section for further explanation why).
 
 0.2.1
 -----
