@@ -45,21 +45,32 @@ public class AbstractFunctionDefinitionInheritanceTest {
 
         List<Object[]> data = new ArrayList<Object[]>();
 
-        data.add(new Object[] { new Object[][] { { Parent.class, true }, { Child.class, false } }, Parent.class });
-        data.add(new Object[] { new Object[][] { { Parent.class, true }, { Child.class, true } }, Child.class });
+        // Multiple executors
+        data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, false }, { AC.class, false }, { ACD.class, false } }, A.class, true });
+        data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, true }, { AC.class, false }, { ACD.class, false } }, AB.class, true });
+        data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, false }, { AC.class, true }, { ACD.class, false } }, AC.class, true });
+        data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, false }, { AC.class, true }, { ACD.class, true } }, ACD.class, true });
+
+        // Overriding executors
+        data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, false }, { AC.class, false }, { ACD.class, false } }, A.class, false });
+        data.add(new Object[] { new Object[][] { { A.class, false }, { AB.class, true }, { AC.class, false }, { ACD.class, false } }, AB.class, false });
+        data.add(new Object[] { new Object[][] { { A.class, false }, { AB.class, false }, { AC.class, true }, { ACD.class, false } }, AC.class, false });
+        data.add(new Object[] { new Object[][] { { A.class, false }, { AB.class, false }, { AC.class, false }, { ACD.class, true } }, ACD.class, false });
 
         return data;
     }
 
     private final Object[][]                     executors;
     private final Class<? extends FeatureHolder> variant;
+    private final boolean                        differentExecutorNames;
 
     private AbstractFunctionDefinition<Void>     functionDefinition;
 
-    public AbstractFunctionDefinitionInheritanceTest(Object[][] executors, Class<? extends FeatureHolder> variant) {
+    public AbstractFunctionDefinitionInheritanceTest(Object[][] executors, Class<? extends FeatureHolder> variant, boolean differentExecutorNames) {
 
         this.executors = executors;
         this.variant = variant;
+        this.differentExecutorNames = differentExecutorNames;
     }
 
     @Before
@@ -102,7 +113,8 @@ public class AbstractFunctionDefinitionInheritanceTest {
             expectedInvocations[index] = (Boolean) entry[1];
 
             Class<? extends FeatureHolder> variant = (Class<? extends FeatureHolder>) entry[0];
-            functionDefinition.addExecutor(variant, "executor" + index, createTestExecutor(actualInvocations, index));
+            String executorName = "testExecutor" + (differentExecutorNames ? index : "");
+            functionDefinition.addExecutor(variant, executorName, createTestExecutor(actualInvocations, index));
 
             index++;
         }
@@ -113,18 +125,35 @@ public class AbstractFunctionDefinitionInheritanceTest {
         Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
     }
 
-    private static class Parent extends DefaultFeatureHolder {
+    private static class A extends DefaultFeatureHolder {
 
-        public Parent() {
+        public A() {
 
         }
 
     }
 
-    private static class Child extends Parent {
+    private static class AB extends A {
 
         @SuppressWarnings ("unused")
-        public Child() {
+        public AB() {
+
+        }
+
+    }
+
+    private static class AC extends A {
+
+        public AC() {
+
+        }
+
+    }
+
+    private static class ACD extends AC {
+
+        @SuppressWarnings ("unused")
+        public ACD() {
 
         }
 

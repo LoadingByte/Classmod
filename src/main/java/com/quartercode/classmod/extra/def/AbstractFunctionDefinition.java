@@ -44,7 +44,7 @@ import com.quartercode.classmod.extra.FunctionExecutor;
 public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefinition<Function<R>> implements FunctionDefinition<R> {
 
     private final List<Class<?>>                                                        parameters = new ArrayList<Class<?>>();
-    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> executors  = new HashMap<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>>();
+    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors  = new HashMap<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>>();
 
     /**
      * Creates a new abstract function definition for defining a {@link Function} with the given name and parameters.
@@ -86,9 +86,18 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     public Map<String, FunctionExecutor<R>> getExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         Map<String, FunctionExecutor<R>> variantExecutors = new HashMap<String, FunctionExecutor<R>>();
-        for (Entry<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
-            if (executors.getKey().isAssignableFrom(variant)) {
-                variantExecutors.putAll(executors.getValue());
+        for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
+            // Select the executor whose variant is as near as possible to the given variant
+            Class<? extends FeatureHolder> currentExecutorVariant = null;
+            for (Class<? extends FeatureHolder> executorVariant : executors.getValue().keySet()) {
+                if (executorVariant.isAssignableFrom(variant) && (currentExecutorVariant == null || currentExecutorVariant.isAssignableFrom(executorVariant))) {
+                    currentExecutorVariant = executorVariant;
+                }
+            }
+
+            // If there is such an executor, put it into the result
+            if (currentExecutorVariant != null) {
+                variantExecutors.put(executors.getKey(), executors.getValue().get(currentExecutorVariant));
             }
         }
 
@@ -98,21 +107,21 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     @Override
     public void addExecutor(Class<? extends FeatureHolder> variant, String name, FunctionExecutor<R> executor) {
 
-        if (!executors.containsKey(variant)) {
-            executors.put(variant, new HashMap<String, FunctionExecutor<R>>());
+        if (!executors.containsKey(name)) {
+            executors.put(name, new HashMap<Class<? extends FeatureHolder>, FunctionExecutor<R>>());
         }
 
-        executors.get(variant).put(name, executor);
+        executors.get(name).put(variant, executor);
     }
 
     @Override
     public void removeExecutor(Class<? extends FeatureHolder> variant, String name) {
 
-        if (executors.containsKey(variant)) {
-            executors.get(variant).remove(name);
+        if (executors.containsKey(name)) {
+            executors.get(name).remove(variant);
 
-            if (executors.get(variant).isEmpty()) {
-                executors.remove(variant);
+            if (executors.get(name).isEmpty()) {
+                executors.remove(name);
             }
         }
     }
