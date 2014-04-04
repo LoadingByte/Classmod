@@ -46,60 +46,26 @@ public interface FunctionExecutorContext<R> extends Named {
     public FunctionExecutor<R> getExecutor();
 
     /**
-     * Returns a value of the given {@link Annotation} type at the stored {@link FunctionExecutor}.
-     * Using this, you can read the values of every annotation at the {@link FunctionExecutor} (for example {@link Limit#value()})
+     * Returns a value of the given annotation type at the {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
      * 
-     * @param type The {@link Annotation} type whose value should be retrieved (could be {@link Limit}).
-     * @param name The name of the value stored in the {@link Annotation} which should be retrieved (could be "value" for {@link Limit#value()}).
-     * @return The value stored in the defined variable (could be 7 for {@link Limit#value()}).
+     * @param type The annotation type whose value should be retrieved.
+     * @param name The name of the value stored in the annotation which should be retrieved.
+     * @return The value stored in the defined variable.
      */
     public <A extends Annotation> Object getValue(Class<A> type, String name);
 
     /**
-     * Sets a value of the given {@link Annotation} type at the stored {@link FunctionExecutor} to the given one.
-     * That allows to modify {@link Annotation} values at runtime.
-     * You can compare that with reflection.
+     * Sets a value of the given annotation type at the {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method to the given one.
+     * That allows to modify annotation values at runtime.
      * 
-     * @param type The {@link Annotation} type whose value should be changed (could be {@link Limit}).
-     * @param name The name of the value stored in the {@link Annotation} which should be changed (could be "value" for {@link Limit#value()}).
-     * @param value The new value for the defined variable (could be 7 for {@link Limit#value()}).
+     * @param type The annotation type whose value should be changed.
+     * @param name The name of the value stored in the annotation which should be changed.
+     * @param value The new value for the defined variable.
      */
     public <A extends Annotation> void setValue(Class<A> type, String name, Object value);
 
     /**
-     * Returns the amount of times the stored {@link FunctionExecutor} was invoked.
-     * 
-     * @return How many times the stored {@link FunctionExecutor} was invoked.
-     */
-    public int getInvocations();
-
-    /**
-     * Sets the internal invocation counter for the function executor context to 0.
-     * That allows to use {@link FunctionExecutor}s which are already over their {@link Limit}.
-     */
-    public void resetInvocations();
-
-    /**
-     * Returns if the stored {@link FunctionExecutor} is locked. <br>
-     * Locked executors are <b>not</b> invoked when the function that is using them is called.
-     * The lock status of executors can be changed through {@link #setLocked(boolean)}.
-     * 
-     * @return True if the stored {@link FunctionExecutor} is locked, false if not.
-     */
-    public boolean isLocked();
-
-    /**
-     * Changes if the stored {@link FunctionExecutor} is locked.<br>
-     * Locked executors are <b>not</b> invoked when the function that is using them is called.
-     * 
-     * @param locked True if the stored {@link FunctionExecutor} should be locked, false if not.
-     */
-    public void setLocked(boolean locked);
-
-    /**
      * Invokes the stored {@link FunctionExecutor} inside the given {@link FunctionInvocation} with the given arguments.
-     * Also increases the amount of times the {@link FunctionExecutor} was invoked. You can retrieve the value with {@link #getInvocations()}.
-     * Please not that this method does nothing if {@link #isLocked()} is true.
      * 
      * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the stored {@link FunctionExecutor}.

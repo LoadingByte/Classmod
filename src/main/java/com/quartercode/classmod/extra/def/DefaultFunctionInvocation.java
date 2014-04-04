@@ -26,13 +26,11 @@ import java.util.List;
 import java.util.Queue;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.Delay;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Limit;
 import com.quartercode.classmod.extra.Prioritized;
 
 /**
@@ -61,11 +59,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         // Specify the list type for using this as a queue later on
         // We need a list here for sorting the executors
         LinkedList<FunctionExecutorContext<R>> executors = new LinkedList<FunctionExecutorContext<R>>();
-        for (FunctionExecutorContext<R> executor : source.getExecutors()) {
-            if (isExecutorInvocable(executor)) {
-                executors.add(executor);
-            }
-        }
+        executors.addAll(source.getExecutors());
 
         Collections.sort(executors, new Comparator<FunctionExecutorContext<R>>() {
 
@@ -78,39 +72,6 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         });
 
         remainingExecutors = executors;
-    }
-
-    /**
-     * Returns wether the given {@link FunctionExecutorContext} is invocable.
-     * For example, a {@link FunctionExecutor} which already exceeded its invocation limit is not invocable.
-     * This can be overriden to modify which {@link FunctionExecutor}s should be invoked.
-     * 
-     * @param executor The {@link FunctionExecutorContext} to check.
-     * @return Wether the given {@link FunctionExecutorContext} is invocable.
-     */
-    protected boolean isExecutorInvocable(FunctionExecutorContext<R> executor) {
-
-        // Locked
-        if (executor.isLocked()) {
-            return false;
-        }
-
-        // Limit
-        if (executor.getInvocations() + 1 > (Integer) executor.getValue(Limit.class, "value")) {
-            return false;
-        }
-
-        // Delay
-        int invocation = source.getInvocations() - 1;
-        int firstDelay = (Integer) executor.getValue(Delay.class, "firstDelay");
-        int delay = (Integer) executor.getValue(Delay.class, "delay");
-        if (invocation < firstDelay) {
-            return false;
-        } else if (delay > 0 && (invocation - firstDelay) % (delay + 1) != 0) {
-            return false;
-        }
-
-        return true;
     }
 
     @Override

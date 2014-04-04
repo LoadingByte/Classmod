@@ -43,8 +43,6 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     private final String              name;
     private final FunctionExecutor<R> executor;
     private final Map<Method, Object> annotationValues = new HashMap<Method, Object>();
-    private int                       invocations      = 0;
-    private boolean                   locked           = false;
 
     /**
      * Creates a new default function executor context and fills in the {@link FunctionExecutor} to store and its name.
@@ -102,7 +100,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
             // Return stored value
             return annotationValues.get(valueMethod);
         } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.WARNING, "Tried to access not existing annotation method for getting annotation value", e);
+            LOGGER.log(Level.WARNING, "Tried to access non-existing annotation method for getting annotation value", e);
             return null;
         }
     }
@@ -113,43 +111,14 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
         try {
             annotationValues.put(type.getMethod(name), value);
         } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.WARNING, "Tried to access not existing annotation method for setting annotation value", e);
+            LOGGER.log(Level.WARNING, "Tried to access non-existing annotation method for setting annotation value", e);
         }
-    }
-
-    @Override
-    public int getInvocations() {
-
-        return invocations;
-    }
-
-    @Override
-    public void resetInvocations() {
-
-        invocations = 0;
-    }
-
-    @Override
-    public boolean isLocked() {
-
-        return locked;
-    }
-
-    @Override
-    public void setLocked(boolean locked) {
-
-        this.locked = locked;
     }
 
     @Override
     public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException {
 
-        if (!locked) {
-            invocations++;
-            return executor.invoke(invocation, arguments);
-        } else {
-            return null;
-        }
+        return executor.invoke(invocation, arguments);
     }
 
     @Override
@@ -187,7 +156,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + name + ", executor=" + executor + ", locked=" + locked + ", invocations=" + invocations + "]";
+        return getClass().getName() + " [name=" + name + ", executor=" + executor + "]";
     }
 
 }
