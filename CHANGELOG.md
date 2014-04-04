@@ -8,10 +8,12 @@
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
 * Properties now support getter and setter function executors; that removes the need for GET_X and SET_X functions.
 * Collection properties are normal properties with add() and remove() methods instead of the set() method.
+* The interface GetterSupplier abstracts the principle of a get() method and is extended by every property. It can be used whenever the type of property isn't known.
 * The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
 
 ### Removals
-* Removed the parts of the lock system that didn't belong to function executors; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
+* Removed the whole lock system; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
+* Removed the limit/delay system; it was intended for update functions whose functionality should be implemented by a specialized feature.
 
 ### Fixes
 * The DefaultFunctionInvocation implementation can now handle null arguments.
