@@ -18,6 +18,8 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,6 +30,9 @@ import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -53,10 +58,12 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
-    private boolean        intialized;
-    private Function<C>    getter;
-    private Function<Void> adder;
-    private Function<Void> remover;
+    private static final Logger LOGGER = Logger.getLogger(AbstractCollectionProperty.class.getName());
+
+    private boolean             intialized;
+    private Function<C>         getter;
+    private Function<Void>      adder;
+    private Function<Void>      remover;
 
     /**
      * Creates a new empty abstract collection property.
@@ -77,7 +84,20 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         super(name, holder);
 
-        setInternal(collection);
+        Validate.notNull(collection, "A collection property must be supplied with a collection implementation to use");
+
+        // Clone the supplied collection so accessing the property doesn't affect the collection that is stored in the definition
+        try {
+            Method clone = collection.getClass().getMethod("clone");
+            Validate.isTrue(Modifier.isPublic(clone.getModifiers()));
+            clone.setAccessible(true);
+            @SuppressWarnings ("unchecked")
+            C clonedCollection = (C) clone.invoke(collection);
+            setInternal(clonedCollection);
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Collection implementation '" + collection.getClass().getName() + "' doesn't support clone; cannot be used by collection property", e);
+        }
+
     }
 
     @Override
