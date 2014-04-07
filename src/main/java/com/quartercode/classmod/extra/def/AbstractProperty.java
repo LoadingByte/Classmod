@@ -22,7 +22,6 @@ import java.util.Map.Entry;
 import java.util.Random;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
-import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
@@ -117,7 +116,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         });
 
         // Add setter executor
-        setterDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
+        setterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -145,10 +144,15 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
         });
 
-        // Create the getter/setter functions
-        FeatureHolder holder = new DefaultFeatureHolder();
-        getter = holder.get(getterDefinition);
-        setter = holder.get(setterDefinition);
+        /*
+         * Create the getter/setter functions
+         * We can't use FeatureHolder#get here because that method would add the new function to the feature holder.
+         * We also can't use a new instance of that feature holder because the functions needs to believe that its holder is the property's one.
+         */
+        getter = getterDefinition.create(getHolder());
+        getter.initialize(getterDefinition);
+        setter = setterDefinition.create(getHolder());
+        setter.initialize(setterDefinition);
     }
 
     @Override

@@ -30,7 +30,6 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
-import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
@@ -107,7 +106,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
 
         // Add getter executor
-        getterDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<C>() {
+        getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<C>() {
 
             @Override
             public C invoke(FunctionInvocation<C> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -135,7 +134,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         });
 
         // Add adder executor
-        adderDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
+        adderDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -161,7 +160,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         });
 
         // Add remover executor
-        removerDefinition.addExecutor(internalExecutorName, FeatureHolder.class, new FunctionExecutor<Void>() {
+        removerDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
@@ -184,11 +183,17 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         });
 
-        // Create the getter/adder/remover functions
-        FeatureHolder holder = new DefaultFeatureHolder();
-        getter = holder.get(getterDefinition);
-        adder = holder.get(adderDefinition);
-        remover = holder.get(removerDefinition);
+        /*
+         * Create the getter/adder/remover functions
+         * We can't use FeatureHolder#get here because that method would add the new function to the feature holder.
+         * We also can't use a new instance of that feature holder because the functions needs to believe that its holder is the property's one.
+         */
+        getter = getterDefinition.create(getHolder());
+        getter.initialize(getterDefinition);
+        adder = adderDefinition.create(getHolder());
+        adder.initialize(adderDefinition);
+        remover = removerDefinition.create(getHolder());
+        remover.initialize(removerDefinition);
     }
 
     @Override
