@@ -20,9 +20,7 @@ package com.quartercode.classmod.test.extra.def;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -84,9 +82,9 @@ public class AbstractFunctionDefinitionTest {
 
         List<Class<?>> expectedParameters = new ArrayList<Class<?>>();
         expectedParameters.add(String.class);
-        Set<FunctionExecutor<Void>> expectedExecutors = new HashSet<FunctionExecutor<Void>>();
+        List<FunctionExecutor<Void>> expectedExecutors = new ArrayList<FunctionExecutor<Void>>();
         expectedExecutors.add(executor);
-        Set<FunctionExecutor<Void>> actualExecutors = new HashSet<FunctionExecutor<Void>>();
+        List<FunctionExecutor<Void>> actualExecutors = new ArrayList<FunctionExecutor<Void>>();
         for (FunctionExecutorContext<Void> context : function.getExecutors()) {
             actualExecutors.add(context.getExecutor());
         }

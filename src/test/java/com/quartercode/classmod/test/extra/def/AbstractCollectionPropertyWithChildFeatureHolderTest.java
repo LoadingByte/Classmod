@@ -18,8 +18,8 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,15 +34,15 @@ import com.quartercode.classmod.extra.def.ObjectCollectionProperty;
 
 public class AbstractCollectionPropertyWithChildFeatureHolderTest {
 
-    private FeatureHolder                                                         propertyHolder;
-    private CollectionProperty<ChildFeatureHolder<?>, Set<ChildFeatureHolder<?>>> property;
+    private FeatureHolder                                                          propertyHolder;
+    private CollectionProperty<ChildFeatureHolder<?>, List<ChildFeatureHolder<?>>> property;
 
     @Before
     public void setUp() {
 
         propertyHolder = new DefaultFeatureHolder();
         // Use object collection property as storage implementation
-        CollectionPropertyDefinition<ChildFeatureHolder<?>, Set<ChildFeatureHolder<?>>> propertyDefinition = ObjectCollectionProperty.createDefinition("property", new HashSet<ChildFeatureHolder<?>>());
+        CollectionPropertyDefinition<ChildFeatureHolder<?>, List<ChildFeatureHolder<?>>> propertyDefinition = ObjectCollectionProperty.createDefinition("property", new ArrayList<ChildFeatureHolder<?>>());
         property = propertyHolder.get(propertyDefinition);
     }
 

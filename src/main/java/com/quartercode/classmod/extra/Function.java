@@ -19,14 +19,13 @@
 package com.quartercode.classmod.extra;
 
 import java.util.List;
-import java.util.Set;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.Initializable;
 
 /**
  * A function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
- * The function object itself stores a set of {@link FunctionExecutorContext}s which wrap around the actual {@link FunctionExecutor}s.
+ * The function object itself stores a collection of {@link FunctionExecutorContext}s which wrap around the actual {@link FunctionExecutor}s.
  * For invoking a function, the object creates a new {@link FunctionInvocation} which takes care of calling all the executors.
  * 
  * @param <R> The type of the return value of the used {@link FunctionExecutor}s.
@@ -44,12 +43,12 @@ public interface Function<R> extends Feature, Initializable<FunctionDefinition<R
     public List<Class<?>> getParameters();
 
     /**
-     * Returns a {@link Set} of all {@link FunctionExecutorContext}s which are used by the function.
+     * Returns a {@link List} of all {@link FunctionExecutorContext}s which are used by the function.
      * They store {@link FunctionExecutor}s which are used for actually handling a function call.
      * 
      * @return All {@link FunctionExecutorContext}s which are used by the function.
      */
-    public Set<FunctionExecutorContext<R>> getExecutors();
+    public List<FunctionExecutorContext<R>> getExecutors();
 
     /**
      * Returns the {@link FunctionExecutorContext} which is used by the function and has the given name.

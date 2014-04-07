@@ -18,8 +18,8 @@
 
 package com.quartercode.classmod.test.base.def;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -94,14 +94,14 @@ public class DefaultFeatureHolderTest {
         Feature testFeature = new AbstractFeature("testFeature", featureHolder);
 
         // Modify persistent feature set
-        Set<Feature> persistentFeatures = featureHolder.getPersistentFeatures();
+        List<Feature> persistentFeatures = featureHolder.getPersistentFeatures();
         persistentFeatures.add(testFeature);
 
-        Set<Feature> actualFeatures = new HashSet<Feature>();
+        List<Feature> actualFeatures = new ArrayList<Feature>();
         for (Feature feature : featureHolder) {
             actualFeatures.add(feature);
         }
-        Set<Object> expectedFeatures = new HashSet<Object>();
+        List<Object> expectedFeatures = new ArrayList<Object>();
         expectedFeatures.add(testFeature);
         Assert.assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
     }

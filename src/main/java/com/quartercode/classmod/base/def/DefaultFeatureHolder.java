@@ -18,10 +18,10 @@
 
 package com.quartercode.classmod.base.def;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -43,7 +43,7 @@ import com.quartercode.classmod.base.Persistent;
  */
 public class DefaultFeatureHolder implements FeatureHolder {
 
-    private final Set<Feature> features = new HashSet<Feature>();
+    private final List<Feature> features = new ArrayList<Feature>();
 
     /**
      * Creates a new default feature holder.
@@ -93,21 +93,21 @@ public class DefaultFeatureHolder implements FeatureHolder {
     }
 
     /**
-     * Returns a {@link Set} of all {@link Persistent} {@link Feature}s of the default feature holder.
-     * Additions to the returned {@link Set} are applied back to the feature holder.
+     * Returns a {@link List} of all {@link Persistent} {@link Feature}s of the default feature holder.
+     * Additions to the returned {@link List} are applied back to the feature holder.
      * 
      * @return All {@link Persistent} {@link Feature}s of the default feature holder.
      */
     @XmlAnyElement (lax = true)
-    public Set<Feature> getPersistentFeatures() {
+    public List<Feature> getPersistentFeatures() {
 
-        return new PersistentFeatureSet(this);
+        return new PersistentFeatureList(this);
     }
 
     @Override
     public Iterator<Feature> iterator() {
 
-        return Collections.unmodifiableSet(features).iterator();
+        return Collections.unmodifiableList(features).iterator();
     }
 
     /**
@@ -166,14 +166,14 @@ public class DefaultFeatureHolder implements FeatureHolder {
         return getClass().getName() + " [features={" + (featureString.length() == 0 ? "" : featureString.substring(2)) + "}]";
     }
 
-    // We need to use a custom set because JAXB adds the values using the add() method
+    // We need to use a custom list because JAXB adds the values using the add() method
     // We won't ever need to serialize this class (it's private)
     @SuppressWarnings ("serial")
-    private static class PersistentFeatureSet extends HashSet<Feature> {
+    private static class PersistentFeatureList extends ArrayList<Feature> {
 
         private final DefaultFeatureHolder featureHolder;
 
-        private PersistentFeatureSet(DefaultFeatureHolder featureHolder) {
+        private PersistentFeatureList(DefaultFeatureHolder featureHolder) {
 
             this.featureHolder = featureHolder;
 

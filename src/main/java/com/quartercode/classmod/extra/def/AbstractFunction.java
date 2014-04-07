@@ -18,11 +18,10 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
@@ -36,7 +35,7 @@ import com.quartercode.classmod.extra.FunctionInvocation;
 /**
  * An abstract function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
- * The function object itself stores a set of those {@link FunctionExecutor}s.
+ * The function object itself stores a list of those {@link FunctionExecutor}s.
  * 
  * @param <R> The type of the return value of the used {@link FunctionExecutor}s. The function returns a {@link List} with these values.
  * @see FunctionExecutor
@@ -44,10 +43,10 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class AbstractFunction<R> extends AbstractFeature implements Function<R> {
 
-    private boolean                         initialized;
-    private List<Class<?>>                  parameters;
-    private Set<FunctionExecutorContext<R>> executors;
-    private int                             invocations;
+    private boolean                          initialized;
+    private List<Class<?>>                   parameters;
+    private List<FunctionExecutorContext<R>> executors;
+    private int                              invocations;
 
     /**
      * Creates a new abstract function with the given name and parent {@link FeatureHolder}.
@@ -70,7 +69,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             Validate.notNull(parameter, "Null parameters are not allowed");
         }
 
-        executors = new HashSet<FunctionExecutorContext<R>>();
+        executors = new ArrayList<FunctionExecutorContext<R>>();
         for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
             executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
         }
@@ -95,9 +94,9 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     }
 
     @Override
-    public Set<FunctionExecutorContext<R>> getExecutors() {
+    public List<FunctionExecutorContext<R>> getExecutors() {
 
-        return Collections.unmodifiableSet(new HashSet<FunctionExecutorContext<R>>(this.executors));
+        return Collections.unmodifiableList(executors);
     }
 
     @Override
