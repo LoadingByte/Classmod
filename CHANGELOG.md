@@ -20,8 +20,8 @@
 * The DefaultFunctionInvocation implementation no longer throws unexpected exceptions if there are less arguments than parameters.
 * The DefaultFunctionInvocation implementation now transforms varargs into arrays (["testString", 0, 1, 2] -> ["testString", [0, 1, 2]]).
 * The JAXB persistence system actually works (a lot of bugfixes done here).
+* Listified everything because sets (especially HashSets) are not safe for modifiable objects.
 * Refactored a whole bunch of code based on automatic suggestions.
-* The LockableClass initialization is now done in the actual lockable classes instead of the feature holder.
 
 ### Notes
 * The update changed the parameter order of every add/removeExecutor method to (name, variant, executor) in order to logically conform the new function executor override feature. Users of the function system must be refactored.
