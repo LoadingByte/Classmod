@@ -164,7 +164,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 @SuppressWarnings ("unchecked")
                 E element = (E) arguments[0];
 
-                if (element instanceof ChildFeatureHolder) {
+                if (element instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) element).getParentType().isAssignableFrom(getHolder().getClass())) {
                     // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                     @SuppressWarnings ("unchecked")
                     ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;

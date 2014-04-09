@@ -36,6 +36,14 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface ChildFeatureHolder<P extends FeatureHolder> extends FeatureHolder {
 
     /**
+     * Basically returns a {@link Class} object of the type defined by the generic <code>P</code> parameter.<br>
+     * The class is used for checking whether a feature holder is actually allowed to be a parent of a child feature holder.
+     * 
+     * @return A {@link Class} object that represents the generic <code>P</code> parameter.
+     */
+    public Class<? super P> getParentType();
+
+    /**
      * Returns the parent {@link FeatureHolder} which is storing this child feature holder.
      * 
      * @return The parent {@link FeatureHolder}.

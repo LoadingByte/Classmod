@@ -47,14 +47,23 @@ public class AbstractPropertyWithChildFeatureHolderTest {
     @Test
     public void testSet() throws ExecutorInvocationException {
 
-        property.set(new DefaultChildFeatureHolder<FeatureHolder>());
+        property.set(new TestFeatureHolder());
         ChildFeatureHolder<?> value1 = property.get();
 
-        property.set(new DefaultChildFeatureHolder<FeatureHolder>());
+        property.set(new TestFeatureHolder());
         ChildFeatureHolder<?> value2 = property.get();
 
         Assert.assertEquals("Parent of the newly set property value 1 (child feature holder)", null, value1.getParent());
         Assert.assertEquals("Parent of the newly set property value 2 (child feature holder)", propertyHolder, value2.getParent());
+    }
+
+    private static class TestFeatureHolder extends DefaultChildFeatureHolder<FeatureHolder> {
+
+        public TestFeatureHolder() {
+
+            setParentType(FeatureHolder.class);
+        }
+
     }
 
 }

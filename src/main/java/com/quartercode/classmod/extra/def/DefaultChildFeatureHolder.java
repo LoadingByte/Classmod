@@ -30,7 +30,25 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
  * A child feature holder is a {@link FeatureHolder} which stores its parent {@link FeatureHolder}.
  * It uses the {@link DefaultFeatureHolder} implementation.
  * A user can get {@link Feature}s through the central access method {@link #get(FeatureDefinition)}.
- * Such {@link Feature}s are defined by {@link FeatureDefinition} which describe how a feature looks like.
+ * Such {@link Feature}s are defined by {@link FeatureDefinition} which describe how a feature looks like.<br>
+ * <br>
+ * The "constant" <code>parentType</code> must be set during the construction of every child feature holder for more type-safety.
+ * For example, a child feature holder class <code>TestChild&lt;TestParent&gt;</code> could look like this:
+ * 
+ * <pre>
+ * public class TestChild extends DefaultChildFeatureHolder&lt;<b>TestParent</b>&gt; {
+ * 
+ *     public TestChild() {
+ * 
+ *         <i>setParentType(<b>TestParent.class</b>);</i>
+ *     }
+ * 
+ *     ...
+ * 
+ * }
+ * </pre>
+ * 
+ * Note that the parent type class is set in the no-arg constructor every time an object is created.
  * 
  * @param <P> The type the parent {@link FeatureHolder} has to have.
  * @see FeatureHolder
@@ -39,13 +57,32 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
  */
 public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultFeatureHolder implements ChildFeatureHolder<P> {
 
-    private P parent;
+    private Class<? super P> parentType;
+    private P                parent;
 
     /**
      * Creates a new default child feature holder.
+     * Please note that the method {@link #setParentType(Class)} should be called somewhere during the construction.
      */
     public DefaultChildFeatureHolder() {
 
+    }
+
+    @Override
+    public Class<? super P> getParentType() {
+
+        return parentType;
+    }
+
+    /**
+     * Sets the {@link Class} representation of the generic <code>P</code> parameter (parent type).
+     * This method should be called somewhere during the construction.
+     * 
+     * @param parentType A class object that represents the generic <code>P</code> parameter for providing more type-safety.
+     */
+    protected void setParentType(Class<? super P> parentType) {
+
+        this.parentType = parentType;
     }
 
     @Override

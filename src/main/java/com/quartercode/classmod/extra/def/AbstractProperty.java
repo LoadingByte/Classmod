@@ -132,7 +132,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
                 setInternal(value);
 
-                if (value instanceof ChildFeatureHolder) {
+                if (value instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) value).getParentType().isAssignableFrom(getHolder().getClass())) {
                     // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                     @SuppressWarnings ("unchecked")
                     ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;

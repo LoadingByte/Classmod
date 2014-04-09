@@ -49,15 +49,24 @@ public class AbstractCollectionPropertyWithChildFeatureHolderTest {
     @Test
     public void testAdd() throws ExecutorInvocationException {
 
-        property.add(new DefaultChildFeatureHolder<FeatureHolder>());
+        property.add(new TestFeatureHolder());
         ChildFeatureHolder<?> element1 = property.get().iterator().next();
         property.remove(element1);
 
-        property.add(new DefaultChildFeatureHolder<FeatureHolder>());
+        property.add(new TestFeatureHolder());
         ChildFeatureHolder<?> element2 = property.get().iterator().next();
 
         Assert.assertEquals("Parent of the newly added and then removed collection property element 1 (child feature holder)", null, element1.getParent());
         Assert.assertEquals("Parent of the newly added and not removed collection property element 2 (child feature holder)", propertyHolder, element2.getParent());
+    }
+
+    private static class TestFeatureHolder extends DefaultChildFeatureHolder<FeatureHolder> {
+
+        public TestFeatureHolder() {
+
+            setParentType(FeatureHolder.class);
+        }
+
     }
 
 }
