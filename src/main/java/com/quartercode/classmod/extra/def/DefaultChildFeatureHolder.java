@@ -28,7 +28,9 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
 
 /**
  * A child feature holder is a {@link FeatureHolder} which stores its parent {@link FeatureHolder}.
- * It uses the {@link DefaultFeatureHolder} implementation.
+ * The parent holder is an object that holds a (collection) property that holds the actual child feature holder.
+ * It uses the {@link DefaultFeatureHolder} implementation.<br>
+ * <br>
  * A user can get {@link Feature}s through the central access method {@link #get(FeatureDefinition)}.
  * Such {@link Feature}s are defined by {@link FeatureDefinition} which describe how a feature looks like.<br>
  * <br>
