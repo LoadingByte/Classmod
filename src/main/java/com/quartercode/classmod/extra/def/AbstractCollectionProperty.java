@@ -18,8 +18,6 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,6 +30,7 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
@@ -88,16 +87,13 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         // Clone the supplied collection so accessing the property doesn't affect the collection that is stored in the definition
         try {
-            Method clone = collection.getClass().getMethod("clone");
-            Validate.isTrue(Modifier.isPublic(clone.getModifiers()));
-            clone.setAccessible(true);
             @SuppressWarnings ("unchecked")
-            C clonedCollection = (C) clone.invoke(collection);
+            C clonedCollection = (C) ObjectUtils.clone(collection);
+            Validate.notNull(clonedCollection, collection.getClass().getName() + " returned a null clone (cloning not possible?)");
             setInternal(clonedCollection);
         } catch (Exception e) {
             LOGGER.log(Level.SEVERE, "Collection implementation '" + collection.getClass().getName() + "' doesn't support clone; cannot be used by collection property", e);
         }
-
     }
 
     @Override

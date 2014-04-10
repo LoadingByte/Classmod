@@ -20,6 +20,10 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.apache.commons.lang.ObjectUtils;
+import org.apache.commons.lang.exception.CloneFailedException;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -44,9 +48,11 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractProperty<T> extends AbstractFeature implements Property<T> {
 
-    private boolean        intialized;
-    private Function<T>    getter;
-    private Function<Void> setter;
+    private static final Logger LOGGER = Logger.getLogger(AbstractProperty.class.getName());
+
+    private boolean             intialized;
+    private Function<T>         getter;
+    private Function<Void>      setter;
 
     /**
      * Creates a new empty abstract property.
@@ -78,7 +84,14 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
         super(name, holder);
 
-        setInternal(initialValue);
+        // Clone the supplied initial value so accessing the value that is stored in the property doesn't affect the value that is stored in the definition
+        try {
+            @SuppressWarnings ("unchecked")
+            T clonedValue = (T) ObjectUtils.cloneIfPossible(initialValue);
+            setInternal(clonedValue);
+        } catch (CloneFailedException e) {
+            LOGGER.log(Level.SEVERE, "Unknown exception while cloning object of type '" + initialValue.getClass().getName() + "'", e);
+        }
     }
 
     @Override
