@@ -10,6 +10,8 @@
 * Collection properties are normal properties with add() and remove() methods instead of the set() method.
 * The interface GetterSupplier abstracts the principle of a get() method and is extended by every property. It can be used whenever the type of property isn't known.
 * The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
+* ChildFeatureHolders provide a class that represents the parent type for more type-safety.
+* Properties clone the initial values/collections in order to prevent changes to the object that is stored in the definition.
 
 ### Removals
 * Removed the whole lock system; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
