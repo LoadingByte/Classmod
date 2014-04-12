@@ -12,6 +12,7 @@
 * The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
 * ChildFeatureHolders provide a class that represents the parent type for more type-safety.
 * Properties clone the initial values/collections in order to prevent changes to the object that is stored in the definition.
+* Properties are now able to provide (JAXB) persistence for arrays.
 
 ### Removals
 * Removed the whole lock system; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
