@@ -28,8 +28,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.ChildFeatureHolder;
+import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -150,19 +149,13 @@ public class CollectionPropertyAccessorFactory {
 
         return new FunctionExecutor<Void>() {
 
-            @SuppressWarnings ("unchecked")
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                Object element = arguments[0];
-
                 // Hope that the using FunctionDefinition has the correct parameters
-                boolean changed = invocation.getHolder().get(propertyDefinition).get().add((E) element);
-
-                // Set the parent of the added element the new holder
-                if (changed && element instanceof ChildFeatureHolder) {
-                    ((ChildFeatureHolder<FeatureHolder>) element).setParent(invocation.getHolder());
-                }
+                @SuppressWarnings ("unchecked")
+                E element = (E) arguments[0];
+                invocation.getHolder().get(propertyDefinition).add(element);
 
                 return invocation.next(arguments);
             }
@@ -185,14 +178,10 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                Object element = arguments[0];
-
-                boolean changed = invocation.getHolder().get(propertyDefinition).get().remove(element);
-
-                // Set the parent of the removed element to null
-                if (changed && element instanceof ChildFeatureHolder) {
-                    ((ChildFeatureHolder<?>) element).setParent(null);
-                }
+                // Hope that the using FunctionDefinition has the correct parameters
+                @SuppressWarnings ("unchecked")
+                E element = (E) arguments[0];
+                invocation.getHolder().get(propertyDefinition).remove(element);
 
                 return invocation.next(arguments);
             }
@@ -214,8 +203,10 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
+                E element = invocation.getHolder().get(propertyDefinition).get().peek();
+
                 invocation.next(arguments);
-                return invocation.getHolder().get(propertyDefinition).get().peek();
+                return element;
             }
 
         };
@@ -235,11 +226,10 @@ public class CollectionPropertyAccessorFactory {
             @Override
             public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
 
-                E element = invocation.getHolder().get(propertyDefinition).get().poll();
-
-                // Set the parent of the removed (polled) element to null
-                if (element instanceof ChildFeatureHolder) {
-                    ((ChildFeatureHolder<?>) element).setParent(null);
+                CollectionProperty<E, ? extends Queue<E>> property = invocation.getHolder().get(propertyDefinition);
+                E element = property.get().peek();
+                if (element != null) {
+                    property.remove(element);
                 }
 
                 invocation.next(arguments);
