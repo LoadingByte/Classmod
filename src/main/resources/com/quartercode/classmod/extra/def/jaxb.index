@@ -4,4 +4,5 @@ ObjectProperty
 ReferenceCollectionProperty
 ReferenceProperty
 ObjectAdapter$ClassWrapper
+ObjectAdapter$ArrayWrapper
 ObjectAdapter$CollectionWrapper

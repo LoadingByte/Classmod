@@ -54,8 +54,12 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
     @Override
     public Object marshal(Object v) {
 
-        if (v instanceof Class) {
+        if (v == null) {
+            return null;
+        } else if (v instanceof Class) {
             return new ClassWrapper((Class<?>) v);
+        } else if (v.getClass().isArray()) {
+            return new ArrayWrapper((Object[]) v);
         } else if (v instanceof Collection) {
             return new CollectionWrapper((Collection<?>) v);
         } else {
@@ -86,6 +90,29 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
 
         @Override
         public Class<?> getObject() {
+
+            return object;
+        }
+
+    }
+
+    @XmlType (name = "array")
+    public static class ArrayWrapper implements Wrapper<Object[]> {
+
+        @XmlElement (name = "item")
+        private Object[] object;
+
+        protected ArrayWrapper() {
+
+        }
+
+        public ArrayWrapper(Object[] object) {
+
+            this.object = object;
+        }
+
+        @Override
+        public Object[] getObject() {
 
             return object;
         }

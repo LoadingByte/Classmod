@@ -55,6 +55,7 @@ public class PropertyPersistenceTest {
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property") } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", "Test") } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", String.class) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }) } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3")) } });
 
         DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
