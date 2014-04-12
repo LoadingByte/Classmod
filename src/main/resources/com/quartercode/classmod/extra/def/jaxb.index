@@ -1,5 +1,7 @@
 DefaultChildFeatureHolder
+ObjectCollectionProperty
 ObjectProperty
+ReferenceCollectionProperty
 ReferenceProperty
 ObjectAdapter$ClassWrapper
 ObjectAdapter$CollectionWrapper
