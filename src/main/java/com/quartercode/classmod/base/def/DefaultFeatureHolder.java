@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -41,7 +43,9 @@ import com.quartercode.classmod.base.Persistent;
  * @see Feature
  * @see FeatureDefinition
  */
-public class DefaultFeatureHolder implements FeatureHolder {
+public class DefaultFeatureHolder implements FeatureHolder, Cloneable {
+
+    private static final Logger LOGGER   = Logger.getLogger(DefaultFeatureHolder.class.getName());
 
     private final List<Feature> features = new ArrayList<Feature>();
 
@@ -121,6 +125,18 @@ public class DefaultFeatureHolder implements FeatureHolder {
     public String getId() {
 
         return Integer.toHexString(System.identityHashCode(this));
+    }
+
+    @Override
+    public Object clone() {
+
+        // Just return an empty pseudo clone
+        try {
+            return getClass().newInstance();
+        } catch (Exception e) {
+            LOGGER.log(Level.SEVERE, "Cannot create new instance of feature holder '" + getClass().getName() + "' for pseudo clone", e);
+            return this;
+        }
     }
 
     @Override

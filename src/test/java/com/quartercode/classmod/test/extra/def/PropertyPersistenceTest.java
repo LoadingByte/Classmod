@@ -58,7 +58,7 @@ public class PropertyPersistenceTest {
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }) } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3")) } });
 
-        DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
+        NoCloneFeatureHolder referencedObject = new NoCloneFeatureHolder();
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", referencedObject), ReferenceProperty.createDefinition("reference", referencedObject) } });
 
         return data;
@@ -119,6 +119,17 @@ public class PropertyPersistenceTest {
         private RootElement(DefaultFeatureHolder featureHolder) {
 
             this.featureHolder = featureHolder;
+        }
+
+    }
+
+    public static class NoCloneFeatureHolder extends DefaultFeatureHolder {
+
+        // "Disable" the pseudo clone method, so referencing objects in the definitions works
+        @Override
+        public Object clone() {
+
+            return this;
         }
 
     }
