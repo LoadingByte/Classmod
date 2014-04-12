@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.Arrays;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.logging.Level;
@@ -229,10 +230,19 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
             if (other.getInternal() != null) {
                 return false;
             }
-        } else if (!this.getInternal().equals(other.getInternal())) {
+        } else if (!valueEquals(this.getInternal(), other.getInternal())) {
             return false;
         }
         return true;
+    }
+
+    private boolean valueEquals(Object value1, Object value2) {
+
+        if (value1.getClass().isArray() && value2.getClass().isArray()) {
+            return Arrays.equals((Object[]) value1, (Object[]) value2);
+        } else {
+            return value1.equals(value2);
+        }
     }
 
     @Override
