@@ -53,13 +53,13 @@ public class PropertyPersistenceTest {
         List<Object[]> data = new ArrayList<Object[]>();
 
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property") } });
-        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", "Test") } });
-        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", String.class) } });
-        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }) } });
-        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3")) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", "Test", true) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", String.class, true) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }, true) } });
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3"), true) } });
 
-        NoCloneFeatureHolder referencedObject = new NoCloneFeatureHolder();
-        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", referencedObject), ReferenceProperty.createDefinition("reference", referencedObject) } });
+        DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", referencedObject, false), ReferenceProperty.createDefinition("reference", referencedObject, false) } });
 
         return data;
     }
@@ -119,17 +119,6 @@ public class PropertyPersistenceTest {
         private RootElement(DefaultFeatureHolder featureHolder) {
 
             this.featureHolder = featureHolder;
-        }
-
-    }
-
-    public static class NoCloneFeatureHolder extends DefaultFeatureHolder {
-
-        // "Disable" the pseudo clone method, so referencing objects in the definitions works
-        @Override
-        public Object clone() {
-
-            return this;
         }
 
     }

@@ -34,7 +34,7 @@ public class AbstractPropertyTest {
     public void setUp() {
 
         // Use object property as storage implementation
-        property = new DefaultFeatureHolder().get(ObjectProperty.createDefinition("property", "initialString"));
+        property = new DefaultFeatureHolder().get(ObjectProperty.createDefinition("property", "initialString", true));
     }
 
     @Test
