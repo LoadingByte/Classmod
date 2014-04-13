@@ -23,8 +23,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
@@ -38,7 +38,7 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContext<R> {
 
-    private static final Logger       LOGGER           = Logger.getLogger(DefaultFunctionExecutorContext.class.getName());
+    private static final Logger       LOGGER           = LoggerFactory.getLogger(DefaultFunctionExecutorContext.class);
 
     private final String              name;
     private final FunctionExecutor<R> executor;
@@ -84,11 +84,11 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
                         return value;
                     }
                 } catch (NoSuchMethodException e) {
-                    LOGGER.log(Level.SEVERE, "Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
+                    LOGGER.error("Programmer's fault: Can't find invoke() method (should be defined by interface)", e);
                 } catch (IllegalAccessException e) {
-                    LOGGER.log(Level.SEVERE, "No access to annotation method because it's not public; What the ... ?", e);
+                    LOGGER.error("No access to annotation method because it's not public; What the ... ?", e);
                 } catch (InvocationTargetException e) {
-                    LOGGER.log(Level.SEVERE, "Can't invoke annotation method", e);
+                    LOGGER.error("Can't invoke annotation method", e);
                 }
 
                 // Fill in default value
@@ -100,7 +100,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
             // Return stored value
             return annotationValues.get(valueMethod);
         } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.WARNING, "Tried to access non-existing annotation method for getting annotation value", e);
+            LOGGER.warn("Tried to access non-existing annotation method for getting annotation value", e);
             return null;
         }
     }
@@ -111,7 +111,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
         try {
             annotationValues.put(type.getMethod(name), value);
         } catch (NoSuchMethodException e) {
-            LOGGER.log(Level.WARNING, "Tried to access non-existing annotation method for setting annotation value", e);
+            LOGGER.warn("Tried to access non-existing annotation method for setting annotation value", e);
         }
     }
 

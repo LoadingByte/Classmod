@@ -18,10 +18,10 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.apache.commons.lang.ObjectUtils;
 import org.apache.commons.lang.exception.CloneFailedException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Property;
 
@@ -34,7 +34,7 @@ import com.quartercode.classmod.extra.Property;
  */
 public class PropertyCloneUtil {
 
-    private static final Logger LOGGER = Logger.getLogger(PropertyCloneUtil.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(PropertyCloneUtil.class);
 
     /**
      * Clones or pseudo-clones the given initial property value.
@@ -58,7 +58,7 @@ public class PropertyCloneUtil {
                 T clone = (T) initialValue.getClass().newInstance();
                 return clone;
             } catch (Exception e) {
-                LOGGER.log(Level.SEVERE, "Cannot create new instance of feature holder '" + initialValue.getClass().getName() + "' for pseudo clone", e);
+                LOGGER.error("Cannot create new instance of feature holder '{}' for pseudo clone", initialValue.getClass().getName(), e);
             }
         }
         // Try to really clone the object
@@ -68,7 +68,7 @@ public class PropertyCloneUtil {
                 T clone = (T) ObjectUtils.cloneIfPossible(initialValue);
                 return clone;
             } catch (CloneFailedException e) {
-                LOGGER.log(Level.SEVERE, "Unknown exception while cloning object of type '" + initialValue.getClass().getName() + "'", e);
+                LOGGER.error("Unknown exception while cloning object of type '{}'", initialValue.getClass().getName(), e);
             }
         }
 
