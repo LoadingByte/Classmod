@@ -13,8 +13,10 @@
 * ChildFeatureHolders provide a class that represents the parent type for more type-safety.
 * Properties clone the initial values/collections in order to prevent changes to the object that is stored in the definition.
 * Properties are now able to provide (JAXB) persistence for arrays.
+* The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
 
 ### Removals
+* Removed the ExecutorInvocationException. That exception was thrown by every function executor / function and produced unnecessary try-catchs. RuntimeExceptions should be used instead.
 * Removed the whole lock system; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
 * Removed the limit/delay system; it was intended for update functions whose functionality should be implemented by a specialized feature.
 
