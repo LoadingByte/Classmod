@@ -25,7 +25,6 @@ import java.util.Map.Entry;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -112,7 +111,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     }
 
     @Override
-    public R invoke(Object... arguments) throws ExecutorInvocationException {
+    public R invoke(Object... arguments) {
 
         invocations++;
         FunctionInvocation<R> invocation = new DefaultFunctionInvocation<R>(this);

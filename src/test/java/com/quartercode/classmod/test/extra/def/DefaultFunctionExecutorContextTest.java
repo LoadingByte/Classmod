@@ -22,7 +22,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import org.junit.Assert;
 import org.junit.Test;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.DefaultFunctionExecutorContext;
@@ -36,7 +35,7 @@ public class DefaultFunctionExecutorContextTest {
 
             @Override
             @TestAnnotation (value1 = 7, value2 = "test")
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 return invocation.next(arguments);
             }
@@ -52,7 +51,7 @@ public class DefaultFunctionExecutorContextTest {
         DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 return invocation.next(arguments);
             }
@@ -68,7 +67,7 @@ public class DefaultFunctionExecutorContextTest {
         DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 return invocation.next(arguments);
             }

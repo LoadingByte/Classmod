@@ -24,7 +24,6 @@ import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultChildFeatureHolder;
@@ -45,7 +44,7 @@ public class AbstractPropertyWithChildFeatureHolderTest {
     }
 
     @Test
-    public void testSet() throws ExecutorInvocationException {
+    public void testSet() {
 
         property.set(new TestFeatureHolder());
         ChildFeatureHolder<?> value1 = property.get();

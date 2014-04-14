@@ -22,7 +22,6 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.def.ObjectProperty;
 
@@ -38,14 +37,14 @@ public class AbstractPropertyTest {
     }
 
     @Test
-    public void testGet() throws ExecutorInvocationException {
+    public void testGet() {
 
         Object value = property.get();
         Assert.assertEquals("Initially set property value", "initialString", value);
     }
 
     @Test
-    public void testSet() throws ExecutorInvocationException {
+    public void testSet() {
 
         property.set("secondString");
         Object value = property.get();

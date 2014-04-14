@@ -43,8 +43,8 @@ public interface FunctionInvocation<R> {
      * 
      * @param arguments The arguments for the next {@link FunctionExecutor}. Most of the times, the same argument array will be carried through all of the {@link FunctionExecutor}s.
      * @return The return value the nextly invoked {@link FunctionExecutor} returns.
-     * @throws ExecutorInvocationException Something goes wrong while invoking the next {@link FunctionExecutor}.
+     * @throws RuntimeException The next function executor throws a custom function-related exception.
      */
-    public R next(Object... arguments) throws ExecutorInvocationException;
+    public R next(Object... arguments);
 
 }

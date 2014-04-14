@@ -28,7 +28,6 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.def.DefaultChildFeatureHolder;
 import com.quartercode.classmod.extra.def.ObjectCollectionProperty;
 
@@ -47,7 +46,7 @@ public class AbstractCollectionPropertyWithChildFeatureHolderTest {
     }
 
     @Test
-    public void testAdd() throws ExecutorInvocationException {
+    public void testAdd() {
 
         property.add(new TestFeatureHolder());
         ChildFeatureHolder<?> element1 = property.get().iterator().next();

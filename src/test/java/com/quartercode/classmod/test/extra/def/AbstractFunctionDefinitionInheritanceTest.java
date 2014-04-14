@@ -30,7 +30,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -92,7 +91,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 invocationArray[index] = true;
                 return invocation.next(arguments);
@@ -103,7 +102,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
 
     @SuppressWarnings ("unchecked")
     @Test
-    public void testCreateFeatureHolder() throws InstantiationException, IllegalAccessException, ExecutorInvocationException {
+    public void testCreateFeatureHolder() throws InstantiationException, IllegalAccessException {
 
         boolean[] expectedInvocations = new boolean[executors.length];
         boolean[] actualInvocations = new boolean[executors.length];

@@ -33,18 +33,18 @@ public interface Property<T> extends Feature, GetterSupplier<T>, Initializable<P
      * Note that all getter function executors are invoked when this is called.
      * 
      * @return The stored object.
-     * @throws ExecutorInvocationException Something goes wrong while invoking a getter function executor.
+     * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      */
     @Override
-    public T get() throws ExecutorInvocationException;
+    public T get();
 
     /**
      * Changes the object which is stored inside the property.
      * Note that all setter function executors are invoked when this is called.
      * 
      * @param value The new stored object.
-     * @throws ExecutorInvocationException Something goes wrong while invoking a setter function executor.
+     * @throws RuntimeException A setter function executor throws a custom setter-related exception.
      */
-    public void set(T value) throws ExecutorInvocationException;
+    public void set(T value);
 
 }

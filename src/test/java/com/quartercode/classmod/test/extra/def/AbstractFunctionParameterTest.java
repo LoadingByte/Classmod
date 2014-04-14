@@ -28,7 +28,6 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -119,7 +118,7 @@ public class AbstractFunctionParameterTest {
         definition.addExecutor("default", FeatureHolder.class, new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 return invocation.next(arguments);
             }
@@ -131,7 +130,7 @@ public class AbstractFunctionParameterTest {
         try {
             function.invoke(arguments);
             actuallyWorks = true;
-        } catch (ExecutorInvocationException e) {
+        } catch (IllegalArgumentException e) {
             actuallyWorks = false;
         }
 

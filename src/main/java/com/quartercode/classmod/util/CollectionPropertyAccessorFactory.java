@@ -30,7 +30,6 @@ import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
@@ -56,7 +55,7 @@ public class CollectionPropertyAccessorFactory {
         return createGet(propertyDefinition, new CriteriumMatcher<E>() {
 
             @Override
-            public boolean matches(E element, Object... arguments) throws ExecutorInvocationException {
+            public boolean matches(E element, Object... arguments) {
 
                 return true;
             }
@@ -80,7 +79,7 @@ public class CollectionPropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public C invoke(FunctionInvocation<C> invocation, Object... arguments) throws ExecutorInvocationException {
+            public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
 
                 C originalCollection = invocation.getHolder().get(propertyDefinition).get();
 
@@ -121,7 +120,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) {
 
                 E result = null;
                 for (E element : invocation.getHolder().get(propertyDefinition).get()) {
@@ -150,7 +149,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 // Hope that the using FunctionDefinition has the correct parameters
                 @SuppressWarnings ("unchecked")
@@ -176,7 +175,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 // Hope that the using FunctionDefinition has the correct parameters
                 @SuppressWarnings ("unchecked")
@@ -201,7 +200,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) {
 
                 E element = invocation.getHolder().get(propertyDefinition).get().peek();
 
@@ -224,7 +223,7 @@ public class CollectionPropertyAccessorFactory {
         return new FunctionExecutor<E>() {
 
             @Override
-            public E invoke(FunctionInvocation<E> invocation, Object... arguments) throws ExecutorInvocationException {
+            public E invoke(FunctionInvocation<E> invocation, Object... arguments) {
 
                 CollectionProperty<E, ? extends Queue<E>> property = invocation.getHolder().get(propertyDefinition);
                 E element = property.get().peek();
@@ -254,9 +253,8 @@ public class CollectionPropertyAccessorFactory {
          * @param element The element to check.
          * @param arguments The arguments which were passed during invocation.
          * @return True if the given element matches, false if not.
-         * @throws ExecutorInvocationException The execution of the current invocation queue should stop.
          */
-        public boolean matches(E element, Object... arguments) throws ExecutorInvocationException;
+        public boolean matches(E element, Object... arguments);
 
     }
 

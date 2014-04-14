@@ -26,7 +26,6 @@ import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.def.ObjectCollectionProperty;
 
 public class AbstractCollectionPropertyTest {
@@ -47,21 +46,21 @@ public class AbstractCollectionPropertyTest {
     }
 
     @Test
-    public void testGet() throws ExecutorInvocationException {
+    public void testGet() {
 
         Object currentCollection = property.get();
         Assert.assertEquals("Initially set property collection", collection, currentCollection);
     }
 
     @Test
-    public void testAdd() throws ExecutorInvocationException {
+    public void testAdd() {
 
         property.add("entry3");
         Assert.assertTrue("Collection property doesn't contain newly added entry", property.get().contains("entry3"));
     }
 
     @Test
-    public void testRemove() throws ExecutorInvocationException {
+    public void testRemove() {
 
         property.remove("entry2");
         Assert.assertTrue("Collection property contains removed entry", !property.get().contains("entry2"));

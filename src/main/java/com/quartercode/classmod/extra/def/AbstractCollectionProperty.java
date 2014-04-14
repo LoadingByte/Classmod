@@ -34,7 +34,6 @@ import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -111,7 +110,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<C>() {
 
             @Override
-            public C invoke(FunctionInvocation<C> invocation, Object... arguments) throws ExecutorInvocationException {
+            public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
 
                 C collection = unmodifiable(getInternal());
                 invocation.next(arguments);
@@ -139,7 +138,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         adderDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 C collection = getInternal();
                 // The only caller (add()) verified the type by a compiler-safe generic parameter
@@ -165,7 +164,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         removerDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 C collection = getInternal();
                 // The only caller (remove()) verified the type by a compiler-safe generic parameter
@@ -205,19 +204,19 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
     }
 
     @Override
-    public C get() throws ExecutorInvocationException {
+    public C get() {
 
         return getter.invoke();
     }
 
     @Override
-    public void add(E element) throws ExecutorInvocationException {
+    public void add(E element) {
 
         adder.invoke(element);
     }
 
     @Override
-    public void remove(E element) throws ExecutorInvocationException {
+    public void remove(E element) {
 
         remover.invoke(element);
     }

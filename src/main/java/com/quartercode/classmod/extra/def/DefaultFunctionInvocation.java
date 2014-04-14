@@ -26,7 +26,6 @@ import java.util.List;
 import java.util.Queue;
 import org.apache.commons.lang.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
@@ -81,27 +80,19 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     }
 
     @Override
-    public R next(Object... arguments) throws ExecutorInvocationException {
+    public R next(Object... arguments) {
 
         // Use a clone of the argument array in order to prevent it from outside modification
         arguments = arguments.clone();
 
         // Validate the arguments and transform varargs to arrays
-        try {
-            arguments = checkArguments(arguments);
-        } catch (IllegalArgumentException e) {
-            throw new ExecutorInvocationException("Invalid arguments", e);
-        }
+        arguments = checkArguments(arguments);
 
         if (remainingExecutors.isEmpty()) {
             // Abort because all executors were already invoked
             return null;
         } else {
-            try {
-                return remainingExecutors.poll().invoke(this, arguments);
-            } catch (RuntimeException e) {
-                throw new ExecutorInvocationException("Runtime exception while invoking a function executor", e);
-            }
+            return remainingExecutors.poll().invoke(this, arguments);
         }
     }
 

@@ -71,8 +71,8 @@ public interface Function<R> extends Feature, Initializable<FunctionDefinition<R
      * 
      * @param arguments Some arguments for the {@link FunctionExecutor}s.
      * @return The return value on the end of the invocation chain. Can be null.
-     * @throws ExecutorInvocationException Something goes wrong during the invocation of a {@link FunctionExecutor}.
+     * @throws RuntimeException A function executor throws a custom function-related exception.
      */
-    public R invoke(Object... arguments) throws ExecutorInvocationException;
+    public R invoke(Object... arguments);
 
 }

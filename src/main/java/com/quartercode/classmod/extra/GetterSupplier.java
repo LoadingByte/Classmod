@@ -31,8 +31,8 @@ public interface GetterSupplier<T> {
      * The type of value should be specified by the implementing class.
      * 
      * @return The value that is provided by the implementing class.
-     * @throws ExecutorInvocationException Something goes wrong while retrieving the supplied value.
+     * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      */
-    public T get() throws ExecutorInvocationException;
+    public T get();
 
 }

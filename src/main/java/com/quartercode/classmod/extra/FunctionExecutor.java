@@ -34,8 +34,8 @@ public interface FunctionExecutor<R> {
      * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the function executor.
      * @return The value the invoked function executor returns. Can be null.
-     * @throws ExecutorInvocationException Something goes wrong while invoking the function executor.
+     * @throws RuntimeException The function executor throws a custom exception that is related to the function that uses it.
      */
-    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException;
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments);
 
 }

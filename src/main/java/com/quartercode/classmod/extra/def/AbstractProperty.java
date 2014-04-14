@@ -24,7 +24,6 @@ import java.util.Random;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -107,7 +106,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<T>() {
 
             @Override
-            public T invoke(FunctionInvocation<T> invocation, Object... arguments) throws ExecutorInvocationException {
+            public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
 
                 T value = getInternal();
                 invocation.next(arguments);
@@ -120,7 +119,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         setterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
 
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 T oldValue = getInternal();
                 if (oldValue instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) oldValue).getParent().equals(getHolder())) {
@@ -163,13 +162,13 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     }
 
     @Override
-    public T get() throws ExecutorInvocationException {
+    public T get() {
 
         return getter.invoke();
     }
 
     @Override
-    public void set(T value) throws ExecutorInvocationException {
+    public void set(T value) {
 
         setter.invoke(value);
     }

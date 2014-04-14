@@ -25,7 +25,6 @@ import java.util.HashMap;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -116,7 +115,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     }
 
     @Override
-    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException {
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments) {
 
         return executor.invoke(invocation, arguments);
     }

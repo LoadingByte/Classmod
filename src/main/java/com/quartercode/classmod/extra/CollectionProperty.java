@@ -35,27 +35,27 @@ public interface CollectionProperty<E, C extends Collection<E>> extends Feature,
      * Note that all getter function executors are invoked when this is called.
      * 
      * @return The stored {@link Collection}.
-     * @throws ExecutorInvocationException Something goes wrong while invoking a getter function executor.
+     * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      */
     @Override
-    public C get() throws ExecutorInvocationException;
+    public C get();
 
     /**
      * Adds an element to the {@link Collection} which is stored inside the property.
      * Note that all adder function executors are invoked when this is called.
      * 
      * @param element The object to add to the stored {@link Collection}.
-     * @throws ExecutorInvocationException Something goes wrong while invoking an adder function executor.
+     * @throws RuntimeException An adder function executor throws a custom adder-related exception.
      */
-    public void add(E element) throws ExecutorInvocationException;
+    public void add(E element);
 
     /**
      * Removes an element from the {@link Collection} which is stored inside the property.
      * Note that all remover function executors are invoked when this is called.
      * 
      * @param element The object to remove from the stored {@link Collection}.
-     * @throws ExecutorInvocationException Something goes wrong while invoking a remover function executor.
+     * @throws RuntimeException A remover function executor throws a custom remover-related exception.
      */
-    public void remove(E element) throws ExecutorInvocationException;
+    public void remove(E element);
 
 }

@@ -70,8 +70,8 @@ public interface FunctionExecutorContext<R> extends Named {
      * @param invocation The {@link FunctionInvocation} which called the function executor.
      * @param arguments Some arguments for the stored {@link FunctionExecutor}.
      * @return The value the invoked {@link FunctionExecutor} returns. Can be null.
-     * @throws ExecutorInvocationException Something goes wrong while invoking the stored {@link FunctionExecutor}.
+     * @throws RuntimeException A function executor throws a custom function-related exception.
      */
-    public R invoke(FunctionInvocation<R> invocation, Object... arguments) throws ExecutorInvocationException;
+    public R invoke(FunctionInvocation<R> invocation, Object... arguments);
 
 }

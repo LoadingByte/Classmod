@@ -23,7 +23,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -35,7 +34,7 @@ import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 public class AbstractFunctionPriorityTest {
 
     @Test
-    public void testInvoke() throws ExecutorInvocationException {
+    public void testInvoke() {
 
         FunctionDefinition<Integer> definition = new AbstractFunctionDefinition<Integer>("testFunction") {
 
@@ -52,7 +51,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (4)
-            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor1.set(true);
                 return invocation.next(arguments);
@@ -65,7 +64,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (3)
-            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor2.set(true);
                 invocation.next(arguments); // Execute next, but don't return next value
@@ -79,7 +78,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (2)
-            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor3.set(true);
                 return 3; // Do not even execute next
@@ -92,7 +91,7 @@ public class AbstractFunctionPriorityTest {
 
             @Override
             @Prioritized (1)
-            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor4.set(true);
                 invocation.next(arguments);

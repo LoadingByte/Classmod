@@ -19,7 +19,6 @@
 package com.quartercode.classmod.util;
 
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.extra.ExecutorInvocationException;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
@@ -45,7 +44,7 @@ public class PropertyAccessorFactory {
         return new FunctionExecutor<T>() {
 
             @Override
-            public T invoke(FunctionInvocation<T> invocation, Object... arguments) throws ExecutorInvocationException {
+            public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
 
                 invocation.next(arguments);
 
@@ -69,7 +68,7 @@ public class PropertyAccessorFactory {
 
             @SuppressWarnings ("unchecked")
             @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) throws ExecutorInvocationException {
+            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 // Hope that the using FunctionDefinition has the correct parameters
                 invocation.getHolder().get(propertyDefinition).set((T) arguments[0]);
