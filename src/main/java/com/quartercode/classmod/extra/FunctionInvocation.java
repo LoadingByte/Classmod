@@ -22,8 +22,8 @@ import com.quartercode.classmod.base.FeatureHolder;
 
 /**
  * A function invocation object takes care of invoking all {@link FunctionExecutor}s of a {@link Function} in a chain.
- * That means that the {@link FunctionExecutor} with the highest priority is called first.
- * That firstly called {@link FunctionExecutor} then calls the {@link #next(Object...)} method on its function invocation in order to call the next {@link FunctionExecutor}.
+ * That means that the function invocation with the highest priority is called first.
+ * That firstly called function executor then calls the {@link #next(Object...)} method on its function invocation in order to call the next function executor.
  * 
  * @param <R> The return type of the function invocation.
  */
@@ -32,17 +32,18 @@ public interface FunctionInvocation<R> {
     /**
      * Returns The {@link FeatureHolder} which holds the {@link Function} using the function invocation.
      * 
-     * @return The {@link FeatureHolder} the function invocation is used by.
+     * @return The feature holder the function invocation is used by.
      */
     public FeatureHolder getHolder();
 
     /**
      * Invokes the next {@link FunctionExecutor} in the chain with the given arguments and returns its return value.
-     * If there is no next {@link FunctionExecutor} with a lower priority than the one invoked before, the method returns null.
-     * The method should be used by {@link FunctionExecutor}s to keep the invocation chain going.
+     * If there is no next function executor with a lower priority than the one invoked before, the method returns null.
+     * The method should be used by function executors to keep the invocation chain going.
      * 
-     * @param arguments The arguments for the next {@link FunctionExecutor}. Most of the times, the same argument array will be carried through all of the {@link FunctionExecutor}s.
-     * @return The return value the nextly invoked {@link FunctionExecutor} returns.
+     * @param arguments The arguments for the next function executor. Most of the times, the same argument array will be carried through all of the function executors.
+     * @return The return value the nextly invoked function executor returns.
+     * @throws IllegalArgumentException The supplied arguments are not valid and do not match the parameters.
      * @throws RuntimeException The next function executor throws a custom function-related exception.
      */
     public R next(Object... arguments);

@@ -92,7 +92,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         }
 
         if (remainingExecutors.isEmpty()) {
-            // Abort because all executors were already invoked
+            // Stop because all executors were already invoked
             return null;
         } else {
             return remainingExecutors.poll().invoke(this, arguments);

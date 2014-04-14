@@ -27,7 +27,7 @@ package com.quartercode.classmod.extra;
 public interface GetterSupplier<T> {
 
     /**
-     * Returns some kind of value that has the set genercis type T.
+     * Returns some kind of value that has the set generic type <code>T</code>.
      * The type of value should be specified by the implementing class.
      * 
      * @return The value that is provided by the implementing class.
