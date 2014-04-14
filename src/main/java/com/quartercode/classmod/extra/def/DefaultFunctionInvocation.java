@@ -85,8 +85,11 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         // Use a clone of the argument array in order to prevent it from outside modification
         arguments = arguments.clone();
 
-        // Validate the arguments and transform varargs to arrays
-        arguments = checkArguments(arguments);
+        // Performance: Skip argument validation if there are no arguments and no parameters
+        if (source.getParameters().size() != 0 || arguments.length > 0) {
+            // Validate the arguments and transform varargs into arrays
+            arguments = checkArguments(arguments);
+        }
 
         if (remainingExecutors.isEmpty()) {
             // Abort because all executors were already invoked
