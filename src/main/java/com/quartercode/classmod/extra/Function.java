@@ -51,14 +51,6 @@ public interface Function<R> extends Feature, Initializable<FunctionDefinition<R
     public List<FunctionExecutorContext<R>> getExecutors();
 
     /**
-     * Returns the {@link FunctionExecutorContext} which is used by the function and has the given name.
-     * 
-     * @param name The name the returned {@link FunctionExecutorContext} must have.
-     * @return The {@link FunctionExecutorContext} which has the given name.
-     */
-    public FunctionExecutorContext<R> getExecutor(String name);
-
-    /**
      * Invokes the defined function with the given arguments on all {@link FunctionExecutor}s.
      * This returns the return value the {@link FunctionExecutor} with the highest priority returns on the end of the invocation chain.
      * 

@@ -92,18 +92,6 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     }
 
     @Override
-    public FunctionExecutorContext<R> getExecutor(String name) {
-
-        for (FunctionExecutorContext<R> executor : executors) {
-            if (executor.getName().equals(name)) {
-                return executor;
-            }
-        }
-
-        return null;
-    }
-
-    @Override
     public R invoke(Object... arguments) {
 
         FunctionInvocation<R> invocation = new DefaultFunctionInvocation<R>(this);
