@@ -49,6 +49,10 @@ public class AbstractPropertyTest {
         property.set("secondString");
         Object value = property.get();
         Assert.assertEquals("Newly set property value", "secondString", value);
+
+        property.set(null);
+        value = property.get();
+        Assert.assertEquals("Newly set property value", null, value);
     }
 
 }
