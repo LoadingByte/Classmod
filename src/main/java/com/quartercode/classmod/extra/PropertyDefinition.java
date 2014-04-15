@@ -34,7 +34,7 @@ import com.quartercode.classmod.base.FeatureHolder;
  * @see Property
  * @see FunctionExecutor
  */
-public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>> {
+public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>>, ValueSupplierDefinition<T, Property<T>> {
 
     /**
      * Returns all registered getter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.

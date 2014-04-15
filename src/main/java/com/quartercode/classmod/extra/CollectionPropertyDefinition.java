@@ -37,7 +37,7 @@ import com.quartercode.classmod.base.FeatureHolder;
  * @see CollectionProperty
  * @see FunctionExecutor
  */
-public interface CollectionPropertyDefinition<E, C extends Collection<E>> extends FeatureDefinition<CollectionProperty<E, C>> {
+public interface CollectionPropertyDefinition<E, C extends Collection<E>> extends FeatureDefinition<CollectionProperty<E, C>>, ValueSupplierDefinition<C, CollectionProperty<E, C>> {
 
     /**
      * Returns all registered getter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.
