@@ -45,7 +45,6 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     private boolean                          initialized;
     private List<Class<?>>                   parameters;
     private List<FunctionExecutorContext<R>> executors;
-    private int                              invocations;
 
     /**
      * Creates a new abstract function with the given name and parent {@link FeatureHolder}.
@@ -81,12 +80,6 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     }
 
     @Override
-    public int getInvocations() {
-
-        return invocations;
-    }
-
-    @Override
     public List<Class<?>> getParameters() {
 
         return Collections.unmodifiableList(parameters);
@@ -113,7 +106,6 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public R invoke(Object... arguments) {
 
-        invocations++;
         FunctionInvocation<R> invocation = new DefaultFunctionInvocation<R>(this);
         return invocation.next(arguments);
     }
