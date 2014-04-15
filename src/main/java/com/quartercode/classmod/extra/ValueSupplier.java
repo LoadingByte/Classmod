@@ -18,20 +18,21 @@
 
 package com.quartercode.classmod.extra;
 
+import com.quartercode.classmod.base.Feature;
+
 /**
- * Getter suppliers provide a {@link #get()} method for retrieving some value of the set generics type.
- * Typical getter suppliers are properties, like the {@link Property} and {@link CollectionProperty} classes.
+ * Value suppliers provide a {@link #get()} method for retrieving some value they provide.
+ * Typical value suppliers are properties, like the {@link Property} and {@link CollectionProperty} classes.
  * 
  * @param <T> The type of object that can be retrieved through the {@link #get()} method (return value).
  */
-public interface GetterSupplier<T> {
+public interface ValueSupplier<T> extends Feature {
 
     /**
-     * Returns some kind of value that has the set generic type <code>T</code>.
+     * Returns some kind of value that is an instance of the generic type <code>T</code>.
      * The type of value should be specified by the implementing class.
      * 
      * @return The value that is provided by the implementing class.
-     * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      */
     public T get();
 

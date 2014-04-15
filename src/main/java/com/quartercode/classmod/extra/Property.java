@@ -26,7 +26,7 @@ import com.quartercode.classmod.base.Initializable;
  * 
  * @param <T> The type of object which can be stored inside the property.
  */
-public interface Property<T> extends Feature, GetterSupplier<T>, Initializable<PropertyDefinition<T>> {
+public interface Property<T> extends Feature, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
 
     /**
      * Returns the object which is stored inside the property.

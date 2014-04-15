@@ -28,7 +28,7 @@ import com.quartercode.classmod.base.Initializable;
  * @param <E> The type of object which can be stored inside the {@link Collection} the collection property holds.
  * @param <C> The type of {@link Collection} the collection property stores.
  */
-public interface CollectionProperty<E, C extends Collection<E>> extends Feature, GetterSupplier<C>, Initializable<CollectionPropertyDefinition<E, C>> {
+public interface CollectionProperty<E, C extends Collection<E>> extends Feature, ValueSupplier<C>, Initializable<CollectionPropertyDefinition<E, C>> {
 
     /**
      * Returns the {@link Collection} which is stored inside the property.
