@@ -63,14 +63,6 @@ public class TransientCollectionProperty<E, C extends Collection<E>> extends Abs
     private C collection;
 
     /**
-     * Creates a new empty transient collection property.
-     * This is only recommended for direct field access (e.g. for serialization).
-     */
-    protected TransientCollectionProperty() {
-
-    }
-
-    /**
      * Creates a new transient collection property with the given name, {@link FeatureHolder} and stored {@link Collection}.
      * 
      * @param name The name of the transient collection property.
