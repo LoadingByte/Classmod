@@ -69,16 +69,6 @@ public class AbstractFeature implements Feature {
     }
 
     /**
-     * Changes the parent {@link FeatureHolder} which uses this feature.
-     * 
-     * @param holder
-     */
-    protected void setHolder(FeatureHolder holder) {
-
-        this.holder = holder;
-    }
-
-    /**
      * Resolves the {@link FeatureHolder} which houses the abstract persistent feature.
      * 
      * @param unmarshaller The unmarshaller which unmarshals this task.
@@ -87,7 +77,7 @@ public class AbstractFeature implements Feature {
     protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
 
         if (parent instanceof FeatureHolder) {
-            setHolder((FeatureHolder) parent);
+            holder = (FeatureHolder) parent;
         }
     }
 
