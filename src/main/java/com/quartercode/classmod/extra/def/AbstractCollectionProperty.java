@@ -24,7 +24,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -35,10 +34,9 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract collection property is an implementation of the {@link CollectionProperty} interface.<br>
@@ -53,10 +51,19 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
-    private boolean        intialized;
-    private Function<C>    getter;
-    private Function<Void> adder;
-    private Function<Void> remover;
+    private static final List<Class<?>> GETTER_PARAMETERS        = new ArrayList<Class<?>>();
+    private static final List<Class<?>> ADDER_REMOVER_PARAMETERS = new ArrayList<Class<?>>();
+
+    static {
+
+        ADDER_REMOVER_PARAMETERS.add(Object.class);
+
+    }
+
+    private boolean                     intialized;
+    private Function<C>                 getter;
+    private Function<Void>              adder;
+    private Function<Void>              remover;
 
     /**
      * Creates a new empty abstract collection property.
@@ -86,28 +93,23 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         intialized = true;
 
-        // Create getter/adder/remover definitions for creating a function later on
-        FunctionDefinition<C> getterDefinition = FunctionDefinitionFactory.create("get");
-        // Using any object as parameter here; safe since the adder/remover is only called through the add()/remove() method that has the correct type as parameter
-        FunctionDefinition<Void> adderDefinition = FunctionDefinitionFactory.create("add", Object.class);
-        FunctionDefinition<Void> removerDefinition = FunctionDefinitionFactory.create("remove", Object.class);
+        List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<FunctionExecutorContext<C>>();
+        List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<FunctionExecutorContext<Void>>();
+        List<FunctionExecutorContext<Void>> removerExecutors = new ArrayList<FunctionExecutorContext<Void>>();
 
         // Add the custom getter/adder/remover executors
         for (Entry<String, FunctionExecutor<C>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
+            getterExecutors.add(new DefaultFunctionExecutorContext<C>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getAdderExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            adderDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
+            adderExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getRemoverExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            removerDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
+            removerExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
         }
 
-        // Use a random value as name for the internal executor so no one can override it
-        String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
-
         // Add getter executor
-        getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<C>() {
+        getterExecutors.add(new DefaultFunctionExecutorContext<C>("getInternal", new FunctionExecutor<C>() {
 
             @Override
             public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
@@ -132,10 +134,10 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 }
             }
 
-        });
+        }));
 
         // Add adder executor
-        adderDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
+        adderExecutors.add(new DefaultFunctionExecutorContext<Void>("addInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -158,10 +160,10 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 return invocation.next(arguments);
             }
 
-        });
+        }));
 
         // Add remover executor
-        removerDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
+        removerExecutors.add(new DefaultFunctionExecutorContext<Void>("removeInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -182,19 +184,14 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 return invocation.next(arguments);
             }
 
-        });
+        }));
 
         /*
-         * Create the getter/adder/remover functions
-         * We can't use FeatureHolder#get here because that method would add the new function to the feature holder.
-         * We also can't use a new instance of that feature holder because the functions needs to believe that its holder is the property's one.
+         * Create the dummy getter/adder/remover functions
          */
-        getter = getterDefinition.create(getHolder());
-        getter.initialize(getterDefinition);
-        adder = adderDefinition.create(getHolder());
-        adder.initialize(adderDefinition);
-        remover = removerDefinition.create(getHolder());
-        remover.initialize(removerDefinition);
+        getter = new DummyFunction<C>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        adder = new DummyFunction<Void>("add", getHolder(), ADDER_REMOVER_PARAMETERS, adderExecutors);
+        remover = new DummyFunction<Void>("remove", getHolder(), ADDER_REMOVER_PARAMETERS, removerExecutors);
     }
 
     @Override

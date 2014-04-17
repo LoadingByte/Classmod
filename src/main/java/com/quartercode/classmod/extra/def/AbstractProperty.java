@@ -18,19 +18,19 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map.Entry;
-import java.util.Random;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
-import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract property is an implementation of the {@link Property} interface.<br>
@@ -44,9 +44,18 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractProperty<T> extends AbstractFeature implements Property<T> {
 
-    private boolean        intialized;
-    private Function<T>    getter;
-    private Function<Void> setter;
+    private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<Class<?>>();
+    private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<Class<?>>();
+
+    static {
+
+        SETTER_PARAMETERS.add(Object.class);
+
+    }
+
+    private boolean                     intialized;
+    private Function<T>                 getter;
+    private Function<Void>              setter;
 
     /**
      * Creates a new empty abstract property.
@@ -95,24 +104,19 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
         intialized = true;
 
-        // Create getter/setter definitions for creating a function later on
-        FunctionDefinition<T> getterDefinition = FunctionDefinitionFactory.create("get");
-        // Using any object as parameter here; safe since the setter is only called through the set() method that has the correct type as parameter
-        FunctionDefinition<Void> setterDefinition = FunctionDefinitionFactory.create("set", Object.class);
+        List<FunctionExecutorContext<T>> getterExecutors = new ArrayList<FunctionExecutorContext<T>>();
+        List<FunctionExecutorContext<Void>> setterExecutors = new ArrayList<FunctionExecutorContext<Void>>();
 
         // Add the custom getter/setter executors
         for (Entry<String, FunctionExecutor<T>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
+            getterExecutors.add(new DefaultFunctionExecutorContext<T>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getSetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            setterDefinition.addExecutor(executor.getKey(), getHolder().getClass(), executor.getValue());
+            setterExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
         }
 
-        // Use a random value as name for the internal executor so no one can override it
-        String internalExecutorName = String.valueOf(new Random().nextInt(Integer.MAX_VALUE));
-
         // Add getter executor
-        getterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<T>() {
+        getterExecutors.add(new DefaultFunctionExecutorContext<T>("getInternal", new FunctionExecutor<T>() {
 
             @Override
             public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
@@ -122,10 +126,10 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
                 return value;
             }
 
-        });
+        }));
 
         // Add setter executor
-        setterDefinition.addExecutor(internalExecutorName, getHolder().getClass(), new FunctionExecutor<Void>() {
+        setterExecutors.add(new DefaultFunctionExecutorContext<Void>("setInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -151,17 +155,13 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
                 return invocation.next(arguments);
             }
 
-        });
+        }));
 
         /*
-         * Create the getter/setter functions
-         * We can't use FeatureHolder#get here because that method would add the new function to the feature holder.
-         * We also can't use a new instance of that feature holder because the functions needs to believe that its holder is the property's one.
+         * Create the dummy getter/setter functions
          */
-        getter = getterDefinition.create(getHolder());
-        getter.initialize(getterDefinition);
-        setter = setterDefinition.create(getHolder());
-        setter.initialize(setterDefinition);
+        getter = new DummyFunction<T>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        setter = new DummyFunction<Void>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
     }
 
     @Override
