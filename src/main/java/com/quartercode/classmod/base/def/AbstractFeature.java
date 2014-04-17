@@ -47,8 +47,8 @@ public class AbstractFeature implements Feature {
     /**
      * Creates a new abstract feature with the given name and {@link FeatureHolder}.
      * 
-     * @param name The name of the {@link Feature}.
-     * @param holder The feature holder which has and uses the new {@link Feature}.
+     * @param name The name of the feature.
+     * @param holder The feature holder which has and uses the new feature.
      */
     public AbstractFeature(String name, FeatureHolder holder) {
 

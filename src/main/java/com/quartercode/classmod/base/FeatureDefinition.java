@@ -19,21 +19,21 @@
 package com.quartercode.classmod.base;
 
 /**
- * A feature definition is used to get a {@link Feature} from a {@link FeatureHolder}.
- * It contains the name of the {@link Feature} and the type it has as a generic parameter.
+ * A feature definition is used to retrieve a {@link Feature} from a {@link FeatureHolder}.
+ * It contains the name of the feature and the type it has as a generic parameter.
  * You can use a feature definition to construct a new instance of the defined feature through {@link #create(FeatureHolder)}.
  * 
- * @param <F> The type the defined {@link Feature} has.
+ * @param <F> The type the defined feature has.
  * @see Feature
- * @see Named
+ * @see FeatureHolder
  */
 public interface FeatureDefinition<F extends Feature> extends Named {
 
     /**
      * Returns the name of the defined {@link Feature}.
-     * The name is used for storing and accessing a created {@link Feature} in a {@link FeatureHolder}.
+     * The name is used for storing and accessing a created feature in a {@link FeatureHolder}.
      * 
-     * @return The name of the {@link Feature}.
+     * @return The name of the feature.
      */
     @Override
     public String getName();
@@ -42,8 +42,8 @@ public interface FeatureDefinition<F extends Feature> extends Named {
      * Creates a new {@link Feature} which is defined by this feature definition using the given holder.
      * The holder is a {@link FeatureHolder} which can have different features.
      * 
-     * @param holder The {@link FeatureHolder} which holds the new {@link Feature}.
-     * @return The created {@link Feature}.
+     * @param holder The feature holder which holds the new feature.
+     * @return The newly created feature.
      */
     public F create(FeatureHolder holder);
 

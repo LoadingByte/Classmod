@@ -23,12 +23,12 @@ import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 
 /**
- * An abstract feature definition is used to get a {@link Feature} from a {@link FeatureHolder}.
+ * An abstract feature definition is used to retrieve a {@link Feature} from a {@link FeatureHolder}.
  * It's an implementation of the {@link FeatureDefinition} interface.
- * It contains the name of the {@link Feature} and the type it has as a generic parameter.
- * You can use an abstract feature definition to construct a new instance of the defined {@link Feature} through {@link #create(FeatureHolder)}.
+ * It contains the name of the feature and the type it has as a generic parameter.
+ * You can use an abstract feature definition to construct a new instance of the defined feature through {@link #create(FeatureHolder)}.
  * 
- * @param <F> The type the defined {@link Feature} has.
+ * @param <F> The type the defined feature has.
  * @see FeatureDefinition
  * @see Feature
  */
@@ -39,7 +39,7 @@ public abstract class AbstractFeatureDefinition<F extends Feature> implements Fe
     /**
      * Creates a new abstract feature definition for defining a {@link Feature} with the given name.
      * 
-     * @param name The name of the defined {@link Feature}.
+     * @param name The name of the defined feature.
      */
     public AbstractFeatureDefinition(String name) {
 

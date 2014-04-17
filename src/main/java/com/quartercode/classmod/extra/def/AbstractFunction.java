@@ -47,10 +47,10 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     private List<FunctionExecutorContext<R>> executors;
 
     /**
-     * Creates a new abstract function with the given name and parent {@link FeatureHolder}.
+     * Creates a new abstract function with the given name and {@link FeatureHolder} type.
      * 
      * @param name The name of the abstract function.
-     * @param holder The {@link FeatureHolder} which has and uses the new abstract function.
+     * @param holder The feature holder type the abstract function is made for.
      */
     public AbstractFunction(String name, FeatureHolder holder) {
 
@@ -102,7 +102,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + getName() + ", " + getExecutors().size() + " executors]";
+        return getClass().getName() + " [name=" + getName() + ", " + executors.size() + " executors]";
     }
 
 }

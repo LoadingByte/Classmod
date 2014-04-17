@@ -39,7 +39,7 @@ public interface Feature extends Named {
      * Returns the {@link FeatureHolder} which has and uses the feature.
      * The feature is accessible though the {@link FeatureHolder#get(FeatureDefinition)} method of the returned holder.
      * 
-     * @return The {@link FeatureHolder} which holds the feature.
+     * @return The feature holder which holds the feature.
      */
     public FeatureHolder getHolder();
 

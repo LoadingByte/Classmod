@@ -42,13 +42,13 @@ public interface Initializable<D extends FeatureDefinition<?>> extends Feature {
      * Initializes the {@link Feature} with the contents of the given {@link FeatureDefinition}.<br>
      * See the {@link Initializable} docs for more details.
      * 
-     * @param definition The {@link FeatureDefinition} the implementing {@link Feature} is retrieving the intialization data from.
+     * @param definition The feature definition the implementing feature is retrieving the intialization data from.
      */
     public void initialize(D definition);
 
     /**
      * Returns whether the {@link #initialize(FeatureDefinition)} method has already been called.
-     * Whether "already been called" means the current "session" or the persistent lifetime of the feature is up to the author.<br>
+     * Whether "already been called" means the current "session" or the persistent lifetime of the feature is up to the implementation.<br>
      * See the {@link Initializable} docs for more details.
      * 
      * @return True if the {@link #initialize(FeatureDefinition)} method has already been called, false if not.

@@ -62,7 +62,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
         F feature = null;
 
-        // Retrieve existing feature
+        // Retrieve existing feature instance from the local storage
         for (Feature availableFeature : features) {
             if (availableFeature.getName().equals(definition.getName())) {
                 try {
@@ -74,8 +74,9 @@ public class DefaultFeatureHolder implements FeatureHolder {
             }
         }
 
-        // Create a new feature if the defined feature doesn't exist yet
+        // Check whether there actually is a feature instance in the local storage
         if (feature == null) {
+            // If not, create one and put it in the local storage
             feature = definition.create(this);
             features.add(feature);
         }

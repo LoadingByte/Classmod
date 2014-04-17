@@ -85,7 +85,7 @@ public class PropertyPersistenceTest {
         try {
             JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":com.quartercode.classmod.test.extra.def");
             marshaller = context.createMarshaller();
-            // Enable only for debugging
+            // Only enable for debugging
             // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             unmarshaller = context.createUnmarshaller();
         } catch (JAXBException e) {
