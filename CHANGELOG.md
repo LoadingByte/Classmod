@@ -3,6 +3,7 @@
 
 ### Additions
 * The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
+* Properties have persistence support for map objects (also using map objects in properties is no fun right now).
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
 * The property implementations provide feature definition factory methods.
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
