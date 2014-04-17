@@ -43,8 +43,11 @@ import com.quartercode.classmod.extra.FunctionExecutor;
  */
 public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefinition<Function<R>> implements FunctionDefinition<R> {
 
-    private final List<Class<?>>                                                        parameters = new ArrayList<Class<?>>();
-    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors  = new HashMap<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>>();
+    private final List<Class<?>>                                                        parameters   = new ArrayList<Class<?>>();
+    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors    = new HashMap<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>>();
+
+    // Performance: Cache for different variants
+    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache = new HashMap<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>>();
 
     /**
      * Creates a new abstract function definition for defining a {@link Function} with the given name and parameters.
@@ -85,20 +88,27 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     @Override
     public Map<String, FunctionExecutor<R>> getExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
-        Map<String, FunctionExecutor<R>> variantExecutors = new HashMap<String, FunctionExecutor<R>>();
-        for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
-            // Select the executor whose variant is as near as possible to the given variant
-            Class<? extends FeatureHolder> currentExecutorVariant = null;
-            for (Class<? extends FeatureHolder> executorVariant : executors.getValue().keySet()) {
-                if (executorVariant.isAssignableFrom(variant) && (currentExecutorVariant == null || currentExecutorVariant.isAssignableFrom(executorVariant))) {
-                    currentExecutorVariant = executorVariant;
+        Map<String, FunctionExecutor<R>> variantExecutors = variantCache.get(variant);
+
+        if (variantExecutors == null) {
+            variantExecutors = new HashMap<String, FunctionExecutor<R>>();
+
+            for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
+                // Select the executor whose variant is as near as possible to the given variant
+                Class<? extends FeatureHolder> currentExecutorVariant = null;
+                for (Class<? extends FeatureHolder> executorVariant : executors.getValue().keySet()) {
+                    if (executorVariant.isAssignableFrom(variant) && (currentExecutorVariant == null || currentExecutorVariant.isAssignableFrom(executorVariant))) {
+                        currentExecutorVariant = executorVariant;
+                    }
+                }
+
+                // If there is such an executor, put it into the result
+                if (currentExecutorVariant != null) {
+                    variantExecutors.put(executors.getKey(), executors.getValue().get(currentExecutorVariant));
                 }
             }
 
-            // If there is such an executor, put it into the result
-            if (currentExecutorVariant != null) {
-                variantExecutors.put(executors.getKey(), executors.getValue().get(currentExecutorVariant));
-            }
+            variantCache.put(variant, variantExecutors);
         }
 
         return variantExecutors;
@@ -112,6 +122,9 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
         }
 
         executors.get(name).put(variant, executor);
+
+        // Invalidate variant cache
+        variantCache.clear();
     }
 
     @Override
@@ -124,6 +137,9 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
                 executors.remove(name);
             }
         }
+
+        // Invalidate variant cache
+        variantCache.clear();
     }
 
 }
