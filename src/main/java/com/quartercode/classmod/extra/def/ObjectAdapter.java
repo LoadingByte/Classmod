@@ -18,12 +18,18 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The object adapter is used for mapping an {@link Object} field.
@@ -33,6 +39,8 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
  * Also note that you must add the {@link ClassWrapper} class to the "classpath" of your {@link JAXBContext}.
  */
 public class ObjectAdapter extends XmlAdapter<Object, Object> {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ObjectAdapter.class);
 
     /**
      * Creates a new object adapter.
@@ -62,6 +70,8 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
             return new ArrayWrapper((Object[]) v);
         } else if (v instanceof Collection) {
             return new CollectionWrapper((Collection<?>) v);
+        } else if (v instanceof Map) {
+            return new MapWrapper((Map<?, ?>) v);
         } else {
             return v;
         }
@@ -138,6 +148,58 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
         public Collection<?> getObject() {
 
             return object;
+        }
+
+    }
+
+    @XmlType (name = "map")
+    public static class MapWrapper implements Wrapper<Map<?, ?>> {
+
+        @XmlElement
+        private Class<?>       mapType;
+        @XmlElement (name = "entry")
+        private List<MapEntry> entries;
+
+        protected MapWrapper() {
+
+        }
+
+        public MapWrapper(Map<?, ?> object) {
+
+            mapType = object.getClass();
+
+            entries = new ArrayList<MapEntry>();
+            for (Entry<?, ?> entry : object.entrySet()) {
+                MapEntry entryObject = new MapEntry();
+                entryObject.key = entry.getKey();
+                entryObject.value = entry.getValue();
+                entries.add(entryObject);
+            }
+        }
+
+        @Override
+        public Map<?, ?> getObject() {
+
+            try {
+                @SuppressWarnings ("unchecked")
+                Map<Object, Object> map = (Map<Object, Object>) mapType.newInstance();
+                for (MapEntry entry : entries) {
+                    map.put(entry.key, entry.value);
+                }
+                return map;
+            } catch (Exception e) {
+                LOGGER.error("Cannot instantiate map type '{}'", mapType.getName(), e);
+                return null;
+            }
+        }
+
+        private static class MapEntry {
+
+            @XmlElement
+            private Object key;
+            @XmlElement
+            private Object value;
+
         }
 
     }

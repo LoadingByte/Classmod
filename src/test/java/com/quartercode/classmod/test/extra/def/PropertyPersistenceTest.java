@@ -24,7 +24,9 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -57,6 +59,11 @@ public class PropertyPersistenceTest {
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", String.class, true) } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }, true) } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3"), true) } });
+
+        Map<String, Integer> map = new HashMap<String, Integer>();
+        map.put("somekey1", 12);
+        map.put("somekey2", 300);
+        data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", map, true) } });
 
         DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", referencedObject, false), ReferenceProperty.createDefinition("reference", referencedObject, false) } });

@@ -6,3 +6,4 @@ ReferenceProperty
 ObjectAdapter$ClassWrapper
 ObjectAdapter$ArrayWrapper
 ObjectAdapter$CollectionWrapper
+ObjectAdapter$MapWrapper
