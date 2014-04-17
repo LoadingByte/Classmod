@@ -71,6 +71,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
         for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
             executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
         }
+        executors = Collections.unmodifiableList(executors);
     }
 
     @Override
@@ -88,7 +89,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public List<FunctionExecutorContext<R>> getExecutors() {
 
-        return Collections.unmodifiableList(executors);
+        return executors;
     }
 
     @Override
