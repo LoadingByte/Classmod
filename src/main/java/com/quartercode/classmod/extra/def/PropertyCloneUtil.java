@@ -18,8 +18,8 @@
 
 package com.quartercode.classmod.extra.def;
 
-import org.apache.commons.lang.ObjectUtils;
-import org.apache.commons.lang.exception.CloneFailedException;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.exception.CloneFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -64,8 +64,7 @@ public class PropertyCloneUtil {
         // Try to really clone the object
         else if (initialValue instanceof Cloneable) {
             try {
-                @SuppressWarnings ("unchecked")
-                T clone = (T) ObjectUtils.cloneIfPossible(initialValue);
+                T clone = ObjectUtils.cloneIfPossible(initialValue);
                 return clone;
             } catch (CloneFailedException e) {
                 LOGGER.error("Unknown exception while cloning object of type '{}'", initialValue.getClass().getName(), e);

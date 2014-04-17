@@ -24,7 +24,7 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import org.apache.commons.lang.Validate;
+import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -156,7 +156,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
 
             // Check whether all vararg arguments are of the actual vararg type
             for (Object varargArgument : varargArguments) {
-                Validate.isTrue(varargType.isAssignableFrom(varargArgument.getClass()), errorString);
+                Validate.isInstanceOf(varargType, varargArgument, errorString);
             }
 
             // Create a new array with an array containing the vararg arguments at the last index
