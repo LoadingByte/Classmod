@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -88,7 +89,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         super(name, holder);
 
         if (initialValue != null) {
-            if (initialValue instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) initialValue).getParentType().isAssignableFrom(getHolder().getClass())) {
+            if (initialValue instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) initialValue).getParentType())) {
                 // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                 @SuppressWarnings ("unchecked")
                 ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) initialValue;
@@ -145,7 +146,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
                 setInternal(value);
 
-                if (value instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) value).getParentType().isAssignableFrom(getHolder().getClass())) {
+                if (value instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) value).getParentType())) {
                     // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                     @SuppressWarnings ("unchecked")
                     ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;

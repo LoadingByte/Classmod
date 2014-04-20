@@ -28,6 +28,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -147,7 +148,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 @SuppressWarnings ("unchecked")
                 E element = (E) arguments[0];
 
-                if (element instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) element).getParentType().isAssignableFrom(getHolder().getClass())) {
+                if (element instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) element).getParentType())) {
                     // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                     @SuppressWarnings ("unchecked")
                     ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;

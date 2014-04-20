@@ -25,6 +25,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -133,7 +134,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         for (int index = 0; index < parameters.size() - (hasVararg ? 1 : 0); index++) {
             Class<?> parameter = parameters.get(index);
             // Check whether the argument matches the parameter
-            Validate.isTrue(arguments[index] == null || parameter.isAssignableFrom(arguments[index].getClass()), errorString);
+            Validate.isTrue(arguments[index] == null || TypeUtils.isInstance(arguments[index], parameter), errorString);
         }
 
         // Vararg validation
