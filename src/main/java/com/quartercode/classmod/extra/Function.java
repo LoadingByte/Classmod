@@ -55,7 +55,7 @@ public interface Function<R> extends Feature, Initializable<FunctionDefinition<R
      * This returns the return value the {@link FunctionExecutor} with the highest priority returns on the end of the invocation chain.
      * 
      * @param arguments Some arguments for the {@link FunctionExecutor}s.
-     * @return The return value on the end of the invocation chain. Can be <code>null</code>.
+     * @return The return value on the end of the invocation chain. Can be {@code null}.
      * @throws IllegalArgumentException The supplied arguments are not valid and do not match the parameters that are provided by {@link #getParameters()}.
      * @throws RuntimeException A function executor throws a custom function-related exception.
      */

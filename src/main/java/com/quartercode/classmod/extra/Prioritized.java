@@ -99,7 +99,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 0 are invoked last inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      * Sublevel 0 is the default sublevel.
      */
     public static final int SUBLEVEL_0 = 0;
@@ -108,7 +108,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 1 are invoked ninthly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_1 = 1;
 
@@ -116,7 +116,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 2 are invoked eighthly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_2 = 2;
 
@@ -124,7 +124,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 3 are invoked seventh inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_3 = 3;
 
@@ -132,7 +132,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 4 are invoked sixthly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_4 = 4;
 
@@ -140,7 +140,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 5 are invoked fifthly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_5 = 5;
 
@@ -148,7 +148,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 6 are invoked fourthly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_6 = 6;
 
@@ -156,7 +156,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 7 are invoked thirdly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_7 = 7;
 
@@ -164,7 +164,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 8 are invoked secondly inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_8 = 8;
 
@@ -172,7 +172,7 @@ public @interface Prioritized {
      * {@link FunctionExecutor}s with the sublevel 9 are invoked first inside their priority level or tier.
      * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
-     * You can combine a tier with a sublevel by simply writing <code>LEVEL_X + SUBLEVEL_X</code>.
+     * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
     public static final int SUBLEVEL_9 = 9;
 

@@ -34,8 +34,8 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
  * A user can get {@link Feature}s through the central access method {@link #get(FeatureDefinition)}.
  * Such {@link Feature}s are defined by {@link FeatureDefinition} which describe how a feature looks like.<br>
  * <br>
- * The "constant" <code>parentType</code> must be set during the construction of every child feature holder for more type-safety.
- * For example, a child feature holder class <code>TestChild&lt;TestParent&gt;</code> could look like this:
+ * The "constant" {@code parentType} must be set during the construction of every child feature holder for more type-safety.
+ * For example, a child feature holder class {@code TestChild&lt;TestParent&gt;} could look like this:
  * 
  * <pre>
  * public class TestChild extends DefaultChildFeatureHolder&lt;<b>TestParent</b>&gt; {
@@ -77,10 +77,10 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
     }
 
     /**
-     * Sets the {@link Class} representation of the generic <code>P</code> parameter (parent type).
+     * Sets the {@link Class} representation of the generic {@code P} parameter (parent type).
      * This method should be called somewhere during the construction.
      * 
-     * @param parentType A class object that represents the generic <code>P</code> parameter for providing more type-safety.
+     * @param parentType A class object that represents the generic {@code P} parameter for providing more type-safety.
      */
     protected void setParentType(Class<? super P> parentType) {
 

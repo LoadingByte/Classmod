@@ -37,7 +37,7 @@ public class TransientCollectionProperty<E, C extends Collection<E>> extends Abs
      * 
      * @param name The name of the transient collection property which the returned {@link CollectionPropertyDefinition} describes.
      * @param collection The {@link Collection} the {@link CollectionProperty} that {@link CollectionPropertyDefinition} describes uses.
-     * @param cloneCollection Whether the collection object should be cloned for every new instance of the property (mostly <code>true</code>).
+     * @param cloneCollection Whether the collection object should be cloned for every new instance of the property (mostly {@code true}).
      *        By cloning the collection, the collection that is stored in the definition is not affected by changes made to the collection that is stored in the property.
      * @return A {@link CollectionPropertyDefinition} which can be used to describe a transient collection property.
      */

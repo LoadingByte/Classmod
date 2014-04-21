@@ -31,7 +31,7 @@ package com.quartercode.classmod.base;
  * So how do you transfer the non-persistent attributes from the custom {@link FeatureDefinition} again?<br>
  * <br>
  * The initialize method is called with the custom {@link FeatureDefinition} every time F is requested and {@link #isInitialized()} is false.
- * If you set the <code>initialized</code> variable to non-persistent, the method is invoked the first time F is requested in every new "session".
+ * If you set the {@code initialized} variable to non-persistent, the method is invoked the first time F is requested in every new "session".
  * That way, you can work around the custom constructor problem, as well as have a nicer design.
  * 
  * @param <D> The type of the {@link FeatureDefinition} the implementing {@link Feature} is using; used in {@link #initialize(FeatureDefinition)}.

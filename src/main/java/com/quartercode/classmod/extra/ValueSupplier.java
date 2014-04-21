@@ -29,7 +29,7 @@ import com.quartercode.classmod.base.Feature;
 public interface ValueSupplier<T> extends Feature {
 
     /**
-     * Returns some kind of value that is an instance of the generic type <code>T</code>.
+     * Returns some kind of value that is an instance of the generic type {@code T}.
      * The type of value should be specified by the implementing class.
      * 
      * @return The value that is provided by the implementing class.

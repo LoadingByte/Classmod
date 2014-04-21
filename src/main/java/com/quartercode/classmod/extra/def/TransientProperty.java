@@ -54,7 +54,7 @@ public class TransientProperty<T> extends AbstractProperty<T> {
      * 
      * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
      * @param initialValue The initial value of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the property (mostly <code>true</code>).
+     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the property (mostly {@code true}).
      *        By cloning the value, the object that is stored in the definition is not affected by changes made to the object that is stored in the property.
      * @return A {@link PropertyDefinition} which can be used to describe a transient property.
      */
