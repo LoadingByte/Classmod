@@ -175,9 +175,13 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 E element = (E) arguments[0];
 
                 if (collection.contains(element)) {
-                    if (element instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) element).getParent().equals(getHolder())) {
-                        ((ChildFeatureHolder<?>) element).setParent(null);
+                    if (element instanceof ChildFeatureHolder) {
+                        Object parent = ((ChildFeatureHolder<?>) element).getParent();
+                        if (parent != null && parent.equals(getHolder())) {
+                            ((ChildFeatureHolder<?>) element).setParent(null);
+                        }
                     }
+
                     collection.remove(element);
                     setInternal(collection);
                 }

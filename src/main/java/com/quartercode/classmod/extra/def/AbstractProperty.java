@@ -136,8 +136,11 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
                 T oldValue = getInternal();
-                if (oldValue instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) oldValue).getParent().equals(getHolder())) {
-                    ((ChildFeatureHolder<?>) oldValue).setParent(null);
+                if (oldValue instanceof ChildFeatureHolder) {
+                    Object parent = ((ChildFeatureHolder<?>) oldValue).getParent();
+                    if (parent != null && parent.equals(getHolder())) {
+                        ((ChildFeatureHolder<?>) oldValue).setParent(null);
+                    }
                 }
 
                 // The only caller (set()) verified the type by a compiler-safe generic parameter
