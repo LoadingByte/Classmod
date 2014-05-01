@@ -61,6 +61,8 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
     }
 
+    private boolean                     ignoreEquals;
+
     private boolean                     intialized;
     private Function<C>                 getter;
     private Function<Void>              adder;
@@ -93,6 +95,8 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
     public void initialize(CollectionPropertyDefinition<E, C> definition) {
 
         intialized = true;
+
+        ignoreEquals = definition.isIgnoreEquals();
 
         List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<>();
         List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<>();
@@ -251,6 +255,10 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
     @Override
     public boolean equals(Object obj) {
+
+        if (ignoreEquals) {
+            return true;
+        }
 
         if (this == obj) {
             return true;

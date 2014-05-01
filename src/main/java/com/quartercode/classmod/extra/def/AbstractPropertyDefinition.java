@@ -41,6 +41,7 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefinition<Property<T>> implements PropertyDefinition<T> {
 
+    private boolean                        ignoreEquals;
     private final FunctionDefinition<T>    getter;
     private final FunctionDefinition<Void> setter;
 
@@ -55,6 +56,25 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
 
         getter = FunctionDefinitionFactory.create(name);
         setter = FunctionDefinitionFactory.create(name, Object.class);
+    }
+
+    /**
+     * Creates a new abstract property definition for defining a {@link Property} with the given name and "ignoreEquals" flag.
+     * 
+     * @param name The name of the defined {@link Property}.
+     * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     */
+    public AbstractPropertyDefinition(String name, boolean ignoreEquals) {
+
+        this(name);
+
+        this.ignoreEquals = ignoreEquals;
+    }
+
+    @Override
+    public boolean isIgnoreEquals() {
+
+        return ignoreEquals;
     }
 
     @Override

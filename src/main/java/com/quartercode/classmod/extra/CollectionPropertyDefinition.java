@@ -40,6 +40,13 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface CollectionPropertyDefinition<E, C extends Collection<E>> extends FeatureDefinition<CollectionProperty<E, C>>, ValueSupplierDefinition<C, CollectionProperty<E, C>> {
 
     /**
+     * Returns whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     * 
+     * @return Whether the "ignoreEquals" flag is set.
+     */
+    public boolean isIgnoreEquals();
+
+    /**
      * Returns all registered getter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.
      * The variant class was set on the {@link #addGetterExecutor(String, Class, FunctionExecutor)} call.
      * Modifications to the returned map do not affect the storage of the definition.

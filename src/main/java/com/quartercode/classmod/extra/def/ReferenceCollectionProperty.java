@@ -53,7 +53,23 @@ public class ReferenceCollectionProperty<E, C extends Collection<E>> extends Abs
     // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
     public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, final I collection, final boolean cloneCollection) {
 
-        return new AbstractCollectionPropertyDefinition<E, C>(name) {
+        return createDefinition(name, collection, cloneCollection, false);
+    }
+
+    /**
+     * Creates a new {@link CollectionPropertyDefinition} that describes a reference collection property with the given name and initial value.
+     * 
+     * @param name The name of the reference collection property which the returned {@link CollectionPropertyDefinition} describes.
+     * @param collection The {@link Collection} the {@link CollectionProperty} that {@link CollectionPropertyDefinition} describes uses.
+     * @param cloneCollection Whether the collection object should be cloned for every new instance of the property (mostly {@code true}).
+     *        By cloning the collection, the collection that is stored in the definition is not affected by changes made to the collection that is stored in the property.
+     * @param ignoreEquals Whether the value of the collection property should be excluded from equality checks of its feature holder.
+     * @return A {@link CollectionPropertyDefinition} which can be used to describe a reference collection property.
+     */
+    // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
+    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, final I collection, final boolean cloneCollection, final boolean ignoreEquals) {
+
+        return new AbstractCollectionPropertyDefinition<E, C>(name, ignoreEquals) {
 
             @Override
             public CollectionProperty<E, C> create(FeatureHolder holder) {

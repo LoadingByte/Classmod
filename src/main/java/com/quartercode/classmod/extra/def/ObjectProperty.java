@@ -67,7 +67,42 @@ public class ObjectProperty<T> extends AbstractProperty<T> {
      */
     public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue, final boolean cloneInitialValue) {
 
-        return new AbstractPropertyDefinition<T>(name) {
+        return createDefinition(name, initialValue, cloneInitialValue, false);
+    }
+
+    /**
+     * Creates a new {@link PropertyDefinition} that describes an object property with the given name and ignore equals state.
+     * 
+     * @param name The name of the object property which the returned {@link PropertyDefinition} describes.
+     * @param ignoreEquals Whether the value of the property should be excluded from equality checks of its feature holder.
+     * @return A {@link PropertyDefinition} which can be used to describe an object property.
+     */
+    public static <T> PropertyDefinition<T> createDefinition(String name, final boolean ignoreEquals) {
+
+        return new AbstractPropertyDefinition<T>(name, ignoreEquals) {
+
+            @Override
+            public Property<T> create(FeatureHolder holder) {
+
+                return new ObjectProperty<>(getName(), holder);
+            }
+
+        };
+    }
+
+    /**
+     * Creates a new {@link PropertyDefinition} that describes an object property with the given name, initial value and ignore equals state.
+     * 
+     * @param name The name of the object property which the returned {@link PropertyDefinition} describes.
+     * @param initialValue The initial value of the object property which the returned {@link PropertyDefinition} describes.
+     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the property (mostly {@code true}).
+     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the object that is stored in the property.
+     * @param ignoreEquals Whether the value of the property should be excluded from equality checks of its feature holder.
+     * @return A {@link PropertyDefinition} which can be used to describe an object property.
+     */
+    public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue, final boolean cloneInitialValue, final boolean ignoreEquals) {
+
+        return new AbstractPropertyDefinition<T>(name, ignoreEquals) {
 
             @Override
             public Property<T> create(FeatureHolder holder) {

@@ -54,6 +54,8 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
     }
 
+    private boolean                     ignoreEquals;
+
     private boolean                     intialized;
     private Function<T>                 getter;
     private Function<Void>              setter;
@@ -78,7 +80,8 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     }
 
     /**
-     * Creates a new abstract property with the given name and {@link FeatureHolder}. Also sets the initially stored object.
+     * Creates a new abstract property with the given name and {@link FeatureHolder}.
+     * Also sets the initially stored object.
      * 
      * @param name The name of the abstract property.
      * @param holder The feature holder which has and uses the new abstract property.
@@ -104,6 +107,8 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     public void initialize(PropertyDefinition<T> definition) {
 
         intialized = true;
+
+        ignoreEquals = definition.isIgnoreEquals();
 
         List<FunctionExecutorContext<T>> getterExecutors = new ArrayList<>();
         List<FunctionExecutorContext<Void>> setterExecutors = new ArrayList<>();
@@ -214,6 +219,10 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
     @Override
     public boolean equals(Object obj) {
+
+        if (ignoreEquals) {
+            return true;
+        }
 
         if (this == obj) {
             return true;

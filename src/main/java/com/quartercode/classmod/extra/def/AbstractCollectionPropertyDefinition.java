@@ -44,6 +44,7 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractCollectionPropertyDefinition<E, C extends Collection<E>> extends AbstractFeatureDefinition<CollectionProperty<E, C>> implements CollectionPropertyDefinition<E, C> {
 
+    private boolean                        ignoreEquals;
     private final FunctionDefinition<C>    getter;
     private final FunctionDefinition<Void> adder;
     private final FunctionDefinition<Void> remover;
@@ -60,6 +61,25 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
         getter = FunctionDefinitionFactory.create(name);
         adder = FunctionDefinitionFactory.create(name, Object.class);
         remover = FunctionDefinitionFactory.create(name, Object.class);
+    }
+
+    /**
+     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name and "ignoreEquals" flag.
+     * 
+     * @param name The name of the defined {@link CollectionProperty}.
+     * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     */
+    public AbstractCollectionPropertyDefinition(String name, boolean ignoreEquals) {
+
+        this(name);
+
+        this.ignoreEquals = ignoreEquals;
+    }
+
+    @Override
+    public boolean isIgnoreEquals() {
+
+        return ignoreEquals;
     }
 
     @Override
