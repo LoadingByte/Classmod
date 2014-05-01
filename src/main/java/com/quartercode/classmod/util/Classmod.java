@@ -30,7 +30,7 @@ public class Classmod {
     /**
      * The JAXB context path for classmod you can use in {@link JAXBContext#newInstance(String)}.
      * The constant doesn't has a ":" seperator at the start or the end.
-     * The actual value is {@code {@value #CONTEXT_PATH} .
+     * The actual value is {@value #CONTEXT_PATH}.
      */
     public static final String CONTEXT_PATH = "com.quartercode.classmod.base.def:com.quartercode.classmod.extra.def";
 
