@@ -83,7 +83,7 @@ public class CollectionPropertyAccessorFactory {
 
                 C originalCollection = invocation.getHolder().get(propertyDefinition).get();
 
-                Collection<E> collection = new ArrayList<E>();
+                Collection<E> collection = new ArrayList<>();
                 for (E element : originalCollection) {
                     if (matcher.matches(element, arguments)) {
                         collection.add(element);
@@ -94,11 +94,11 @@ public class CollectionPropertyAccessorFactory {
 
                 // These casts always return the right value IF C is no implementation (e.g. ArrayList instead of just List)
                 if (originalCollection instanceof List) {
-                    return (C) Collections.unmodifiableList(new ArrayList<E>(collection));
+                    return (C) Collections.unmodifiableList(new ArrayList<>(collection));
                 } else if (originalCollection instanceof Set) {
-                    return (C) Collections.unmodifiableSet(new HashSet<E>(collection));
+                    return (C) Collections.unmodifiableSet(new HashSet<>(collection));
                 } else if (originalCollection instanceof SortedSet) {
-                    return (C) Collections.unmodifiableSortedSet(new TreeSet<E>(collection));
+                    return (C) Collections.unmodifiableSortedSet(new TreeSet<>(collection));
                 } else {
                     return (C) Collections.unmodifiableCollection(collection);
                 }

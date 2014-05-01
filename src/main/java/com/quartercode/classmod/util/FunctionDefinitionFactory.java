@@ -47,7 +47,7 @@ public class FunctionDefinitionFactory {
             @Override
             public Function<R> create(FeatureHolder holder) {
 
-                return new AbstractFunction<R>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };
@@ -70,7 +70,7 @@ public class FunctionDefinitionFactory {
             @Override
             public Function<R> create(FeatureHolder holder) {
 
-                return new AbstractFunction<R>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };

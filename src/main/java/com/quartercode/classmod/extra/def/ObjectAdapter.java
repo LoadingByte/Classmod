@@ -168,7 +168,7 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
 
             mapType = object.getClass();
 
-            entries = new ArrayList<MapEntry>();
+            entries = new ArrayList<>();
             for (Entry<?, ?> entry : object.entrySet()) {
                 MapEntry entryObject = new MapEntry();
                 entryObject.key = entry.getKey();
@@ -187,7 +187,7 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
                     map.put(entry.key, entry.value);
                 }
                 return map;
-            } catch (Exception e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.error("Cannot instantiate map type '{}'", mapType.getName(), e);
                 return null;
             }

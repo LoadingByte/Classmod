@@ -54,7 +54,7 @@ public class TransientCollectionProperty<E, C extends Collection<E>> extends Abs
                     actualCollection = PropertyCloneUtil.cloneInitialValue(collection);
                 }
 
-                return new TransientCollectionProperty<E, C>(getName(), holder, actualCollection);
+                return new TransientCollectionProperty<>(getName(), holder, actualCollection);
             }
 
         };

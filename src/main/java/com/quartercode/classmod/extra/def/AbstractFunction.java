@@ -67,9 +67,9 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
             Validate.notNull(parameter, "Null parameters are not allowed");
         }
 
-        executors = new ArrayList<FunctionExecutorContext<R>>();
+        executors = new ArrayList<>();
         for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            executors.add(new DefaultFunctionExecutorContext<R>(executor.getKey(), executor.getValue()));
+            executors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
         executors = Collections.unmodifiableList(executors);
     }
@@ -95,7 +95,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public R invoke(Object... arguments) {
 
-        FunctionInvocation<R> invocation = new DefaultFunctionInvocation<R>(this);
+        FunctionInvocation<R> invocation = new DefaultFunctionInvocation<>(this);
         return invocation.next(arguments);
     }
 

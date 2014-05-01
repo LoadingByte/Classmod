@@ -52,7 +52,7 @@ public class ReferenceProperty<T> extends AbstractProperty<T> {
             @Override
             public Property<T> create(FeatureHolder holder) {
 
-                return new ReferenceProperty<T>(getName(), holder);
+                return new ReferenceProperty<>(getName(), holder);
             }
 
         };
@@ -79,7 +79,7 @@ public class ReferenceProperty<T> extends AbstractProperty<T> {
                     actualInitialValue = PropertyCloneUtil.cloneInitialValue(initialValue);
                 }
 
-                return new ReferenceProperty<T>(getName(), holder, actualInitialValue);
+                return new ReferenceProperty<>(getName(), holder, actualInitialValue);
             }
 
         };

@@ -36,7 +36,7 @@ public class AbstractCollectionPropertyTest {
     @Before
     public void setUp() {
 
-        collection = new HashSet<String>();
+        collection = new HashSet<>();
         collection.add("entry1");
         collection.add("entry2");
 

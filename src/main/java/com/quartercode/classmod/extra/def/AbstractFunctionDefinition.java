@@ -43,11 +43,11 @@ import com.quartercode.classmod.extra.FunctionExecutor;
  */
 public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefinition<Function<R>> implements FunctionDefinition<R> {
 
-    private final List<Class<?>>                                                        parameters   = new ArrayList<Class<?>>();
-    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors    = new HashMap<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>>();
+    private final List<Class<?>>                                                        parameters   = new ArrayList<>();
+    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors    = new HashMap<>();
 
     // Performance: Cache for different variants
-    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache = new HashMap<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>>();
+    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache = new HashMap<>();
 
     /**
      * Creates a new abstract function definition for defining a {@link Function} with the given name and parameters.
@@ -91,7 +91,7 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
         Map<String, FunctionExecutor<R>> variantExecutors = variantCache.get(variant);
 
         if (variantExecutors == null) {
-            variantExecutors = new HashMap<String, FunctionExecutor<R>>();
+            variantExecutors = new HashMap<>();
 
             for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
                 // Select the executor whose variant is as near as possible to the given variant

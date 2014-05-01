@@ -52,7 +52,7 @@ public class PropertyPersistenceTest {
     @Parameters
     public static Collection<Object[]> data() {
 
-        List<Object[]> data = new ArrayList<Object[]>();
+        List<Object[]> data = new ArrayList<>();
 
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property") } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", "Test", true) } });
@@ -60,7 +60,7 @@ public class PropertyPersistenceTest {
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", new String[] { "Test1", "Test2", "Test3" }, true) } });
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", Arrays.asList("Test1", "Test2", "Test3"), true) } });
 
-        Map<String, Integer> map = new HashMap<String, Integer>();
+        Map<String, Integer> map = new HashMap<>();
         map.put("somekey1", 12);
         map.put("somekey2", 300);
         data.add(new Object[] { new FeatureDefinition[] { ObjectProperty.createDefinition("property", map, true) } });

@@ -41,7 +41,7 @@ public class AbstractFunctionPriorityTest {
             @Override
             public Function<Integer> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Integer>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };

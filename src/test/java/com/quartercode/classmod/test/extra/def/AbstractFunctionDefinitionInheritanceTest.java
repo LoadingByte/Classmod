@@ -42,7 +42,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
     @Parameters
     public static Collection<Object[]> data() {
 
-        List<Object[]> data = new ArrayList<Object[]>();
+        List<Object[]> data = new ArrayList<>();
 
         // Multiple executors
         data.add(new Object[] { new Object[][] { { A.class, true }, { AB.class, false }, { AC.class, false }, { ACD.class, false } }, A.class, true });
@@ -80,7 +80,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
             @Override
             public Function<Void> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Void>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };

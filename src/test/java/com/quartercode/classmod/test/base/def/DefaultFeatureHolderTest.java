@@ -97,11 +97,11 @@ public class DefaultFeatureHolderTest {
         List<Feature> persistentFeatures = featureHolder.getPersistentFeatures();
         persistentFeatures.add(testFeature);
 
-        List<Feature> actualFeatures = new ArrayList<Feature>();
+        List<Feature> actualFeatures = new ArrayList<>();
         for (Feature feature : featureHolder) {
             actualFeatures.add(feature);
         }
-        List<Object> expectedFeatures = new ArrayList<Object>();
+        List<Object> expectedFeatures = new ArrayList<>();
         expectedFeatures.add(testFeature);
         Assert.assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
     }

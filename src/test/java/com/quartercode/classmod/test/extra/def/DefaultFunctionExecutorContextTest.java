@@ -31,7 +31,7 @@ public class DefaultFunctionExecutorContextTest {
     @Test
     public void testGetValueAnnotated() {
 
-        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<>("test", new FunctionExecutor<Void>() {
 
             @Override
             @TestAnnotation (value1 = 7, value2 = "test")
@@ -48,7 +48,7 @@ public class DefaultFunctionExecutorContextTest {
     @Test
     public void testGetValueDefault() {
 
-        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -64,7 +64,7 @@ public class DefaultFunctionExecutorContextTest {
     @Test
     public void testSetValue() {
 
-        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<Void>("test", new FunctionExecutor<Void>() {
+        DefaultFunctionExecutorContext<Void> context = new DefaultFunctionExecutorContext<>("test", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {

@@ -57,7 +57,7 @@ public class PropertyCloneUtil {
                 @SuppressWarnings ("unchecked")
                 T clone = (T) initialValue.getClass().newInstance();
                 return clone;
-            } catch (Exception e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.error("Cannot create new instance of feature holder '{}' for pseudo clone", initialValue.getClass().getName(), e);
             }
         }

@@ -45,13 +45,12 @@ public class AbstractFunctionDefinitionTest {
             @Override
             public Function<Void> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Void>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };
     }
 
-    @SuppressWarnings ("unchecked")
     @Test
     public void testSetParameter() {
 
@@ -79,11 +78,11 @@ public class AbstractFunctionDefinitionTest {
         functionDefinition.setParameter(0, String.class);
         Function<Void> function = new DefaultFeatureHolder().get(functionDefinition);
 
-        List<Class<?>> expectedParameters = new ArrayList<Class<?>>();
+        List<Class<?>> expectedParameters = new ArrayList<>();
         expectedParameters.add(String.class);
-        List<FunctionExecutor<Void>> expectedExecutors = new ArrayList<FunctionExecutor<Void>>();
+        List<FunctionExecutor<Void>> expectedExecutors = new ArrayList<>();
         expectedExecutors.add(executor);
-        List<FunctionExecutor<Void>> actualExecutors = new ArrayList<FunctionExecutor<Void>>();
+        List<FunctionExecutor<Void>> actualExecutors = new ArrayList<>();
         for (FunctionExecutorContext<Void> context : function.getExecutors()) {
             actualExecutors.add(context.getExecutor());
         }

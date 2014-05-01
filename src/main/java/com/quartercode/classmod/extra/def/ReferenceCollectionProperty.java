@@ -63,7 +63,7 @@ public class ReferenceCollectionProperty<E, C extends Collection<E>> extends Abs
                     actualCollection = PropertyCloneUtil.cloneInitialValue(collection);
                 }
 
-                return new ReferenceCollectionProperty<E, C>(getName(), holder, actualCollection);
+                return new ReferenceCollectionProperty<>(getName(), holder, actualCollection);
             }
 
         };

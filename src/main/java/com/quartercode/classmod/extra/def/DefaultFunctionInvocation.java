@@ -58,7 +58,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
 
         // Specify the list type for using this as a queue later on
         // We need a list here for sorting the executors
-        LinkedList<FunctionExecutorContext<R>> executors = new LinkedList<FunctionExecutorContext<R>>();
+        LinkedList<FunctionExecutorContext<R>> executors = new LinkedList<>();
         executors.addAll(source.getExecutors());
 
         Collections.sort(executors, new Comparator<FunctionExecutorContext<R>>() {

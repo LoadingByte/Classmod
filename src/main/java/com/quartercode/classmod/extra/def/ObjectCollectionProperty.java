@@ -61,7 +61,7 @@ public class ObjectCollectionProperty<E, C extends Collection<E>> extends Abstra
                     actualCollection = PropertyCloneUtil.cloneInitialValue(collection);
                 }
 
-                return new ObjectCollectionProperty<E, C>(getName(), holder, actualCollection);
+                return new ObjectCollectionProperty<>(getName(), holder, actualCollection);
             }
 
         };

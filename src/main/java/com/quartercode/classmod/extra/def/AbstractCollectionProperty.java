@@ -52,8 +52,8 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public abstract class AbstractCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
-    private static final List<Class<?>> GETTER_PARAMETERS        = new ArrayList<Class<?>>();
-    private static final List<Class<?>> ADDER_REMOVER_PARAMETERS = new ArrayList<Class<?>>();
+    private static final List<Class<?>> GETTER_PARAMETERS        = new ArrayList<>();
+    private static final List<Class<?>> ADDER_REMOVER_PARAMETERS = new ArrayList<>();
 
     static {
 
@@ -94,23 +94,23 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
         intialized = true;
 
-        List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<FunctionExecutorContext<C>>();
-        List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<FunctionExecutorContext<Void>>();
-        List<FunctionExecutorContext<Void>> removerExecutors = new ArrayList<FunctionExecutorContext<Void>>();
+        List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<>();
+        List<FunctionExecutorContext<Void>> removerExecutors = new ArrayList<>();
 
         // Add the custom getter/adder/remover executors
         for (Entry<String, FunctionExecutor<C>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterExecutors.add(new DefaultFunctionExecutorContext<C>(executor.getKey(), executor.getValue()));
+            getterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getAdderExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            adderExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
+            adderExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getRemoverExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            removerExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
+            removerExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
 
         // Add getter executor
-        getterExecutors.add(new DefaultFunctionExecutorContext<C>("getInternal", new FunctionExecutor<C>() {
+        getterExecutors.add(new DefaultFunctionExecutorContext<>("getInternal", new FunctionExecutor<C>() {
 
             @Override
             public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
@@ -125,11 +125,11 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
             private C unmodifiable(C collection) {
 
                 if (collection instanceof List) {
-                    return (C) Collections.unmodifiableList(new ArrayList<E>(collection));
+                    return (C) Collections.unmodifiableList(new ArrayList<>(collection));
                 } else if (collection instanceof Set) {
-                    return (C) Collections.unmodifiableSet(new HashSet<E>(collection));
+                    return (C) Collections.unmodifiableSet(new HashSet<>(collection));
                 } else if (collection instanceof SortedSet) {
-                    return (C) Collections.unmodifiableSortedSet(new TreeSet<E>(collection));
+                    return (C) Collections.unmodifiableSortedSet(new TreeSet<>(collection));
                 } else {
                     return (C) Collections.unmodifiableCollection(collection);
                 }
@@ -138,7 +138,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         }));
 
         // Add adder executor
-        adderExecutors.add(new DefaultFunctionExecutorContext<Void>("addInternal", new FunctionExecutor<Void>() {
+        adderExecutors.add(new DefaultFunctionExecutorContext<>("addInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -164,7 +164,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         }));
 
         // Add remover executor
-        removerExecutors.add(new DefaultFunctionExecutorContext<Void>("removeInternal", new FunctionExecutor<Void>() {
+        removerExecutors.add(new DefaultFunctionExecutorContext<>("removeInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -194,9 +194,9 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         /*
          * Create the dummy getter/adder/remover functions
          */
-        getter = new DummyFunction<C>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
-        adder = new DummyFunction<Void>("add", getHolder(), ADDER_REMOVER_PARAMETERS, adderExecutors);
-        remover = new DummyFunction<Void>("remove", getHolder(), ADDER_REMOVER_PARAMETERS, removerExecutors);
+        getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        adder = new DummyFunction<>("add", getHolder(), ADDER_REMOVER_PARAMETERS, adderExecutors);
+        remover = new DummyFunction<>("remove", getHolder(), ADDER_REMOVER_PARAMETERS, removerExecutors);
     }
 
     @Override

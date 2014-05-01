@@ -50,7 +50,7 @@ public class ObjectProperty<T> extends AbstractProperty<T> {
             @Override
             public Property<T> create(FeatureHolder holder) {
 
-                return new ObjectProperty<T>(getName(), holder);
+                return new ObjectProperty<>(getName(), holder);
             }
 
         };
@@ -77,7 +77,7 @@ public class ObjectProperty<T> extends AbstractProperty<T> {
                     actualInitialValue = PropertyCloneUtil.cloneInitialValue(initialValue);
                 }
 
-                return new ObjectProperty<T>(getName(), holder, actualInitialValue);
+                return new ObjectProperty<>(getName(), holder, actualInitialValue);
             }
 
         };

@@ -41,7 +41,7 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
 
     private final String              name;
     private final FunctionExecutor<R> executor;
-    private final Map<Method, Object> annotationValues = new HashMap<Method, Object>();
+    private final Map<Method, Object> annotationValues = new HashMap<>();
 
     /**
      * Creates a new default function executor context and fills in the {@link FunctionExecutor} to store and its name.

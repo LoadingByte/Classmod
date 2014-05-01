@@ -43,7 +43,7 @@ import com.quartercode.classmod.base.Persistent;
  */
 public class DefaultFeatureHolder implements FeatureHolder {
 
-    private final List<Feature> features = new ArrayList<Feature>();
+    private final List<Feature> features = new ArrayList<>();
 
     /**
      * Creates a new default feature holder.

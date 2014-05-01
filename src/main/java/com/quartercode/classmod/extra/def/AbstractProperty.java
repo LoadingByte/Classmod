@@ -45,8 +45,8 @@ import com.quartercode.classmod.extra.PropertyDefinition;
  */
 public abstract class AbstractProperty<T> extends AbstractFeature implements Property<T> {
 
-    private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<Class<?>>();
-    private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<Class<?>>();
+    private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<>();
+    private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<>();
 
     static {
 
@@ -105,19 +105,19 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
         intialized = true;
 
-        List<FunctionExecutorContext<T>> getterExecutors = new ArrayList<FunctionExecutorContext<T>>();
-        List<FunctionExecutorContext<Void>> setterExecutors = new ArrayList<FunctionExecutorContext<Void>>();
+        List<FunctionExecutorContext<T>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutorContext<Void>> setterExecutors = new ArrayList<>();
 
         // Add the custom getter/setter executors
         for (Entry<String, FunctionExecutor<T>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterExecutors.add(new DefaultFunctionExecutorContext<T>(executor.getKey(), executor.getValue()));
+            getterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
         for (Entry<String, FunctionExecutor<Void>> executor : definition.getSetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            setterExecutors.add(new DefaultFunctionExecutorContext<Void>(executor.getKey(), executor.getValue()));
+            setterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
 
         // Add getter executor
-        getterExecutors.add(new DefaultFunctionExecutorContext<T>("getInternal", new FunctionExecutor<T>() {
+        getterExecutors.add(new DefaultFunctionExecutorContext<>("getInternal", new FunctionExecutor<T>() {
 
             @Override
             public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
@@ -130,7 +130,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         }));
 
         // Add setter executor
-        setterExecutors.add(new DefaultFunctionExecutorContext<Void>("setInternal", new FunctionExecutor<Void>() {
+        setterExecutors.add(new DefaultFunctionExecutorContext<>("setInternal", new FunctionExecutor<Void>() {
 
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
@@ -164,8 +164,8 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         /*
          * Create the dummy getter/setter functions
          */
-        getter = new DummyFunction<T>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
-        setter = new DummyFunction<Void>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
+        getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        setter = new DummyFunction<>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
     }
 
     @Override

@@ -41,7 +41,7 @@ public class AbstractFunctionParameterTest {
     @Parameters
     public static Collection<Object[]> data() {
 
-        List<Object[]> data = new ArrayList<Object[]>();
+        List<Object[]> data = new ArrayList<>();
 
         // Simple arguments test
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { "" }, true });
@@ -108,7 +108,7 @@ public class AbstractFunctionParameterTest {
             @Override
             public Function<Void> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Void>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };

@@ -43,7 +43,7 @@ public class TransientProperty<T> extends AbstractProperty<T> {
             @Override
             public Property<T> create(FeatureHolder holder) {
 
-                return new TransientProperty<T>(getName(), holder);
+                return new TransientProperty<>(getName(), holder);
             }
 
         };
@@ -70,7 +70,7 @@ public class TransientProperty<T> extends AbstractProperty<T> {
                     actualInitialValue = PropertyCloneUtil.cloneInitialValue(initialValue);
                 }
 
-                return new TransientProperty<T>(getName(), holder, actualInitialValue);
+                return new TransientProperty<>(getName(), holder, actualInitialValue);
             }
 
         };

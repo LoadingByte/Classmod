@@ -42,7 +42,7 @@ public class AbstractFunctionTest {
             @Override
             public Function<Object> create(FeatureHolder holder) {
 
-                return new AbstractFunction<Object>(getName(), holder);
+                return new AbstractFunction<>(getName(), holder);
             }
 
         };
@@ -50,7 +50,7 @@ public class AbstractFunctionTest {
         definition.setParameter(1, Class.class);
         definition.setParameter(2, Object[].class);
 
-        final List<Object> actualArguments = new ArrayList<Object>();
+        final List<Object> actualArguments = new ArrayList<>();
         final Object returnValue = "ReturnValue";
         definition.addExecutor("default", FeatureHolder.class, new FunctionExecutor<Object>() {
 
