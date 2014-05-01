@@ -15,6 +15,7 @@
 * Properties clone the initial values/collections in order to prevent changes to the object that is stored in the definition.
 * Properties are now able to provide (JAXB) persistence for arrays.
 * The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
+* The "ignoreEquals" flag on properties makes their equals() method always return true, so they are excluded from equality checks of feature holders.
 
 ### Removals
 * Removed the ExecutorInvocationException. That exception was thrown by every function executor / function and produced unnecessary try-catchs. RuntimeExceptions should be used instead.
@@ -31,6 +32,7 @@
 * Refactored a whole bunch of code based on automatic suggestions.
 
 ### Notes
+* Classmod is now using the version 1.7 of Java.
 * Introducing many major performance improvements, especially related to functions. Classmod applications should run much smoother now.
 * The update changed the parameter order of every add/removeExecutor method to (name, variant, executor) in order to logically conform the new function executor override feature. Users of the function system must be refactored.
 * Some setLocked() statements and all Lockable annotations must be removed in order to conform with the new update (see the removals section for further explanation why).
