@@ -27,7 +27,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
@@ -81,14 +80,10 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
      * 
      * @param name The name of the abstract collection property.
      * @param holder The feature holder which has and uses the new abstract collection property.
-     * @param collection The {@link Collection} the new abstract collection property stores.
      */
-    public AbstractCollectionProperty(String name, FeatureHolder holder, C collection) {
+    public AbstractCollectionProperty(String name, FeatureHolder holder) {
 
         super(name, holder);
-
-        Validate.notNull(collection, "A collection property must be supplied with a collection implementation to use");
-        setInternal(collection);
     }
 
     @Override
@@ -97,6 +92,13 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         intialized = true;
 
         ignoreEquals = definition.isIgnoreEquals();
+
+        C newCollection = definition.newCollection();
+        C oldCollection = getInternal();
+        if (oldCollection != null) {
+            newCollection.addAll(oldCollection);
+        }
+        setInternal(newCollection);
 
         List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<>();
         List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<>();

@@ -41,7 +41,7 @@ public class AbstractCollectionPropertyWithChildFeatureHolderTest {
 
         propertyHolder = new DefaultFeatureHolder();
         // Use object collection property as storage implementation
-        CollectionPropertyDefinition<ChildFeatureHolder<?>, List<ChildFeatureHolder<?>>> propertyDefinition = ObjectCollectionProperty.createDefinition("property", new ArrayList<ChildFeatureHolder<?>>(), true);
+        CollectionPropertyDefinition<ChildFeatureHolder<?>, List<ChildFeatureHolder<?>>> propertyDefinition = ObjectCollectionProperty.createDefinition("property", new ArrayList<ChildFeatureHolder<?>>());
         property = propertyHolder.get(propertyDefinition);
     }
 

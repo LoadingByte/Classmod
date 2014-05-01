@@ -41,7 +41,7 @@ public class AbstractCollectionPropertyTest {
         collection.add("entry2");
 
         // Use object collection property as storage implementation
-        CollectionPropertyDefinition<String, Set<String>> definition = ObjectCollectionProperty.createDefinition("property", collection, true);
+        CollectionPropertyDefinition<String, Set<String>> definition = ObjectCollectionProperty.createDefinition("property", collection);
         property = new DefaultFeatureHolder().get(definition);
     }
 

@@ -45,41 +45,32 @@ public class ReferenceCollectionProperty<E, C extends Collection<E>> extends Abs
      * Creates a new {@link CollectionPropertyDefinition} that describes a reference collection property with the given name and initial value.
      * 
      * @param name The name of the reference collection property which the returned {@link CollectionPropertyDefinition} describes.
-     * @param collection The {@link Collection} the {@link CollectionProperty} that {@link CollectionPropertyDefinition} describes uses.
-     * @param cloneCollection Whether the collection object should be cloned for every new instance of the property (mostly {@code true}).
-     *        By cloning the collection, the collection that is stored in the definition is not affected by changes made to the collection that is stored in the property.
+     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
      * @return A {@link CollectionPropertyDefinition} which can be used to describe a reference collection property.
      */
     // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
-    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, final I collection, final boolean cloneCollection) {
+    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, I collectionTemplate) {
 
-        return createDefinition(name, collection, cloneCollection, false);
+        return createDefinition(name, collectionTemplate, false);
     }
 
     /**
      * Creates a new {@link CollectionPropertyDefinition} that describes a reference collection property with the given name and initial value.
      * 
      * @param name The name of the reference collection property which the returned {@link CollectionPropertyDefinition} describes.
-     * @param collection The {@link Collection} the {@link CollectionProperty} that {@link CollectionPropertyDefinition} describes uses.
-     * @param cloneCollection Whether the collection object should be cloned for every new instance of the property (mostly {@code true}).
-     *        By cloning the collection, the collection that is stored in the definition is not affected by changes made to the collection that is stored in the property.
+     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
      * @param ignoreEquals Whether the value of the collection property should be excluded from equality checks of its feature holder.
      * @return A {@link CollectionPropertyDefinition} which can be used to describe a reference collection property.
      */
     // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
-    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, final I collection, final boolean cloneCollection, final boolean ignoreEquals) {
+    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, I collectionTemplate, boolean ignoreEquals) {
 
-        return new AbstractCollectionPropertyDefinition<E, C>(name, ignoreEquals) {
+        return new AbstractCollectionPropertyDefinition<E, C>(name, collectionTemplate, ignoreEquals) {
 
             @Override
             public CollectionProperty<E, C> create(FeatureHolder holder) {
 
-                C actualCollection = collection;
-                if (cloneCollection) {
-                    actualCollection = PropertyCloneUtil.cloneInitialValue(collection);
-                }
-
-                return new ReferenceCollectionProperty<>(getName(), holder, actualCollection);
+                return new ReferenceCollectionProperty<>(getName(), holder);
             }
 
         };
@@ -97,15 +88,14 @@ public class ReferenceCollectionProperty<E, C extends Collection<E>> extends Abs
     }
 
     /**
-     * Creates a new reference collection property with the given name, {@link FeatureHolder} and stored {@link Collection}.
+     * Creates a new reference collection property with the given name and {@link FeatureHolder}.
      * 
      * @param name The name of the reference collection property.
      * @param holder The feature holder which has and uses the new reference collection property.
-     * @param collection The {@link Collection} the new reference collection property stores.
      */
-    public ReferenceCollectionProperty(String name, FeatureHolder holder, C collection) {
+    public ReferenceCollectionProperty(String name, FeatureHolder holder) {
 
-        super(name, holder, collection);
+        super(name, holder);
     }
 
     @Override

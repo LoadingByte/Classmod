@@ -40,6 +40,14 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface CollectionPropertyDefinition<E, C extends Collection<E>> extends FeatureDefinition<CollectionProperty<E, C>>, ValueSupplierDefinition<C, CollectionProperty<E, C>> {
 
     /**
+     * Returns a {@link Collection} instance that can be used by a {@link CollectionProperty}.
+     * This method should always create a new object, so the same entries are not shared through different properties (monostate).
+     * 
+     * @return A collection instance that can be used by a collection property.
+     */
+    public C newCollection();
+
+    /**
      * Returns whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      * 
      * @return Whether the "ignoreEquals" flag is set.

@@ -20,6 +20,8 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.Collection;
 import java.util.Map;
+import org.apache.commons.lang3.ObjectUtils;
+import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.CollectionProperty;
@@ -44,6 +46,7 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractCollectionPropertyDefinition<E, C extends Collection<E>> extends AbstractFeatureDefinition<CollectionProperty<E, C>> implements CollectionPropertyDefinition<E, C> {
 
+    private C                              collectionTemplate;
     private boolean                        ignoreEquals;
     private final FunctionDefinition<C>    getter;
     private final FunctionDefinition<Void> adder;
@@ -51,12 +54,17 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
 
     /**
      * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name.
+     * Also sets a template {@link Collection} whose clones are used by property instances.
      * 
      * @param name The name of the defined {@link CollectionProperty}.
+     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
      */
-    public AbstractCollectionPropertyDefinition(String name) {
+    public AbstractCollectionPropertyDefinition(String name, C collectionTemplate) {
 
         super(name);
+
+        Validate.notNull(collectionTemplate, "A collection property definition must be supplied with a template collection implementation to use");
+        this.collectionTemplate = collectionTemplate;
 
         getter = FunctionDefinitionFactory.create(name);
         adder = FunctionDefinitionFactory.create(name, Object.class);
@@ -64,16 +72,24 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     /**
-     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name and "ignoreEquals" flag.
+     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name.
+     * Also sets a template {@link Collection} whose clones are used by property instances and the "ignoreEquals" flag.
      * 
      * @param name The name of the defined {@link CollectionProperty}.
+     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
      * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      */
-    public AbstractCollectionPropertyDefinition(String name, boolean ignoreEquals) {
+    public AbstractCollectionPropertyDefinition(String name, C collectionTemplate, boolean ignoreEquals) {
 
-        this(name);
+        this(name, collectionTemplate);
 
         this.ignoreEquals = ignoreEquals;
+    }
+
+    @Override
+    public C newCollection() {
+
+        return ObjectUtils.cloneIfPossible(collectionTemplate);
     }
 
     @Override
