@@ -248,6 +248,10 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
     @Override
     public int hashCode() {
 
+        if (ignoreEquals) {
+            return 0;
+        }
+
         final int prime = 31;
         int result = super.hashCode();
         Object content = getInternal();
