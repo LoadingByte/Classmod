@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.Function;
@@ -140,6 +143,24 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
 
         // Invalidate variant cache
         variantCache.clear();
+    }
+
+    @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this, "executors", "variantCache");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj, "executors", "variantCache");
+    }
+
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toStringExclude(this, "executors", "variantCache");
     }
 
 }

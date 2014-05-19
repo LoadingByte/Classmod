@@ -23,6 +23,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map.Entry;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Function;
@@ -100,9 +103,21 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     }
 
     @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this, "holder", "executors");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj, "holder", "executors");
+    }
+
+    @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + getName() + ", " + executors.size() + " executors]";
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "executors");
     }
 
 }

@@ -19,9 +19,11 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
@@ -210,57 +212,20 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
     @Override
     public int hashCode() {
 
-        if (ignoreEquals) {
-            return 0;
-        }
-
-        final int prime = 31;
-        int result = super.hashCode();
-        Object content = getInternal();
-        result = prime * result + (content == null ? 0 : content.hashCode());
-        return result;
+        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "intialized", "getter", "setter");
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (ignoreEquals) {
-            return true;
-        }
-
-        if (this == obj) {
-            return true;
-        }
-        if (!super.equals(obj)) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        AbstractProperty<?> other = (AbstractProperty<?>) obj;
-        if (this.getInternal() == null) {
-            if (other.getInternal() != null) {
-                return false;
-            }
-        } else if (!valueEquals(this.getInternal(), other.getInternal())) {
-            return false;
-        }
-        return true;
-    }
-
-    private boolean valueEquals(Object value1, Object value2) {
-
-        if (value1.getClass().isArray() && value2.getClass().isArray()) {
-            return Arrays.equals((Object[]) value1, (Object[]) value2);
-        } else {
-            return value1.equals(value2);
-        }
+        boolean doIgnoreEquals = ignoreEquals || obj instanceof AbstractProperty && ((AbstractProperty<?>) obj).ignoreEquals;
+        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "intialized", "getter", "setter");
     }
 
     @Override
     public String toString() {
 
-        return getClass().getName() + " [name=" + getName() + ", content=" + getInternal() + "]";
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "intialized", "getter", "setter");
     }
 
 }

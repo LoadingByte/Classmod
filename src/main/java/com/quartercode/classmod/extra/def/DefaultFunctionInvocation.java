@@ -25,6 +25,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
@@ -84,19 +87,19 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     public R next(Object... arguments) {
 
         // Use a clone of the argument array in order to prevent it from outside modification
-        arguments = arguments.clone();
+        Object[] actualArguments = arguments.clone();
 
         // Performance: Skip argument validation if there are no arguments and no parameters
-        if (source.getParameters().size() != 0 || arguments.length > 0) {
+        if (!source.getParameters().isEmpty() || actualArguments.length > 0) {
             // Validate the arguments and transform varargs into arrays
-            arguments = checkArguments(arguments);
+            actualArguments = checkArguments(actualArguments);
         }
 
         if (remainingExecutors.isEmpty()) {
             // Stop because all executors were already invoked
             return null;
         } else {
-            return remainingExecutors.poll().invoke(this, arguments);
+            return remainingExecutors.poll().invoke(this, actualArguments);
         }
     }
 
@@ -169,6 +172,24 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         } else {
             return arguments;
         }
+    }
+
+    @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj);
+    }
+
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toStringExclude(this);
     }
 
 }

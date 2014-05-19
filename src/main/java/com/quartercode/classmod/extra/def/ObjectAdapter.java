@@ -199,7 +199,7 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
                 }
                 return map;
             } catch (InstantiationException | IllegalAccessException e) {
-                LOGGER.error("Cannot instantiate map type '{}'", mapType.getName(), e);
+                LOGGER.warn("Cannot instantiate map type '{}'", mapType.getName(), e);
                 return null;
             }
         }

@@ -19,6 +19,9 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.List;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
@@ -31,35 +34,53 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
  */
 class DummyFunction<R> extends AbstractFunction<R> {
 
-    private final List<Class<?>>                   parameters;
-    private final List<FunctionExecutorContext<R>> executors;
+    private final List<Class<?>>                   dummyParameters;
+    private final List<FunctionExecutorContext<R>> dummyExecutors;
 
     /**
      * Creates a new dummy function and sets the values the function should serve.
      * 
      * @param name The name of the function.
      * @param holder The {@link FeatureHolder} which supposedly holds the function.
-     * @param parameters The parameters the function has at all times.
-     * @param executors The {@link FunctionExecutorContext}s the function has at all times.
+     * @param dummyParameters The parameters the function has at all times.
+     * @param dummyExecutors The {@link FunctionExecutorContext}s the function has at all times.
      */
-    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> parameters, List<FunctionExecutorContext<R>> executors) {
+    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> dummyParameters, List<FunctionExecutorContext<R>> dummyExecutors) {
 
         super(name, holder);
 
-        this.parameters = parameters;
-        this.executors = executors;
+        this.dummyParameters = dummyParameters;
+        this.dummyExecutors = dummyExecutors;
     }
 
     @Override
     public List<Class<?>> getParameters() {
 
-        return parameters;
+        return dummyParameters;
     }
 
     @Override
     public List<FunctionExecutorContext<R>> getExecutors() {
 
-        return executors;
+        return dummyExecutors;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this, "holder");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj, "holder");
+    }
+
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "parameters", "executors");
     }
 
 }

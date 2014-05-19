@@ -25,6 +25,9 @@ import java.util.List;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -52,12 +55,12 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
     }
 
-    @Override
     /*
      * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
      * Sadly, this method needs to perform unchecked casts in order to keep the whole type system consistent.
      */
     @SuppressWarnings ("unchecked")
+    @Override
     public <F extends Feature> F get(FeatureDefinition<F> definition) {
 
         F feature = null;
@@ -65,12 +68,8 @@ public class DefaultFeatureHolder implements FeatureHolder {
         // Retrieve existing feature instance from the local storage
         for (Feature availableFeature : features) {
             if (availableFeature.getName().equals(definition.getName())) {
-                try {
-                    feature = (F) availableFeature;
-                    break;
-                } catch (ClassCastException e) {
-                    throw new IllegalArgumentException("Generic type argument of feature definition '" + definition.getName() + "' doesn't match existing feature", e);
-                }
+                feature = (F) availableFeature;
+                break;
             }
         }
 
@@ -127,44 +126,24 @@ public class DefaultFeatureHolder implements FeatureHolder {
     @Override
     public int hashCode() {
 
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (features == null ? 0 : features.hashCode());
-        return result;
+        return HashCodeBuilder.reflectionHashCode(this);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        DefaultFeatureHolder other = (DefaultFeatureHolder) obj;
-        if (features == null) {
-            if (other.features != null) {
-                return false;
-            }
-        } else if (!features.equals(other.features)) {
-            return false;
-        }
-        return true;
+        return EqualsBuilder.reflectionEquals(this, obj);
     }
 
     @Override
     public String toString() {
 
-        StringBuilder featureString = new StringBuilder();
+        List<String> featureNames = new ArrayList<>();
         for (Feature feature : features) {
-            featureString.append(", ").append(feature.getName());
+            featureNames.add(new StringBuilder(feature.getName()).append(":").append(feature.getClass().getSimpleName()).toString());
         }
 
-        return getClass().getName() + " [features={" + (featureString.length() == 0 ? "" : featureString.substring(2)) + "}]";
+        return new ToStringBuilder(this).append("features", featureNames).build();
     }
 
     // We need to use a custom list because JAXB adds the values using the add() method

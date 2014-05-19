@@ -22,6 +22,9 @@ import java.util.Collection;
 import java.util.Map;
 import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.CollectionProperty;
@@ -150,6 +153,24 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     public void removeRemoverExecutor(String name, Class<? extends FeatureHolder> variant) {
 
         remover.removeExecutor(name, variant);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this, "getter", "adder", "remover");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj, "getter", "adder", "remover");
+    }
+
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toStringExclude(this, "getter", "adder", "remover");
     }
 
 }

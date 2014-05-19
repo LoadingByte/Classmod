@@ -19,6 +19,9 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.Map;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
@@ -111,6 +114,24 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     public void removeSetterExecutor(String name, Class<? extends FeatureHolder> variant) {
 
         setter.removeExecutor(name, variant);
+    }
+
+    @Override
+    public int hashCode() {
+
+        return HashCodeBuilder.reflectionHashCode(this, "getter", "setter");
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        return EqualsBuilder.reflectionEquals(this, obj, "getter", "setter");
+    }
+
+    @Override
+    public String toString() {
+
+        return ReflectionToStringBuilder.toStringExclude(this, "getter", "setter");
     }
 
 }

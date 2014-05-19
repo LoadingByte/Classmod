@@ -64,8 +64,7 @@ public class PropertyCloneUtil {
         // Try to really clone the object
         else if (initialValue instanceof Cloneable) {
             try {
-                T clone = ObjectUtils.cloneIfPossible(initialValue);
-                return clone;
+                return ObjectUtils.cloneIfPossible(initialValue);
             } catch (CloneFailedException e) {
                 LOGGER.error("Unknown exception while cloning object of type '{}'", initialValue.getClass().getName(), e);
             }
