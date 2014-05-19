@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -111,6 +112,8 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
 
         @XmlElement (name = "item")
         private Object[] object;
+        @XmlElement
+        private Class<?> componentType;
 
         protected ArrayWrapper() {
 
@@ -119,12 +122,20 @@ public class ObjectAdapter extends XmlAdapter<Object, Object> {
         public ArrayWrapper(Object[] object) {
 
             this.object = object;
+            componentType = object.getClass().getComponentType();
         }
 
         @Override
         public Object[] getObject() {
 
-            return object;
+            try {
+                Object[] array = (Object[]) Array.newInstance(componentType, object.length);
+                System.arraycopy(object, 0, array, 0, object.length);
+                return array;
+            } catch (Exception e) {
+                LOGGER.warn("Cannot copy array {} to new instance with component type {}", object, componentType, e);
+                return null;
+            }
         }
 
     }
