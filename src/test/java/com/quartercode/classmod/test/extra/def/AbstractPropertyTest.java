@@ -21,6 +21,7 @@ package com.quartercode.classmod.test.extra.def;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.def.ObjectProperty;
@@ -53,6 +54,30 @@ public class AbstractPropertyTest {
         property.set(null);
         value = property.get();
         Assert.assertEquals("Newly set property value", null, value);
+    }
+
+    @Test
+    public void testIgnoreEquals() {
+
+        FeatureHolder holder = new DefaultFeatureHolder();
+        Property<String> property1 = holder.get(ObjectProperty.<String> createDefinition("property1", false));
+        Property<String> property2 = holder.get(ObjectProperty.<String> createDefinition("property2", false));
+        Property<String> property3 = holder.get(ObjectProperty.<String> createDefinition("property3", true));
+        Property<String> property4 = holder.get(ObjectProperty.<String> createDefinition("property4", true));
+
+        Assert.assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property1.hashCode());
+        Assert.assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property2.hashCode());
+        Assert.assertEquals("Hash code of property with ignoreEquals=false", 0, property3.hashCode());
+        Assert.assertEquals("Hash code of property with ignoreEquals=false", 0, property4.hashCode());
+
+        Assert.assertFalse("Two different properties with ignoreEquals=false on both do equal", property1.equals(property2));
+        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property3));
+        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property4));
+
+        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property3));
+        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property4));
+
+        Assert.assertTrue("Two different properties with ignoreEquals=true on both don't equal", property3.equals(property4));
     }
 
 }

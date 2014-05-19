@@ -23,6 +23,7 @@ import java.util.Set;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
@@ -65,4 +66,34 @@ public class AbstractCollectionPropertyTest {
         property.remove("entry2");
         Assert.assertTrue("Collection property contains removed entry", !property.get().contains("entry2"));
     }
+
+    @Test
+    public void testIgnoreEquals() {
+
+        FeatureHolder holder = new DefaultFeatureHolder();
+        CollectionProperty<String, Set<String>> property1 = holder.get(createDefinition("property1", false));
+        CollectionProperty<String, Set<String>> property2 = holder.get(createDefinition("property2", false));
+        CollectionProperty<String, Set<String>> property3 = holder.get(createDefinition("property3", true));
+        CollectionProperty<String, Set<String>> property4 = holder.get(createDefinition("property4", true));
+
+        Assert.assertNotEquals("Hash code of collection property with ignoreEquals=false should not be 0", 0, property1.hashCode());
+        Assert.assertNotEquals("Hash code of collection property with ignoreEquals=false should not be 0", 0, property2.hashCode());
+        Assert.assertEquals("Hash code of collection property with ignoreEquals=false", 0, property3.hashCode());
+        Assert.assertEquals("Hash code of collection property with ignoreEquals=false", 0, property4.hashCode());
+
+        Assert.assertFalse("Two different collection properties with ignoreEquals=false on both do equal", property1.equals(property2));
+        Assert.assertTrue("Two different collection properties with ignoreEquals=true on one don't equal", property1.equals(property3));
+        Assert.assertTrue("Two different collection properties with ignoreEquals=true on one don't equal", property1.equals(property4));
+
+        Assert.assertTrue("Two different collection properties with ignoreEquals=true on one don't equal", property2.equals(property3));
+        Assert.assertTrue("Two different collection properties with ignoreEquals=true on one don't equal", property2.equals(property4));
+
+        Assert.assertTrue("Two different collection properties with ignoreEquals=true on both don't equal", property3.equals(property4));
+    }
+
+    private CollectionPropertyDefinition<String, Set<String>> createDefinition(String name, boolean ignoreEquals) {
+
+        return ObjectCollectionProperty.createDefinition(name, new HashSet<String>(), ignoreEquals);
+    }
+
 }
