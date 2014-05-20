@@ -18,7 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -52,8 +52,8 @@ public class AbstractPropertyWithChildFeatureHolderTest {
         property.set(new TestFeatureHolder());
         ChildFeatureHolder<?> value2 = property.get();
 
-        Assert.assertEquals("Parent of the newly set property value 1 (child feature holder)", null, value1.getParent());
-        Assert.assertEquals("Parent of the newly set property value 2 (child feature holder)", propertyHolder, value2.getParent());
+        assertEquals("Parent of the newly set property value 1 (child feature holder)", null, value1.getParent());
+        assertEquals("Parent of the newly set property value 2 (child feature holder)", propertyHolder, value2.getParent());
     }
 
     private static class TestFeatureHolder extends DefaultChildFeatureHolder<FeatureHolder> {

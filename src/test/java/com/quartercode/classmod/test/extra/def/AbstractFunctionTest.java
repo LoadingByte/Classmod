@@ -18,10 +18,11 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -69,8 +70,8 @@ public class AbstractFunctionTest {
         Object[] arguments = { "Test", String.class, new Object[] { "Test", 12345, true } };
         Object actualReturnValue = function.invoke(arguments);
 
-        Assert.assertArrayEquals("Received arguments", arguments, actualArguments.toArray(new Object[actualArguments.size()]));
-        Assert.assertEquals("Received return value", returnValue, actualReturnValue);
+        assertArrayEquals("Received arguments", arguments, actualArguments.toArray(new Object[actualArguments.size()]));
+        assertEquals("Received return value", returnValue, actualReturnValue);
     }
 
 }

@@ -18,7 +18,7 @@
 
 package com.quartercode.classmod.test.base.def;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -57,7 +57,7 @@ public class DefaultFeatureHolderTest {
             public TestFeature2 create(FeatureHolder holder) {
 
                 // Something went wrong
-                Assert.fail("Should not be called");
+                fail("Should not be called");
                 return null;
             }
 
@@ -100,14 +100,14 @@ public class DefaultFeatureHolderTest {
         Feature feature1 = featureHolder.get(TEST_FEATURE_1);
         Feature feature2 = featureHolder.get(TEST_FEATURE_2);
 
-        Assert.assertEquals("Type of feature from definition TEST_FEATURE_1", TestFeature1.class, feature1.getClass());
-        Assert.assertEquals("Type of feature from definition TEST_FEATURE_2", TestFeature2.class, feature2.getClass());
+        assertEquals("Type of feature from definition TEST_FEATURE_1", TestFeature1.class, feature1.getClass());
+        assertEquals("Type of feature from definition TEST_FEATURE_2", TestFeature2.class, feature2.getClass());
 
-        Assert.assertEquals("Name of feature from definition TEST_FEATURE_1", "testFeature1", feature1.getName());
-        Assert.assertEquals("Name of feature from definition TEST_FEATURE_2", "testFeature2", feature2.getName());
+        assertEquals("Name of feature from definition TEST_FEATURE_1", "testFeature1", feature1.getName());
+        assertEquals("Name of feature from definition TEST_FEATURE_2", "testFeature2", feature2.getName());
 
-        Assert.assertSame("Result of second call of get(TEST_FEATURE_1) (should be same as first call)", feature1, featureHolder.get(TEST_FEATURE_1));
-        Assert.assertSame("Result of second call of get(TEST_FEATURE_2) (should be same as first call)", feature2, featureHolder.get(TEST_FEATURE_2));
+        assertSame("Result of second call of get(TEST_FEATURE_1) (should be same as first call)", feature1, featureHolder.get(TEST_FEATURE_1));
+        assertSame("Result of second call of get(TEST_FEATURE_2) (should be same as first call)", feature2, featureHolder.get(TEST_FEATURE_2));
     }
 
     @Test (expected = ClassCastException.class)
@@ -124,10 +124,10 @@ public class DefaultFeatureHolderTest {
     public void testGetInitialize() {
 
         TestFeature3 feature = featureHolder.get(TEST_FEATURE_3);
-        Assert.assertTrue("Feature wasn't initialized properly", feature.initializeCalls == 1);
+        assertTrue("Feature wasn't initialized properly", feature.initializeCalls == 1);
 
         feature = featureHolder.get(TEST_FEATURE_3);
-        Assert.assertTrue("Feature was initialized more than once", feature.initializeCalls == 1);
+        assertTrue("Feature was initialized more than once", feature.initializeCalls == 1);
     }
 
     @Test (expected = IllegalArgumentException.class)

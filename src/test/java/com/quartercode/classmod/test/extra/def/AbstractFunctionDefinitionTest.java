@@ -18,10 +18,10 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -59,7 +59,7 @@ public class AbstractFunctionDefinitionTest {
         functionDefinition.setParameter(3, Integer.class);
         functionDefinition.setParameter(5, null);
 
-        Assert.assertEquals("Parameter pattern", Arrays.asList(String.class, null, null, Integer.class), functionDefinition.getParameters());
+        assertEquals("Parameter pattern", Arrays.asList(String.class, null, null, Integer.class), functionDefinition.getParameters());
     }
 
     @Test
@@ -86,8 +86,8 @@ public class AbstractFunctionDefinitionTest {
         for (FunctionExecutorContext<Void> context : function.getExecutors()) {
             actualExecutors.add(context.getExecutor());
         }
-        Assert.assertEquals("Function object's parameters", expectedParameters, function.getParameters());
-        Assert.assertEquals("Function object's executors", expectedExecutors, actualExecutors);
+        assertEquals("Function object's parameters", expectedParameters, function.getParameters());
+        assertEquals("Function object's executors", expectedExecutors, actualExecutors);
     }
 
 }

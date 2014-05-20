@@ -18,10 +18,10 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
@@ -134,7 +134,7 @@ public class AbstractFunctionParameterTest {
             actuallyWorks = false;
         }
 
-        Assert.assertTrue("Function call " + (works ? "doesn't work" : "works") + "; parameters rejected", actuallyWorks == works);
+        assertTrue("Function call " + (works ? "doesn't work" : "works") + "; parameters rejected", actuallyWorks == works);
     }
 
 }

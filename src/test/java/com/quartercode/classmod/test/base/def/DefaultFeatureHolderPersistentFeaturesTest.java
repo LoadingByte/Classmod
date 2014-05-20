@@ -18,9 +18,10 @@
 
 package com.quartercode.classmod.test.base.def;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -76,8 +77,8 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
         featureHolder.get(TEST_FEATURE_1);
         featureHolder.get(TEST_FEATURE_2);
 
-        Assert.assertTrue("Persistent features list doesn't contain TEST_FEATURE_1", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_1)));
-        Assert.assertFalse("Persistent features list contains TEST_FEATURE_2", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_2)));
+        assertTrue("Persistent features list doesn't contain TEST_FEATURE_1", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_1)));
+        assertFalse("Persistent features list contains TEST_FEATURE_2", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_2)));
     }
 
     @Test
@@ -95,7 +96,7 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
         }
         List<Object> expectedFeatures = new ArrayList<>();
         expectedFeatures.add(testFeature);
-        Assert.assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
+        assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
     }
 
     @Persistent

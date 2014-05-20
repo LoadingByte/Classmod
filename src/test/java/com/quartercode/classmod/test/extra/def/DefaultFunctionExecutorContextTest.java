@@ -18,9 +18,9 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertEquals;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
-import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -41,8 +41,8 @@ public class DefaultFunctionExecutorContextTest {
             }
         });
 
-        Assert.assertEquals("First read annotation value", 7, context.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "test", context.getValue(TestAnnotation.class, "value2"));
+        assertEquals("First read annotation value", 7, context.getValue(TestAnnotation.class, "value1"));
+        assertEquals("Second read annotation value", "test", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Test
@@ -57,8 +57,8 @@ public class DefaultFunctionExecutorContextTest {
             }
         });
 
-        Assert.assertEquals("First read annotation value", 2, context.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "defaultvalue", context.getValue(TestAnnotation.class, "value2"));
+        assertEquals("First read annotation value", 2, context.getValue(TestAnnotation.class, "value1"));
+        assertEquals("Second read annotation value", "defaultvalue", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Test
@@ -76,8 +76,8 @@ public class DefaultFunctionExecutorContextTest {
         context.setValue(TestAnnotation.class, "value1", 17);
         context.setValue(TestAnnotation.class, "value2", "testvalue");
 
-        Assert.assertEquals("First read annotation value", 17, context.getValue(TestAnnotation.class, "value1"));
-        Assert.assertEquals("Second read annotation value", "testvalue", context.getValue(TestAnnotation.class, "value2"));
+        assertEquals("First read annotation value", 17, context.getValue(TestAnnotation.class, "value1"));
+        assertEquals("Second read annotation value", "testvalue", context.getValue(TestAnnotation.class, "value2"));
     }
 
     @Retention (RetentionPolicy.RUNTIME)

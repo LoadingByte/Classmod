@@ -18,7 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import org.junit.Assert;
+import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -41,7 +41,7 @@ public class AbstractPropertyTest {
     public void testGet() {
 
         Object value = property.get();
-        Assert.assertEquals("Initially set property value", "initialString", value);
+        assertEquals("Initially set property value", "initialString", value);
     }
 
     @Test
@@ -49,11 +49,11 @@ public class AbstractPropertyTest {
 
         property.set("secondString");
         Object value = property.get();
-        Assert.assertEquals("Newly set property value", "secondString", value);
+        assertEquals("Newly set property value", "secondString", value);
 
         property.set(null);
         value = property.get();
-        Assert.assertEquals("Newly set property value", null, value);
+        assertEquals("Newly set property value", null, value);
     }
 
     @Test
@@ -65,19 +65,19 @@ public class AbstractPropertyTest {
         Property<String> property3 = holder.get(ObjectProperty.<String> createDefinition("property3", true));
         Property<String> property4 = holder.get(ObjectProperty.<String> createDefinition("property4", true));
 
-        Assert.assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property1.hashCode());
-        Assert.assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property2.hashCode());
-        Assert.assertEquals("Hash code of property with ignoreEquals=false", 0, property3.hashCode());
-        Assert.assertEquals("Hash code of property with ignoreEquals=false", 0, property4.hashCode());
+        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property1.hashCode());
+        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property2.hashCode());
+        assertEquals("Hash code of property with ignoreEquals=false", 0, property3.hashCode());
+        assertEquals("Hash code of property with ignoreEquals=false", 0, property4.hashCode());
 
-        Assert.assertFalse("Two different properties with ignoreEquals=false on both do equal", property1.equals(property2));
-        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property3));
-        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property4));
+        assertFalse("Two different properties with ignoreEquals=false on both do equal", property1.equals(property2));
+        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property3));
+        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property4));
 
-        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property3));
-        Assert.assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property4));
+        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property3));
+        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property4));
 
-        Assert.assertTrue("Two different properties with ignoreEquals=true on both don't equal", property3.equals(property4));
+        assertTrue("Two different properties with ignoreEquals=true on both don't equal", property3.equals(property4));
     }
 
 }

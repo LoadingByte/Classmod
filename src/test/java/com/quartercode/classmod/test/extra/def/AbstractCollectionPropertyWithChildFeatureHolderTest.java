@@ -18,9 +18,9 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertEquals;
 import java.util.ArrayList;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -55,8 +55,8 @@ public class AbstractCollectionPropertyWithChildFeatureHolderTest {
         property.add(new TestFeatureHolder());
         ChildFeatureHolder<?> element2 = property.get().iterator().next();
 
-        Assert.assertEquals("Parent of the newly added and then removed collection property element 1 (child feature holder)", null, element1.getParent());
-        Assert.assertEquals("Parent of the newly added and not removed collection property element 2 (child feature holder)", propertyHolder, element2.getParent());
+        assertEquals("Parent of the newly added and then removed collection property element 1 (child feature holder)", null, element1.getParent());
+        assertEquals("Parent of the newly added and not removed collection property element 2 (child feature holder)", propertyHolder, element2.getParent());
     }
 
     private static class TestFeatureHolder extends DefaultChildFeatureHolder<FeatureHolder> {

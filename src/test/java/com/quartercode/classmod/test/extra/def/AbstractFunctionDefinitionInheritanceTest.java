@@ -18,11 +18,11 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -121,7 +121,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
         Function<Void> function = variant.newInstance().get(functionDefinition);
         function.invoke();
 
-        Assert.assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
+        assertTrue("Invocation pattern doesn't equal", Arrays.equals(expectedInvocations, actualInvocations));
     }
 
     private static class A extends DefaultFeatureHolder {

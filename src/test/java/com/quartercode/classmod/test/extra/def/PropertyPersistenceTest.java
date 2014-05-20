@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.assertEquals;
 import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
@@ -33,7 +34,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -109,7 +109,7 @@ public class PropertyPersistenceTest {
         marshaller.marshal(root, serialized);
 
         RootElement copy = (RootElement) unmarshaller.unmarshal(new StringReader(serialized.toString()));
-        Assert.assertEquals("Serialized-deserialized copy of the feature holder", root.featureHolder, copy.featureHolder);
+        assertEquals("Serialized-deserialized copy of the feature holder", root.featureHolder, copy.featureHolder);
     }
 
     @XmlRootElement (namespace = "http://quartercode.com")

@@ -18,8 +18,8 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static org.junit.Assert.*;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Assert;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -104,11 +104,11 @@ public class AbstractFunctionPriorityTest {
 
         int result = function.invoke();
 
-        Assert.assertTrue("Executor 1 wasn't invoked", invokedFunctionExecutor1.get());
-        Assert.assertTrue("Executor 2 wasn't invoked", invokedFunctionExecutor2.get());
-        Assert.assertTrue("Executor 3 wasn't invoked", invokedFunctionExecutor3.get());
-        Assert.assertFalse("Executor 4 was invoked", invokedFunctionExecutor4.get());
-        Assert.assertEquals("Return value", 2, result);
+        assertTrue("Executor 1 wasn't invoked", invokedFunctionExecutor1.get());
+        assertTrue("Executor 2 wasn't invoked", invokedFunctionExecutor2.get());
+        assertTrue("Executor 3 wasn't invoked", invokedFunctionExecutor3.get());
+        assertFalse("Executor 4 was invoked", invokedFunctionExecutor4.get());
+        assertEquals("Return value", 2, result);
     }
 
 }
