@@ -189,7 +189,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this);
+        return ReflectionToStringBuilder.toString(this);
     }
 
 }
