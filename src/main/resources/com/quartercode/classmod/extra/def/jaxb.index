@@ -1,9 +1,3 @@
 DefaultChildFeatureHolder
-ObjectCollectionProperty
-ObjectProperty
-ReferenceCollectionProperty
-ReferenceProperty
-ObjectAdapter$ClassWrapper
-ObjectAdapter$ArrayWrapper
-ObjectAdapter$CollectionWrapper
-ObjectAdapter$MapWrapper
+DefaultCollectionProperty
+DefaultProperty

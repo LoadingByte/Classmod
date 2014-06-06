@@ -19,6 +19,7 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.Map;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -28,11 +29,12 @@ import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract property definition is used to retrieve a {@link Property} from a {@link FeatureHolder}.
- * It's an implementation of the {@link PropertyDefinition} interface.<br>
+ * The class is the default implementation of the {@link PropertyDefinition} interface.<br>
  * <br>
  * Every definition contains the name of the {@link Property}, as well as the getter and setter {@link FunctionExecutor}s that are used.
  * You can use an abstract property definition to construct a new instance of the defined {@link Property} through {@link #create(FeatureHolder)}.
@@ -44,33 +46,79 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefinition<Property<T>> implements PropertyDefinition<T> {
 
+    private Storage<T>                     storageTemplate;
+    private T                              initialValue;
+    private boolean                        cloneInitialValue;
     private boolean                        ignoreEquals;
+
     private final FunctionDefinition<T>    getter;
     private final FunctionDefinition<Void> setter;
 
     /**
      * Creates a new abstract property definition for defining a {@link Property} with the given name.
      * 
-     * @param name The name of the defined {@link Property}.
+     * @param name The name of the defined property.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
      */
-    public AbstractPropertyDefinition(String name) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate) {
 
         super(name);
+
+        Validate.notNull(storageTemplate, "The storage template of an abstract property definition cannot be null");
+
+        this.storageTemplate = storageTemplate;
 
         getter = FunctionDefinitionFactory.create(name);
         setter = FunctionDefinitionFactory.create(name, Object.class);
     }
 
     /**
+     * Creates a new abstract property definition for defining a {@link Property} with the given name and initial value.
+     * 
+     * @param name The name of the defined property.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
+     * @param initialValue The initial value of the defined property.
+     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the defined property (usually {@code true}).
+     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the objects that are stored in property instances.
+     */
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, T initialValue, boolean cloneInitialValue) {
+
+        this(name, storageTemplate);
+
+        this.initialValue = initialValue;
+        this.cloneInitialValue = cloneInitialValue;
+    }
+
+    /**
      * Creates a new abstract property definition for defining a {@link Property} with the given name and "ignoreEquals" flag.
      * 
      * @param name The name of the defined {@link Property}.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
      * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
      */
-    public AbstractPropertyDefinition(String name, boolean ignoreEquals) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, boolean ignoreEquals) {
 
-        this(name);
+        this(name, storageTemplate);
 
+        this.ignoreEquals = ignoreEquals;
+    }
+
+    /**
+     * Creates a new abstract property definition for defining a {@link Property} with the given name, initial value, and "ignoreEquals" flag.
+     * 
+     * @param name The name of the defined property.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
+     * @param initialValue The initial value of the defined property.
+     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the defined property (usually {@code true}).
+     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the objects that are stored in property instances.
+     * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     */
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, T initialValue, boolean cloneInitialValue, boolean ignoreEquals) {
+
+        this(name, storageTemplate);
+
+        this.initialValue = initialValue;
+        this.cloneInitialValue = cloneInitialValue;
         this.ignoreEquals = ignoreEquals;
     }
 
@@ -114,6 +162,33 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     public void removeSetterExecutor(String name, Class<? extends FeatureHolder> variant) {
 
         setter.removeExecutor(name, variant);
+    }
+
+    /**
+     * Creates a new {@link Storage} instance from the stored storage template.
+     * This method should be only used by subclasses.
+     * 
+     * @return A new storage instance.
+     */
+    protected Storage<T> newStorage() {
+
+        return storageTemplate.reproduce();
+    }
+
+    /**
+     * Returns an initial value object that can be immediately used for a new {@link Property} instance.
+     * This method takes care of cloning the template etc.
+     * It should be only used by subclasses.
+     * 
+     * @return A ready-for-use initial value object.
+     */
+    protected T newInitialValue() {
+
+        if (initialValue != null && cloneInitialValue) {
+            return PropertyCloneUtil.cloneInitialValue(initialValue);
+        } else {
+            return initialValue;
+        }
     }
 
     @Override

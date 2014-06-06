@@ -20,132 +20,29 @@ package com.quartercode.classmod.extra.def;
 
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Property;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.Storage;
 
 /**
- * A transient property is a simple {@link Property} which stores an object and can't be serialized by JAXB.
+ * A transient property is a simple {@link Property} which isn't persistent.
+ * It extends the {@link DefaultProperty} class which provides all the base functionality.
  * 
  * @param <T> The type of object which can be stored inside the transient property.
  * @see Property
  */
-public class TransientProperty<T> extends AbstractProperty<T> {
+public class TransientProperty<T> extends DefaultProperty<T> {
 
     /**
-     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name.
-     * 
-     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
-     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
-     */
-    public static <T> PropertyDefinition<T> createDefinition(String name) {
-
-        return new AbstractPropertyDefinition<T>(name) {
-
-            @Override
-            public Property<T> create(FeatureHolder holder) {
-
-                return new TransientProperty<>(getName(), holder);
-            }
-
-        };
-    }
-
-    /**
-     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name and initial value.
-     * 
-     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param initialValue The initial value of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the property (mostly {@code true}).
-     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the object that is stored in the property.
-     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
-     */
-    public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue, final boolean cloneInitialValue) {
-
-        return createDefinition(name, initialValue, cloneInitialValue, false);
-    }
-
-    /**
-     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name and ignore equals state.
-     * 
-     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param ignoreEquals Whether the value of the property should be excluded from equality checks of its feature holder.
-     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
-     */
-    public static <T> PropertyDefinition<T> createDefinition(String name, final boolean ignoreEquals) {
-
-        return new AbstractPropertyDefinition<T>(name, ignoreEquals) {
-
-            @Override
-            public Property<T> create(FeatureHolder holder) {
-
-                return new TransientProperty<>(getName(), holder);
-            }
-
-        };
-    }
-
-    /**
-     * Creates a new {@link PropertyDefinition} that describes a transient property with the given name, initial value and ignore equals state.
-     * 
-     * @param name The name of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param initialValue The initial value of the transient property which the returned {@link PropertyDefinition} describes.
-     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the property (mostly {@code true}).
-     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the object that is stored in the property.
-     * @param ignoreEquals Whether the value of the property should be excluded from equality checks of its feature holder.
-     * @return A {@link PropertyDefinition} which can be used to describe a transient property.
-     */
-    public static <T> PropertyDefinition<T> createDefinition(String name, final T initialValue, final boolean cloneInitialValue, final boolean ignoreEquals) {
-
-        return new AbstractPropertyDefinition<T>(name, ignoreEquals) {
-
-            @Override
-            public Property<T> create(FeatureHolder holder) {
-
-                T actualInitialValue = initialValue;
-                if (cloneInitialValue) {
-                    actualInitialValue = PropertyCloneUtil.cloneInitialValue(initialValue);
-                }
-
-                return new TransientProperty<>(getName(), holder, actualInitialValue);
-            }
-
-        };
-    }
-
-    private T object;
-
-    /**
-     * Creates a new transient property with the given name and {@link FeatureHolder}.
+     * Creates a new transient property with the given name, {@link FeatureHolder} and {@link Storage} implementation.
+     * Also sets the initially stored object.
      * 
      * @param name The name of the transient property.
      * @param holder The feature holder which has and uses the new transient property.
-     */
-    public TransientProperty(String name, FeatureHolder holder) {
-
-        super(name, holder);
-    }
-
-    /**
-     * Creates a new transient property with the given name and {@link FeatureHolder}, and sets the initial value.
-     * 
-     * @param name The name of the transient property.
-     * @param holder The feature holder which has and uses the new transient property.
+     * @param storage The {@link Storage} implementation that should be used by the transient property in order to store its values.
      * @param initialValue The value the new transient property has directly after creation.
      */
-    public TransientProperty(String name, FeatureHolder holder, T initialValue) {
+    public TransientProperty(String name, FeatureHolder holder, Storage<T> storage, T initialValue) {
 
-        super(name, holder, initialValue);
-    }
-
-    @Override
-    protected T getInternal() {
-
-        return object;
-    }
-
-    @Override
-    protected void setInternal(T value) {
-
-        object = value;
+        super(name, holder, storage, initialValue);
     }
 
 }

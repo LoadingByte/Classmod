@@ -27,11 +27,14 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
@@ -40,19 +43,22 @@ import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Storage;
 
 /**
- * An abstract collection property is an implementation of the {@link CollectionProperty} interface.<br>
+ * The {@link Persistent} default implementation of the {@link CollectionProperty} interface.<br>
  * <br>
- * The adder and the remover of every abstract collection property keep track of {@link ChildFeatureHolder}s.
+ * The adder and the remover of every default collection property keep track of {@link ChildFeatureHolder}s.
  * That means that the parent of a {@link ChildFeatureHolder} value is set to the holder of the property on add.
  * If an old {@link ChildFeatureHolder} value is removed, the parent of the old value is set to null.
  * 
- * @param <E> The type of object which can be stored inside the {@link Collection} the abstract collection property holds.
- * @param <C> The type of {@link Collection} the abstract collection property stores.
+ * @param <E> The type of object that can be stored inside the default collection property's {@link Collection}.
+ * @param <C> The type of collection that can be stored inside the default collection property.
  * @see CollectionProperty
  */
-public abstract class AbstractCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
+@Persistent
+@XmlRootElement
+public class DefaultCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
     private static final List<Class<?>> GETTER_PARAMETERS        = new ArrayList<>();
     private static final List<Class<?>> ADDER_REMOVER_PARAMETERS = new ArrayList<>();
@@ -63,30 +69,35 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
 
     }
 
-    private boolean                     ignoreEquals;
+    @XmlAnyElement (lax = true)
+    private Storage<C>                  storage;
 
     private boolean                     intialized;
+    private boolean                     ignoreEquals;
     private Function<C>                 getter;
     private Function<Void>              adder;
     private Function<Void>              remover;
 
     /**
-     * Creates a new empty abstract collection property.
+     * Creates a new empty default collection property.
      * This is only recommended for direct field access (e.g. for serialization).
      */
-    protected AbstractCollectionProperty() {
+    protected DefaultCollectionProperty() {
 
     }
 
     /**
-     * Creates a new abstract collection property with the given name, {@link FeatureHolder} and stored {@link Collection}.
+     * Creates a new default collection property with the given name, {@link FeatureHolder}, and {@link Storage} implementation.
      * 
-     * @param name The name of the abstract collection property.
-     * @param holder The feature holder which has and uses the new abstract collection property.
+     * @param name The name of the default collection property.
+     * @param holder The feature holder which has and uses the new default collection property.
+     * @param storage The {@link Storage} implementation that should be used by the default collection property for storing its {@link Collection}.
      */
-    public AbstractCollectionProperty(String name, FeatureHolder holder) {
+    public DefaultCollectionProperty(String name, FeatureHolder holder, Storage<C> storage) {
 
         super(name, holder);
+
+        this.storage = storage;
     }
 
     @Override
@@ -97,11 +108,11 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         ignoreEquals = definition.isIgnoreEquals();
 
         C newCollection = definition.newCollection();
-        C oldCollection = getInternal();
+        C oldCollection = storage.get();
         if (oldCollection != null) {
             newCollection.addAll(oldCollection);
         }
-        setInternal(newCollection);
+        storage.set(newCollection);
 
         List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<>();
         List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<>();
@@ -124,7 +135,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
             @Override
             public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
 
-                C collection = unmodifiable(getInternal());
+                C collection = unmodifiable(storage.get());
                 invocation.next(arguments);
                 return collection;
             }
@@ -152,7 +163,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-                C collection = getInternal();
+                C collection = storage.get();
                 // The only caller (add()) verified the type by a compiler-safe generic parameter
                 @SuppressWarnings ("unchecked")
                 E element = (E) arguments[0];
@@ -165,7 +176,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                 }
 
                 collection.add(element);
-                setInternal(collection);
+                storage.set(collection);
 
                 return invocation.next(arguments);
             }
@@ -178,7 +189,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-                C collection = getInternal();
+                C collection = storage.get();
                 // The only caller (remove()) verified the type by a compiler-safe generic parameter
                 @SuppressWarnings ("unchecked")
                 E element = (E) arguments[0];
@@ -192,7 +203,7 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
                     }
 
                     collection.remove(element);
-                    setInternal(collection);
+                    storage.set(collection);
                 }
 
                 return invocation.next(arguments);
@@ -232,39 +243,23 @@ public abstract class AbstractCollectionProperty<E, C extends Collection<E>> ext
         remover.invoke(element);
     }
 
-    /**
-     * Returns the stored {@link Collection} without invoking the getter {@link FunctionExecutor}s.
-     * This method is used at the end of the {@link #get()} {@link FunctionExecutor} chain in order to perform the actual get operation.
-     * 
-     * @return The {@link Collection} that is stored by the collection property.
-     */
-    protected abstract C getInternal();
-
-    /**
-     * Changes the stored {@link Collection} to an entirely new object.
-     * This method is used in the constructor and at the end of the adder/remover in order to set or change the stored {@link Collection}.
-     * 
-     * @param collection The new {@link Collection} that should be stored by the collection property.
-     */
-    protected abstract void setInternal(C collection);
-
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "getter", "adder", "remover");
+        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "intialized", "getter", "adder", "remover");
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        boolean doIgnoreEquals = ignoreEquals || obj instanceof AbstractCollectionProperty && ((AbstractCollectionProperty<?, ?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "getter", "adder", "remover");
+        boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultCollectionProperty && ((DefaultCollectionProperty<?, ?>) obj).ignoreEquals;
+        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "intialized", "getter", "adder", "remover");
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "getter", "adder", "remover");
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "intialized", "getter", "adder", "remover");
     }
 
 }

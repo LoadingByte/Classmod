@@ -31,12 +31,12 @@ import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract collection property definition is used to retrieve a {@link CollectionProperty} from a {@link FeatureHolder}.
- * It's an implementation of the {@link CollectionPropertyDefinition} interface.<br>
+ * The class is the default implementation of the {@link CollectionPropertyDefinition} interface.<br>
  * <br>
  * Every definition contains the name of the {@link CollectionProperty}, as well as the getter, adder and remover {@link FunctionExecutor}s that are used.
  * You can use an abstract collection property definition to construct a new instance of the defined {@link CollectionProperty} through {@link #create(FeatureHolder)}.
@@ -49,24 +49,28 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractCollectionPropertyDefinition<E, C extends Collection<E>> extends AbstractFeatureDefinition<CollectionProperty<E, C>> implements CollectionPropertyDefinition<E, C> {
 
+    private Storage<C>                     storageTemplate;
     private C                              collectionTemplate;
     private boolean                        ignoreEquals;
+
     private final FunctionDefinition<C>    getter;
     private final FunctionDefinition<Void> adder;
     private final FunctionDefinition<Void> remover;
 
     /**
-     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name.
-     * Also sets a template {@link Collection} whose clones are used by property instances.
+     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name and {@link Storage} implementation.
+     * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
-     * @param name The name of the defined {@link CollectionProperty}.
-     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
+     * @param name The name of the defined collection property.
+     * @param collectionTemplate The collection template whose clones are used by the defined collection property.
      */
-    public AbstractCollectionPropertyDefinition(String name, C collectionTemplate) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, C collectionTemplate) {
 
         super(name);
 
-        Validate.notNull(collectionTemplate, "A collection property definition must be supplied with a template collection implementation to use");
+        Validate.notNull(storageTemplate, "The storage template of a default collection property definition cannot be null");
+        Validate.notNull(collectionTemplate, "The collection implementation template of a default collection property definition cannot be null");
+
         this.collectionTemplate = collectionTemplate;
 
         getter = FunctionDefinitionFactory.create(name);
@@ -75,16 +79,16 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     /**
-     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name.
-     * Also sets a template {@link Collection} whose clones are used by property instances and the "ignoreEquals" flag.
+     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name, {@link Storage} implementation, and "ignoreEquals" flag.
+     * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
-     * @param name The name of the defined {@link CollectionProperty}.
-     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
+     * @param name The name of the defined collection property.
+     * @param collectionTemplate The collection template whose clones are used by the defined collection property.
      * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      */
-    public AbstractCollectionPropertyDefinition(String name, C collectionTemplate, boolean ignoreEquals) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, C collectionTemplate, boolean ignoreEquals) {
 
-        this(name, collectionTemplate);
+        this(name, storageTemplate, collectionTemplate);
 
         this.ignoreEquals = ignoreEquals;
     }
@@ -153,6 +157,17 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     public void removeRemoverExecutor(String name, Class<? extends FeatureHolder> variant) {
 
         remover.removeExecutor(name, variant);
+    }
+
+    /**
+     * Creates a new {@link Storage} instance from the stored storage template.
+     * This method should be only used by subclasses.
+     * 
+     * @return A new storage instance.
+     */
+    protected Storage<C> newStorage() {
+
+        return storageTemplate.reproduce();
     }
 
     @Override

@@ -21,11 +21,14 @@ package com.quartercode.classmod.extra.def;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
+import javax.xml.bind.annotation.XmlAnyElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Function;
@@ -34,18 +37,21 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.Storage;
 
 /**
- * An abstract property is an implementation of the {@link Property} interface.<br>
+ * The {@link Persistent} default implementation of the {@link Property} interface.<br>
  * <br>
- * The setter of every abstract property keeps track of {@link ChildFeatureHolder}s.
- * That means that the parent of a {@link ChildFeatureHolder} value is set to the holder of the property.
- * If an old {@link ChildFeatureHolder} value is replaced by another object, the parent of the old value is set to null.
+ * The setter of every default property keeps track of {@link ChildFeatureHolder}s.
+ * That means that the parent of a child feature holder value is set to the holder of the property.
+ * If an old child feature holder value is replaced by another object, the parent of the old value is set to null.
  * 
- * @param <T> The type of object which can be stored inside the abstract property.
+ * @param <T> The type of object that can be stored inside the default property.
  * @see Property
  */
-public abstract class AbstractProperty<T> extends AbstractFeature implements Property<T> {
+@Persistent
+@XmlRootElement
+public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
     private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<>();
     private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<>();
@@ -56,53 +62,46 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
 
     }
 
-    private boolean                     ignoreEquals;
+    @XmlAnyElement (lax = true)
+    private Storage<T>                  storage;
+
+    /*
+     * Note that initialValue is only non-null if:
+     * - The parameterized constructor of DefaultProperty was called.
+     * - The set initialValue is not null.
+     * 
+     * The first condition implies that the property was created the first time
+     * from a definition and not loaded by a serializer.
+     */
+    private T                           initialValue;
 
     private boolean                     intialized;
+    private boolean                     ignoreEquals;
     private Function<T>                 getter;
     private Function<Void>              setter;
 
     /**
-     * Creates a new empty abstract property.
+     * Creates a new empty default property.
      * This is only recommended for direct field access (e.g. for serialization).
      */
-    protected AbstractProperty() {
+    protected DefaultProperty() {
 
     }
 
     /**
-     * Creates a new abstract property with the given name and {@link FeatureHolder}.
+     * Creates a new default property with the given name, {@link FeatureHolder}, {@link Storage} implementation, and initial value.
      * 
-     * @param name The name of the abstract property.
-     * @param holder The feature holder which has and uses the new abstract property.
+     * @param name The name of the default property.
+     * @param holder The feature holder which has and uses the new default property.
+     * @param storage The {@link Storage} implementation that should be used by the property for storing its value.
+     * @param initialValue The value the new default property has directly after creation.
      */
-    public AbstractProperty(String name, FeatureHolder holder) {
-
-        super(name, holder);
-    }
-
-    /**
-     * Creates a new abstract property with the given name and {@link FeatureHolder}.
-     * Also sets the initially stored object.
-     * 
-     * @param name The name of the abstract property.
-     * @param holder The feature holder which has and uses the new abstract property.
-     * @param initialValue The value the new abstract property has directly after creation.
-     */
-    public AbstractProperty(String name, FeatureHolder holder, T initialValue) {
+    public DefaultProperty(String name, FeatureHolder holder, Storage<T> storage, T initialValue) {
 
         super(name, holder);
 
-        if (initialValue != null) {
-            if (initialValue instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) initialValue).getParentType())) {
-                // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
-                @SuppressWarnings ("unchecked")
-                ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) initialValue;
-                childFeatureHolder.setParent(getHolder());
-            }
-
-            setInternal(initialValue);
-        }
+        this.storage = storage;
+        this.initialValue = initialValue;
     }
 
     @Override
@@ -129,7 +128,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
             @Override
             public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
 
-                T value = getInternal();
+                T value = storage.get();
                 invocation.next(arguments);
                 return value;
             }
@@ -142,7 +141,7 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
             @Override
             public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-                T oldValue = getInternal();
+                T oldValue = storage.get();
                 if (oldValue instanceof ChildFeatureHolder) {
                     Object parent = ((ChildFeatureHolder<?>) oldValue).getParent();
                     if (parent != null && parent.equals(getHolder())) {
@@ -154,14 +153,14 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
                 @SuppressWarnings ("unchecked")
                 T value = (T) arguments[0];
 
-                setInternal(value);
-
                 if (value instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) value).getParentType())) {
                     // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
                     @SuppressWarnings ("unchecked")
                     ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;
                     childFeatureHolder.setParent(getHolder());
                 }
+
+                storage.set(value);
 
                 return invocation.next(arguments);
             }
@@ -173,6 +172,12 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
          */
         getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
         setter = new DummyFunction<>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
+
+        // See the comment on the "initialValue" field for more information on why this works
+        if (initialValue != null) {
+            set(initialValue);
+            initialValue = null;
+        }
     }
 
     @Override
@@ -193,39 +198,23 @@ public abstract class AbstractProperty<T> extends AbstractFeature implements Pro
         setter.invoke(value);
     }
 
-    /**
-     * Returns the stored object without invoking the getter {@link FunctionExecutor}s.
-     * This method is used at the end of the {@link #get()} {@link FunctionExecutor} chain in order to perform the actual get operation.
-     * 
-     * @return The object that is stored by the property.
-     */
-    protected abstract T getInternal();
-
-    /**
-     * Changes the stored object without invoking the setter {@link FunctionExecutor}s.
-     * This method is used at the end of the {@link #set(Object)} {@link FunctionExecutor} chain in order to perform the actual set operation.
-     * 
-     * @param value The new value that should be stored by the property.
-     */
-    protected abstract void setInternal(T value);
-
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "intialized", "getter", "setter");
+        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "initialValue", "intialized", "getter", "setter");
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        boolean doIgnoreEquals = ignoreEquals || obj instanceof AbstractProperty && ((AbstractProperty<?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "intialized", "getter", "setter");
+        boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultProperty && ((DefaultProperty<?>) obj).ignoreEquals;
+        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "initialValue", "intialized", "getter", "setter");
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "intialized", "getter", "setter");
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "initialValue", "intialized", "getter", "setter");
     }
 
 }

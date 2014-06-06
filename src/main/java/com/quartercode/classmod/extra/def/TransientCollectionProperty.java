@@ -21,75 +21,28 @@ package com.quartercode.classmod.extra.def;
 import java.util.Collection;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.Storage;
 
 /**
- * A transient collection property is a simple <b>non-persistent</b> {@link CollectionProperty} which stores a {@link Collection}.
+ * A transient collection property is a simple {@link CollectionProperty} which isn't persistent.
+ * It extends the {@link DefaultCollectionProperty} class which provides all the base functionality.
  * 
  * @param <E> The type of object which can be stored inside the {@link Collection} the transient collection property holds.
  * @param <C> The type of {@link Collection} the transient collection property stores.
  * @see CollectionProperty
  */
-public class TransientCollectionProperty<E, C extends Collection<E>> extends AbstractCollectionProperty<E, C> {
+public class TransientCollectionProperty<E, C extends Collection<E>> extends DefaultCollectionProperty<E, C> {
 
     /**
-     * Creates a new {@link CollectionPropertyDefinition} that describes a transient collection property with the given name and initial value.
-     * 
-     * @param name The name of the transient collection property which the returned {@link CollectionPropertyDefinition} describes.
-     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
-     * @return A {@link CollectionPropertyDefinition} which can be used to describe a transient collection property.
-     */
-    // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
-    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, I collectionTemplate) {
-
-        return createDefinition(name, collectionTemplate, false);
-    }
-
-    /**
-     * Creates a new {@link CollectionPropertyDefinition} that describes a transient collection property with the given name and initial value.
-     * 
-     * @param name The name of the transient collection property which the returned {@link CollectionPropertyDefinition} describes.
-     * @param collectionTemplate The {@link Collection} template whose clones are used by the defined collection property.
-     * @param ignoreEquals Whether the value of the collection property should be excluded from equality checks of its feature holder.
-     * @return A {@link CollectionPropertyDefinition} which can be used to describe a transient collection property.
-     */
-    // Use generic I(mplementation) parameter for preventing unchecked casts by the method user
-    public static <E, C extends Collection<E>, I extends C> CollectionPropertyDefinition<E, C> createDefinition(String name, I collectionTemplate, boolean ignoreEquals) {
-
-        return new AbstractCollectionPropertyDefinition<E, C>(name, collectionTemplate, ignoreEquals) {
-
-            @Override
-            public CollectionProperty<E, C> create(FeatureHolder holder) {
-
-                return new TransientCollectionProperty<>(getName(), holder);
-            }
-
-        };
-    }
-
-    private C collection;
-
-    /**
-     * Creates a new transient collection property with the given name and {@link FeatureHolder}.
+     * Creates a new transient collection property with the given name, {@link FeatureHolder}, and {@link Storage} implementation.
      * 
      * @param name The name of the transient collection property.
      * @param holder The feature holder which has and uses the new transient collection property.
+     * @param storage The {@link Storage} implementation that should be used by the transient collection property for storing its {@link Collection}.
      */
-    public TransientCollectionProperty(String name, FeatureHolder holder) {
+    public TransientCollectionProperty(String name, FeatureHolder holder, Storage<C> storage) {
 
-        super(name, holder);
-    }
-
-    @Override
-    protected C getInternal() {
-
-        return collection;
-    }
-
-    @Override
-    protected void setInternal(C collection) {
-
-        this.collection = collection;
+        super(name, holder, storage);
     }
 
 }

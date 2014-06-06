@@ -28,7 +28,7 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
 
 /**
  * Dummy functions are really simple {@link Function} implementations that use values which are set through the constructor.
- * They are primarily used by the {@link AbstractProperty} and {@link AbstractCollectionProperty} classes.
+ * They are primarily used by the {@link DefaultProperty} and {@link DefaultCollectionProperty} classes.
  * 
  * @param <R> The return type of the dummy function.
  */
