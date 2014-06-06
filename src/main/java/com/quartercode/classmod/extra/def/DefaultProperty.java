@@ -124,50 +124,9 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
             setterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
 
-        // Add getter executor
-        getterExecutors.add(new DefaultFunctionExecutorContext<>("getInternal", new FunctionExecutor<T>() {
-
-            @Override
-            public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
-
-                T value = storage.get();
-                invocation.next(arguments);
-                return value;
-            }
-
-        }));
-
-        // Add setter executor
-        setterExecutors.add(new DefaultFunctionExecutorContext<>("setInternal", new FunctionExecutor<Void>() {
-
-            @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
-
-                T oldValue = storage.get();
-                if (oldValue instanceof ChildFeatureHolder) {
-                    Object parent = ((ChildFeatureHolder<?>) oldValue).getParent();
-                    if (parent != null && parent.equals(getHolder())) {
-                        ((ChildFeatureHolder<?>) oldValue).setParent(null);
-                    }
-                }
-
-                // The only caller (set()) verified the type by a compiler-safe generic parameter
-                @SuppressWarnings ("unchecked")
-                T value = (T) arguments[0];
-
-                if (value instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) value).getParentType())) {
-                    // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
-                    @SuppressWarnings ("unchecked")
-                    ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;
-                    childFeatureHolder.setParent(getHolder());
-                }
-
-                storage.set(value);
-
-                return invocation.next(arguments);
-            }
-
-        }));
+        // Add default executor
+        getterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultGetterFunctionExecutor()));
+        setterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultSetterFunctionExecutor()));
 
         /*
          * Create the dummy getter/setter functions
@@ -217,6 +176,49 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     public String toString() {
 
         return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+    }
+
+    private class DefaultGetterFunctionExecutor implements FunctionExecutor<T> {
+
+        @Override
+        public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
+
+            T value = storage.get();
+            invocation.next(arguments);
+            return value;
+        }
+
+    }
+
+    private class DefaultSetterFunctionExecutor implements FunctionExecutor<Void> {
+
+        @Override
+        public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
+
+            T oldValue = storage.get();
+            if (oldValue instanceof ChildFeatureHolder) {
+                Object parent = ((ChildFeatureHolder<?>) oldValue).getParent();
+                if (parent != null && parent.equals(getHolder())) {
+                    ((ChildFeatureHolder<?>) oldValue).setParent(null);
+                }
+            }
+
+            // The only caller (set()) verified the type by a compiler-safe generic parameter
+            @SuppressWarnings ("unchecked")
+            T value = (T) arguments[0];
+
+            if (value instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) value).getParentType())) {
+                // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
+                @SuppressWarnings ("unchecked")
+                ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;
+                childFeatureHolder.setParent(getHolder());
+            }
+
+            storage.set(value);
+
+            return invocation.next(arguments);
+        }
+
     }
 
 }

@@ -131,87 +131,10 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
             removerExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
         }
 
-        // Add getter executor
-        getterExecutors.add(new DefaultFunctionExecutorContext<>("getInternal", new FunctionExecutor<C>() {
-
-            @Override
-            public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
-
-                C collection = unmodifiable(storage.get());
-                invocation.next(arguments);
-                return collection;
-            }
-
-            // The casts always return the right value if C is no implementation (e.g. ArrayList instead of just List)
-            @SuppressWarnings ("unchecked")
-            private C unmodifiable(C collection) {
-
-                if (collection instanceof List) {
-                    return (C) Collections.unmodifiableList(new ArrayList<>(collection));
-                } else if (collection instanceof Set) {
-                    return (C) Collections.unmodifiableSet(new HashSet<>(collection));
-                } else if (collection instanceof SortedSet) {
-                    return (C) Collections.unmodifiableSortedSet(new TreeSet<>(collection));
-                } else {
-                    return (C) Collections.unmodifiableCollection(collection);
-                }
-            }
-
-        }));
-
-        // Add adder executor
-        adderExecutors.add(new DefaultFunctionExecutorContext<>("addInternal", new FunctionExecutor<Void>() {
-
-            @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
-
-                C collection = storage.get();
-                // The only caller (add()) verified the type by a compiler-safe generic parameter
-                @SuppressWarnings ("unchecked")
-                E element = (E) arguments[0];
-
-                if (element instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) element).getParentType())) {
-                    // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
-                    @SuppressWarnings ("unchecked")
-                    ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;
-                    childFeatureHolder.setParent(getHolder());
-                }
-
-                collection.add(element);
-                storage.set(collection);
-
-                return invocation.next(arguments);
-            }
-
-        }));
-
-        // Add remover executor
-        removerExecutors.add(new DefaultFunctionExecutorContext<>("removeInternal", new FunctionExecutor<Void>() {
-
-            @Override
-            public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
-
-                C collection = storage.get();
-                // The only caller (remove()) verified the type by a compiler-safe generic parameter
-                @SuppressWarnings ("unchecked")
-                E element = (E) arguments[0];
-
-                if (collection.contains(element)) {
-                    if (element instanceof ChildFeatureHolder) {
-                        Object parent = ((ChildFeatureHolder<?>) element).getParent();
-                        if (parent != null && parent.equals(getHolder())) {
-                            ((ChildFeatureHolder<?>) element).setParent(null);
-                        }
-                    }
-
-                    collection.remove(element);
-                    storage.set(collection);
-                }
-
-                return invocation.next(arguments);
-            }
-
-        }));
+        // Add default executors
+        getterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultGetterFunctionExecutor()));
+        adderExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultAdderFunctionExecutor()));
+        removerExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultRemoverFunctionExecutor()));
 
         /*
          * Create the dummy getter/adder/remover functions
@@ -262,6 +185,85 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     public String toString() {
 
         return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+    }
+
+    private class DefaultGetterFunctionExecutor implements FunctionExecutor<C> {
+
+        @Override
+        public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
+
+            C collection = unmodifiable(storage.get());
+            invocation.next(arguments);
+            return collection;
+        }
+
+        // The casts always return the right value if C is no implementation (e.g. ArrayList instead of just List)
+        @SuppressWarnings ("unchecked")
+        private C unmodifiable(C collection) {
+
+            if (collection instanceof List) {
+                return (C) Collections.unmodifiableList(new ArrayList<>(collection));
+            } else if (collection instanceof Set) {
+                return (C) Collections.unmodifiableSet(new HashSet<>(collection));
+            } else if (collection instanceof SortedSet) {
+                return (C) Collections.unmodifiableSortedSet(new TreeSet<>(collection));
+            } else {
+                return (C) Collections.unmodifiableCollection(collection);
+            }
+        }
+
+    }
+
+    private class DefaultAdderFunctionExecutor implements FunctionExecutor<Void> {
+
+        @Override
+        public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
+
+            C collection = storage.get();
+            // The only caller (add()) verified the type by a compiler-safe generic parameter
+            @SuppressWarnings ("unchecked")
+            E element = (E) arguments[0];
+
+            if (element instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) element).getParentType())) {
+                // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
+                @SuppressWarnings ("unchecked")
+                ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;
+                childFeatureHolder.setParent(getHolder());
+            }
+
+            collection.add(element);
+            storage.set(collection);
+
+            return invocation.next(arguments);
+        }
+
+    }
+
+    private class DefaultRemoverFunctionExecutor implements FunctionExecutor<Void> {
+
+        @Override
+        public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
+
+            C collection = storage.get();
+            // The only caller (remove()) verified the type by a compiler-safe generic parameter
+            @SuppressWarnings ("unchecked")
+            E element = (E) arguments[0];
+
+            if (collection.contains(element)) {
+                if (element instanceof ChildFeatureHolder) {
+                    Object parent = ((ChildFeatureHolder<?>) element).getParent();
+                    if (parent != null && parent.equals(getHolder())) {
+                        ((ChildFeatureHolder<?>) element).setParent(null);
+                    }
+                }
+
+                collection.remove(element);
+                storage.set(collection);
+            }
+
+            return invocation.next(arguments);
+        }
+
     }
 
 }
