@@ -23,14 +23,16 @@ import org.apache.commons.lang3.exception.CloneFailedException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.Property;
 
 /**
  * The property clone util class is used to clone or pseudo-clone initial values for properties.
- * Especially the property definition factories (like {@link ObjectProperty#createDefinition(String, Object, boolean)}) need to clone initial values,
+ * Especially the (collection) property definitions need to clone initial values,
  * so accessing the value that is stored in the final property doesn't affect the value that is stored in the definition.
  * 
  * @see Property
+ * @see CollectionProperty
  */
 public class PropertyCloneUtil {
 

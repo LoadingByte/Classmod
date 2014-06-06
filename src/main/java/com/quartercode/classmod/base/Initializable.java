@@ -24,7 +24,7 @@ package com.quartercode.classmod.base;
  * Moreover, there is an {@link #isInitialized()} method that returns whether the initialize method has already been called.<br>
  * <br>
  * The difference between the initialize method and the constructor has to do with custom definitions and persistence.
- * Say you have a persistent {@link Feature} F. F has some some not-persistent attributes that are stored in its {@link FeatureDefinition}.
+ * Say you have a persistent {@link Feature} F. F has some some non-persistent attributes that are stored in its {@link FeatureDefinition}.
  * These attributes need to be transfered into every new instance of F.
  * That problem could be solved with a custom constructor F's {@link FeatureDefinition} uses.
  * However, when F is saved and loaded again (persistence), the loading algorithm uses a default no-arg constructor.

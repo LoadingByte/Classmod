@@ -36,10 +36,10 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  * An abstract property definition is used to retrieve a {@link Property} from a {@link FeatureHolder}.
  * The class is the default implementation of the {@link PropertyDefinition} interface.<br>
  * <br>
- * Every definition contains the name of the {@link Property}, as well as the getter and setter {@link FunctionExecutor}s that are used.
- * You can use an abstract property definition to construct a new instance of the defined {@link Property} through {@link #create(FeatureHolder)}.
+ * Every definition contains the name of the property, as well as the getter and setter {@link FunctionExecutor}s that are used.
+ * You can use an abstract property definition to construct a new instance of the defined property through {@link #create(FeatureHolder)}.
  * 
- * @param <T> The type of object which can be stored inside the defined {@link Property}.
+ * @param <T> The type of object which can be stored inside the defined property.
  * @see PropertyDefinition
  * @see Property
  * @see FunctionExecutor

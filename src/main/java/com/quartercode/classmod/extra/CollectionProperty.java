@@ -25,8 +25,8 @@ import com.quartercode.classmod.base.Initializable;
 /**
  * A collection property is a simple {@link Feature} which stores a {@link Collection} object.
  * 
- * @param <E> The type of object which can be stored inside the {@link Collection} the collection property holds.
- * @param <C> The type of {@link Collection} the collection property stores.
+ * @param <E> The type of object that can be stored inside the collection property's collection.
+ * @param <C> The type of collection that can be stored inside the collection property.
  */
 public interface CollectionProperty<E, C extends Collection<E>> extends Feature, ValueSupplier<C>, Initializable<CollectionPropertyDefinition<E, C>> {
 

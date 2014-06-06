@@ -24,7 +24,7 @@ import com.quartercode.classmod.base.Initializable;
 /**
  * A property is a simple {@link Feature} which stores an object.
  * 
- * @param <T> The type of object which can be stored inside the property.
+ * @param <T> The type of object that can be stored inside the property.
  */
 public interface Property<T> extends Feature, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
 

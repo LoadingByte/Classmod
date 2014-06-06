@@ -32,8 +32,8 @@ import com.quartercode.classmod.base.FeatureHolder;
  * Essentially, they are just {@link Function}s that are managed by the defined {@link CollectionProperty} object.
  * Note that the actual value changing get/set operations are performed at the default priority {@link Prioritized#DEFAULT}.
  * 
- * @param <E> The type of object which can be stored inside the {@link Collection} of the defined {@link CollectionProperty}.
- * @param <C> The type of the {@link Collection} the defined {@link CollectionProperty} stores.
+ * @param <E> The type of object that can be stored inside the defined collection property's {@link Collection}.
+ * @param <C> The type of collection that can be stored inside the defined collection property.
  * @see CollectionProperty
  * @see FunctionExecutor
  */

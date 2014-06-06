@@ -27,9 +27,9 @@ import com.quartercode.classmod.extra.Storage;
  * A transient collection property is a simple {@link CollectionProperty} which isn't persistent.
  * It extends the {@link DefaultCollectionProperty} class which provides all the base functionality.
  * 
- * @param <E> The type of object which can be stored inside the {@link Collection} the transient collection property holds.
- * @param <C> The type of {@link Collection} the transient collection property stores.
- * @see CollectionProperty
+ * @param <E> The type of object that can be stored inside the transient collection property's {@link Collection}.
+ * @param <C> The type of collection that can be stored inside the transient collection property.
+ * @see DefaultCollectionProperty
  */
 public class TransientCollectionProperty<E, C extends Collection<E>> extends DefaultCollectionProperty<E, C> {
 

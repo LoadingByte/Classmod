@@ -26,8 +26,8 @@ import com.quartercode.classmod.extra.Storage;
  * A transient property is a simple {@link Property} which isn't persistent.
  * It extends the {@link DefaultProperty} class which provides all the base functionality.
  * 
- * @param <T> The type of object which can be stored inside the transient property.
- * @see Property
+ * @param <T> The type of object that can be stored inside the transient property.
+ * @see DefaultProperty
  */
 public class TransientProperty<T> extends DefaultProperty<T> {
 

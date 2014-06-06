@@ -38,11 +38,11 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  * An abstract collection property definition is used to retrieve a {@link CollectionProperty} from a {@link FeatureHolder}.
  * The class is the default implementation of the {@link CollectionPropertyDefinition} interface.<br>
  * <br>
- * Every definition contains the name of the {@link CollectionProperty}, as well as the getter, adder and remover {@link FunctionExecutor}s that are used.
- * You can use an abstract collection property definition to construct a new instance of the defined {@link CollectionProperty} through {@link #create(FeatureHolder)}.
+ * Every definition contains the name of the collection property, as well as the getter, adder and remover {@link FunctionExecutor}s that are used.
+ * You can use an abstract collection property definition to construct a new instance of the defined collection property through {@link #create(FeatureHolder)}.
  * 
- * @param <E> The type of object which can be stored inside the {@link Collection} of the {@link Property}.
- * @param <C> The type of the {@link Collection} the defined {@link Property} stores.
+ * @param <E> The type of object that can be stored inside the defined collection property's {@link Collection}.
+ * @param <C> The type of collection that can be stored inside the defined collection property.
  * @see CollectionPropertyDefinition
  * @see CollectionProperty
  * @see FunctionExecutor
