@@ -73,6 +73,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
         Validate.notNull(storageTemplate, "The storage template of a default collection property definition cannot be null");
         Validate.notNull(collectionTemplate, "The collection implementation template of a default collection property definition cannot be null");
 
+        this.storageTemplate = storageTemplate;
         this.collectionTemplate = collectionTemplate;
 
         getter = FunctionDefinitionFactory.create(name);
