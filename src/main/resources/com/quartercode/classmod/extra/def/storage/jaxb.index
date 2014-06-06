@@ -1,0 +1,6 @@
+ObjectAdapter$ClassWrapper
+ObjectAdapter$ArrayWrapper
+ObjectAdapter$CollectionWrapper
+ObjectAdapter$MapWrapper
+ReferenceStorage
+StandardStorage
