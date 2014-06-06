@@ -53,6 +53,8 @@ import com.quartercode.classmod.extra.Storage;
 @XmlRootElement
 public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
+    private static final String[]       EXCLUDED_FIELDS   = { "holder", "initialValue", "intialized", "getter", "setter" };
+
     private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<>();
     private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<>();
 
@@ -201,20 +203,20 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, "holder", "initialValue", "intialized", "getter", "setter");
+        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
         boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultProperty && ((DefaultProperty<?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, "holder", "initialValue", "intialized", "getter", "setter");
+        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "initialValue", "intialized", "getter", "setter");
+        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
     }
 
 }

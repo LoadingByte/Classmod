@@ -40,11 +40,14 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContext<R> {
 
-    private static final Logger       LOGGER           = LoggerFactory.getLogger(DefaultFunctionExecutorContext.class);
+    private static final Logger       LOGGER                    = LoggerFactory.getLogger(DefaultFunctionExecutorContext.class);
+
+    private static final String[]     EXCLUDED_FIELDS           = { "executor", "annotationValues" };
+    private static final String[]     TO_STRING_EXCLUDED_FIELDS = { "annotationValues" };
 
     private final String              name;
     private final FunctionExecutor<R> executor;
-    private final Map<Method, Object> annotationValues = new HashMap<>();
+    private final Map<Method, Object> annotationValues          = new HashMap<>();
 
     /**
      * Creates a new default function executor context and fills in the {@link FunctionExecutor} to store and its name.
@@ -126,19 +129,19 @@ public class DefaultFunctionExecutorContext<R> implements FunctionExecutorContex
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "executor", "annotationValues");
+        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "executor", "annotationValues");
+        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "annotationValues");
+        return ReflectionToStringBuilder.toStringExclude(this, TO_STRING_EXCLUDED_FIELDS);
     }
 
 }

@@ -45,6 +45,8 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class AbstractFunction<R> extends AbstractFeature implements Function<R> {
 
+    private static final String[]            EXCLUDED_FIELDS = { "holder", "executors" };
+
     private boolean                          initialized;
     private List<Class<?>>                   parameters;
     private List<FunctionExecutorContext<R>> executors;
@@ -105,19 +107,19 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "holder", "executors");
+        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "holder", "executors");
+        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "executors");
+        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
     }
 
 }

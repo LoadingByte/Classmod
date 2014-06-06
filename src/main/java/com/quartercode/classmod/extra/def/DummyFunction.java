@@ -34,6 +34,9 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
  */
 class DummyFunction<R> extends AbstractFunction<R> {
 
+    private static final String[]                  EXCLUDED_FIELDS           = { "holder" };
+    private static final String[]                  TO_STRING_EXCLUDED_FIELDS = { "holder", "parameters", "executors" };
+
     private final List<Class<?>>                   dummyParameters;
     private final List<FunctionExecutorContext<R>> dummyExecutors;
 
@@ -68,19 +71,19 @@ class DummyFunction<R> extends AbstractFunction<R> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "holder");
+        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "holder");
+        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "parameters", "executors");
+        return ReflectionToStringBuilder.toStringExclude(this, TO_STRING_EXCLUDED_FIELDS);
     }
 
 }

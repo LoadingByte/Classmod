@@ -36,9 +36,11 @@ import com.quartercode.classmod.base.FeatureHolder;
  */
 public class AbstractFeature implements Feature {
 
+    private static final String[] EXCLUDED_FIELDS = { "holder" };
+
     @XmlAttribute
-    private String        name;
-    private FeatureHolder holder;
+    private String                name;
+    private FeatureHolder         holder;
 
     /**
      * Creates a new empty abstract feature.
@@ -91,19 +93,19 @@ public class AbstractFeature implements Feature {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "holder");
+        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "holder");
+        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "holder");
+        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
     }
 
 }

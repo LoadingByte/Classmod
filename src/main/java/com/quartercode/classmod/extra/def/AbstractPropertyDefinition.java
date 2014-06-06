@@ -46,6 +46,8 @@ import com.quartercode.classmod.util.FunctionDefinitionFactory;
  */
 public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefinition<Property<T>> implements PropertyDefinition<T> {
 
+    private static final String[]          EXCLUDED_FIELDS = { "getter", "setter" };
+
     private Storage<T>                     storageTemplate;
     private T                              initialValue;
     private boolean                        cloneInitialValue;
@@ -194,19 +196,19 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "getter", "setter");
+        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "getter", "setter");
+        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, "getter", "setter");
+        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
     }
 
 }
