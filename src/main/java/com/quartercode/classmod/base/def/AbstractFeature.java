@@ -20,6 +20,7 @@ package com.quartercode.classmod.base.def;
 
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -54,6 +55,9 @@ public class AbstractFeature implements Feature {
      * @param holder The feature holder which has and uses the new feature.
      */
     public AbstractFeature(String name, FeatureHolder holder) {
+
+        Validate.notNull(name, "The name of a feature cannot be null");
+        Validate.notNull(holder, "The parent feature holder of a feature cannot be null");
 
         this.name = name;
         this.holder = holder;

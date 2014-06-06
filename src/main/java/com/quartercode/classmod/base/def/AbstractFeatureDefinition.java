@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.base.def;
 
+import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -45,6 +46,8 @@ public abstract class AbstractFeatureDefinition<F extends Feature> implements Fe
      * @param name The name of the defined feature.
      */
     public AbstractFeatureDefinition(String name) {
+
+        Validate.notNull(name, "The name of a feature definition cannot be null");
 
         this.name = name;
     }
