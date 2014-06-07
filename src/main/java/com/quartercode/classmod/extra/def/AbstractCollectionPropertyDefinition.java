@@ -64,6 +64,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      */
     public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory) {
@@ -86,6 +87,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
+     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      */
