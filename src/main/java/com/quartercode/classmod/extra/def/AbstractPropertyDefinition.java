@@ -30,6 +30,7 @@ import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.Storage;
+import com.quartercode.classmod.extra.ValueFactory;
 import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
@@ -49,8 +50,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     private static final String[]          EXCLUDED_FIELDS = { "getter", "setter" };
 
     private Storage<T>                     storageTemplate;
-    private T                              initialValue;
-    private boolean                        cloneInitialValue;
+    private ValueFactory<T>                initialValueFactory;
     private boolean                        ignoreEquals;
 
     private final FunctionDefinition<T>    getter;
@@ -79,16 +79,13 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
-     * @param initialValue The initial value of the defined property.
-     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the defined property (usually {@code true}).
-     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the objects that are stored in property instances.
+     * @param initialValueFactory A {@link ValueFactory} that returns initial value objects for all created properties.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, T initialValue, boolean cloneInitialValue) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory) {
 
         this(name, storageTemplate);
 
-        this.initialValue = initialValue;
-        this.cloneInitialValue = cloneInitialValue;
+        this.initialValueFactory = initialValueFactory;
     }
 
     /**
@@ -110,17 +107,14 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
-     * @param initialValue The initial value of the defined property.
-     * @param cloneInitialValue Whether the initial value should be cloned for every new instance of the defined property (usually {@code true}).
-     *        By cloning the value, the object that is stored in the definition is not affected by changes made to the objects that are stored in property instances.
+     * @param initialValueFactory A {@link ValueFactory} that returns initial value objects for all created properties.
      * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, T initialValue, boolean cloneInitialValue, boolean ignoreEquals) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean ignoreEquals) {
 
         this(name, storageTemplate);
 
-        this.initialValue = initialValue;
-        this.cloneInitialValue = cloneInitialValue;
+        this.initialValueFactory = initialValueFactory;
         this.ignoreEquals = ignoreEquals;
     }
 
@@ -179,18 +173,14 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
 
     /**
      * Returns an initial value object that can be immediately used for a new {@link Property} instance.
-     * This method takes care of cloning the template etc.
+     * The returned object may be {@code null} if no initial value factory is supplied or the factory returns {@code null}.
      * It should be only used by subclasses.
      * 
      * @return A ready-for-use initial value object.
      */
     protected T newInitialValue() {
 
-        if (initialValue != null && cloneInitialValue) {
-            return PropertyCloneUtil.cloneInitialValue(initialValue);
-        } else {
-            return initialValue;
-        }
+        return initialValueFactory == null ? null : initialValueFactory.get();
     }
 
     @Override

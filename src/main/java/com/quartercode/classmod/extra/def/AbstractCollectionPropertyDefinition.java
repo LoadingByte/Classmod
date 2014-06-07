@@ -20,7 +20,6 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.Collection;
 import java.util.Map;
-import org.apache.commons.lang3.ObjectUtils;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -32,6 +31,7 @@ import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Storage;
+import com.quartercode.classmod.extra.ValueFactory;
 import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
@@ -52,7 +52,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     private static final String[]          EXCLUDED_FIELDS = { "getter", "adder", "remover" };
 
     private Storage<C>                     storageTemplate;
-    private C                              collectionTemplate;
+    private ValueFactory<C>                collectionFactory;
     private boolean                        ignoreEquals;
 
     private final FunctionDefinition<C>    getter;
@@ -64,17 +64,17 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
-     * @param collectionTemplate The collection template whose clones are used by the defined collection property.
+     * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      */
-    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, C collectionTemplate) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory) {
 
         super(name);
 
         Validate.notNull(storageTemplate, "The storage template of a default collection property definition cannot be null");
-        Validate.notNull(collectionTemplate, "The collection implementation template of a default collection property definition cannot be null");
+        Validate.notNull(collectionFactory, "The collection factory of a default collection property definition cannot be null");
 
         this.storageTemplate = storageTemplate;
-        this.collectionTemplate = collectionTemplate;
+        this.collectionFactory = collectionFactory;
 
         getter = FunctionDefinitionFactory.create(name);
         adder = FunctionDefinitionFactory.create(name, Object.class);
@@ -86,12 +86,12 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
-     * @param collectionTemplate The collection template whose clones are used by the defined collection property.
+     * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      */
-    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, C collectionTemplate, boolean ignoreEquals) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean ignoreEquals) {
 
-        this(name, storageTemplate, collectionTemplate);
+        this(name, storageTemplate, collectionFactory);
 
         this.ignoreEquals = ignoreEquals;
     }
@@ -99,7 +99,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public C newCollection() {
 
-        return ObjectUtils.cloneIfPossible(collectionTemplate);
+        return collectionFactory.get();
     }
 
     @Override
