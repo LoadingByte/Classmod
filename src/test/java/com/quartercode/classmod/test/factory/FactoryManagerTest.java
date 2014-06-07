@@ -20,6 +20,7 @@ package com.quartercode.classmod.test.factory;
 
 import static org.junit.Assert.*;
 import java.util.Objects;
+import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.factory.Factory;
@@ -39,7 +40,7 @@ public class FactoryManagerTest {
     public void testWithUnknownType() {
 
         // No factory is registered for type Abstract
-        factoryManager.create(Abstract.class);
+        factoryManager.create(new TypeLiteral<Abstract>() {});
     }
 
     @Test
@@ -65,7 +66,7 @@ public class FactoryManagerTest {
 
         factoryManager.setFactory(Abstract.class, new NoParameterFactory());
 
-        Abstract actualResult = factoryManager.create(Abstract.class);
+        Abstract actualResult = factoryManager.create(new TypeLiteral<Abstract>() {});
         assertNotNull("Factory manager returned null", actualResult);
         assertTrue("Factory manager didn't create correct object", Objects.equals("noParameters", actualResult.getData()));
     }
@@ -75,7 +76,7 @@ public class FactoryManagerTest {
 
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
-        Abstract actualResult = factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", 17, "parameter3", new StringBuilder("test2"));
+        Abstract actualResult = factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", 17, "parameter3", new StringBuilder("test2"));
         assertNotNull("Factory manager returned null", actualResult);
         assertTrue("Factory manager didn't create correct object", Objects.equals("test17test2", actualResult.getData()));
     }
@@ -85,7 +86,7 @@ public class FactoryManagerTest {
 
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
-        Abstract actualResult = factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", 17, "parameter3", null);
+        Abstract actualResult = factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", 17, "parameter3", null);
         assertNotNull("Factory manager returned null", actualResult);
         assertTrue("Factory manager didn't create correct object", Objects.equals("test17null", actualResult.getData()));
     }
@@ -95,7 +96,7 @@ public class FactoryManagerTest {
 
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
-        Abstract actualResult = factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", null, "parameter3", new StringBuilder("test2"));
+        Abstract actualResult = factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", null, "parameter3", new StringBuilder("test2"));
         assertNotNull("Factory manager returned null", actualResult);
         assertTrue("Factory manager didn't create correct object", Objects.equals("test0test2", actualResult.getData()));
     }
@@ -106,7 +107,7 @@ public class FactoryManagerTest {
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
         // parameter is a StringBuilder although it should be a String
-        factoryManager.create(Abstract.class, "parameter1", new StringBuilder("test1"), "parameter2", 17, "parameter3", new StringBuilder("test2"));
+        factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", new StringBuilder("test1"), "parameter2", 17, "parameter3", new StringBuilder("test2"));
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -115,7 +116,7 @@ public class FactoryManagerTest {
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
         // parameter2 is a boolean although it should be an int
-        factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", true, "parameter3", new StringBuilder("test"));
+        factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", true, "parameter3", new StringBuilder("test"));
     }
 
     @Test (expected = IllegalArgumentException.class)
@@ -124,7 +125,7 @@ public class FactoryManagerTest {
         factoryManager.setFactory(Abstract.class, new ParameterFactory());
 
         // The value of parameter3 is missing
-        factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", true, "parameter3");
+        factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", true, "parameter3");
     }
 
     @Test
@@ -133,7 +134,7 @@ public class FactoryManagerTest {
         factoryManager.setFactory(Abstract.class, new ThrowExceptionFactory());
 
         try {
-            factoryManager.create(Abstract.class, "parameter1", "test", "parameter2", null, "parameter3", new StringBuilder("test2"));
+            factoryManager.create(new TypeLiteral<Abstract>() {}, "parameter1", "test", "parameter2", null, "parameter3", new StringBuilder("test2"));
         } catch (RuntimeException e) {
             assertTrue("Not the correct exception was rethrown", e.getCause() instanceof TestException);
             return;

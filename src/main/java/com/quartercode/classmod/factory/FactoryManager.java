@@ -25,13 +25,15 @@ import java.util.HashMap;
 import java.util.Map;
 import org.apache.commons.lang3.ClassUtils;
 import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang3.reflect.TypeUtils;
+import org.apache.commons.lang3.reflect.Typed;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 
 /**
  * A factory manager assigns factory objects to abstract types.
  * For example, a factory for objects of the type {@code B implements A} could be assigned to the interface type {@code A}.
- * Users can simply input {@code A} in the {@link #create(Class, Object...)} method and get a new instance of {@code B} without knowing that it even exists.<br>
+ * Users can simply input {@code A} in the {@link #create(Typed, Object...)} method and get a new instance of {@code B} without knowing that it even exists.<br>
  * <br>
  * Factory implementations must implement <b>exactly one</b> method that is annotated with the {@link Factory} annotation.
  * That annotation indicates that the method is called by the factory manager for creating new objects.
@@ -54,7 +56,7 @@ public class FactoryManager {
      * Assigns the given factory object to the given abstract type.
      * The type must not be abstract, but it's recommended that only interfaces are added here.
      * The factory must implement <b>exactly one</b> method that is annotated with a valid {@link Factory} annotation.
-     * It then creates objects when the {@link #create(Class, Object...)} method is called with the given type.
+     * It then creates objects when the {@link #create(Typed, Object...)} method is called with the given type.
      * 
      * @param type The abstract type the given factory is assigned to.
      * @param factory The factory which is assigned to the given abstract type.
@@ -102,22 +104,26 @@ public class FactoryManager {
      * @throws RuntimeException An unknown error occurs while invoking the selected factory.
      *         That might be caused by some unknown reflection problems or a programming error.
      */
-    public <T> T create(Class<T> type, Object... parameters) {
+    public <T> T create(Typed<T> type, Object... parameters) {
 
-        Validate.isTrue(factories.containsKey(type), "Factory manager doesn't contain factory for type '%s'", type.getName());
+        Class<?> rawType = TypeUtils.getRawType(type.getType(), null);
 
-        Triple<Object, Method, Factory> factoryData = factories.get(type);
+        Validate.isTrue(factories.containsKey(rawType), "Factory manager doesn't contain factory for type '%s'", type.toString());
+
+        Triple<Object, Method, Factory> factoryData = factories.get(rawType);
         Object factory = factoryData.getLeft();
         Method factoryMethod = factoryData.getMiddle();
         Factory factoryAnnotation = factoryData.getRight();
 
         Object[] arguments = getMethodArguments(factoryMethod, factoryAnnotation, parameters);
         try {
-            return type.cast(factoryMethod.invoke(factory, arguments));
+            @SuppressWarnings ("unchecked")
+            T result = (T) factoryMethod.invoke(factory, arguments);
+            return result;
         } catch (InvocationTargetException e) {
             throw new RuntimeException("Factory '" + factory.getClass() + "' threw an unexpected exception", e.getTargetException());
         } catch (Exception e) {
-            throw new RuntimeException("Unknown error while creating object of type '" + type.getName() + "' with parameters " + Arrays.toString(parameters), e);
+            throw new RuntimeException("Unknown error while creating object of type '" + type + "' with parameters " + Arrays.toString(parameters), e);
         }
     }
 
