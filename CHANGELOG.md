@@ -2,20 +2,20 @@
 -----
 
 ### Additions
-* The properties now set the parents of stored child feature holders instead of the PropertyAccessorFactory.
-* Properties have persistence support for map objects (also using map objects in properties is no fun right now).
-* JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
-* The property implementations provide feature definition factory methods.
+* Added a new factory system which can be used to create implementations without directly depending on them.
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
+* JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
+* Properties now set the parents of stored child feature holders (The PropertyAccessorFactory used to do that).
+* Properties have persistence support for maps and arrays.
 * Properties now support getter and setter function executors; that removes the need for GET_X and SET_X functions.
 * Collection properties are normal properties with add() and remove() methods instead of the set() method.
-* The interface GetterSupplier abstracts the principle of a get() method and is extended by every property. It can be used whenever the type of property isn't known.
-* The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
-* ChildFeatureHolders provide a class that represents the parent type for more type-safety.
-* Properties clone the initial values/collections in order to prevent changes to the object that is stored in the definition.
-* Properties are now able to provide (JAXB) persistence for arrays.
-* The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
+* The interface ValueSupplier abstracts the principle of a get() method and is extended by every property. It can be used whenever the type of property isn't known.
+* All property definitions can take ValueFactory instances which supply them with initial values/collections.
 * The "ignoreEquals" flag on properties makes their equals() method always return true, so they are excluded from equality checks of feature holders.
+* The storage system replaces the old property template method pattern.
+* The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
+* The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
+* ChildFeatureHolders must provide the type of their parent objects as a class object for more type-safety.
 
 ### Removals
 * Removed the ExecutorInvocationException. That exception was thrown by every function executor / function and produced unnecessary try-catchs. RuntimeExceptions should be used instead.
