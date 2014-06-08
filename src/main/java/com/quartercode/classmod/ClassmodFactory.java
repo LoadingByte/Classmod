@@ -20,6 +20,7 @@ package com.quartercode.classmod;
 
 import org.apache.commons.lang3.reflect.Typed;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.factory.FactoryManager;
 
@@ -34,6 +35,8 @@ public class ClassmodFactory {
     private static FactoryManager factoryManager = new FactoryManager();
 
     static {
+
+        factoryManager.setFactory(FunctionDefinition.class, new DefaultFunctionDefinitionFactory());
 
         factoryManager.setFactory(PropertyDefinition.class, new DefaultPropertyDefinitionFactory());
         factoryManager.setFactory(CollectionPropertyDefinition.class, new DefaultCollectionPropertyDefinitionFactory());
