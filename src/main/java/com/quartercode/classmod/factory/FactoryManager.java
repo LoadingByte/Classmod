@@ -117,6 +117,7 @@ public class FactoryManager {
 
         Object[] arguments = getMethodArguments(factoryMethod, factoryAnnotation, parameters);
         try {
+            factoryMethod.setAccessible(true);
             @SuppressWarnings ("unchecked")
             T result = (T) factoryMethod.invoke(factory, arguments);
             return result;
