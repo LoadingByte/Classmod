@@ -18,38 +18,36 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import java.util.List;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.extra.Storage;
-import com.quartercode.classmod.extra.def.storage.ObjectAdapter;
 
 @XmlRootElement
-class DummyStorage<T> extends Storage<T> {
+class DummyListStorage<T> extends Storage<List<T>> {
 
-    @XmlElement (name = "object")
-    @XmlJavaTypeAdapter (ObjectAdapter.class)
-    private T object;
+    @XmlElement (name = "List")
+    private List<T> object;
 
     @Override
-    public T get() {
+    public List<T> get() {
 
         return object;
     }
 
     @Override
-    public void set(T object) {
+    public void set(List<T> object) {
 
         this.object = object;
     }
 
     @Override
-    public Storage<T> reproduce() {
+    public Storage<List<T>> reproduce() {
 
-        return new DummyStorage<>();
+        return new DummyListStorage<>();
     }
 
     @Override

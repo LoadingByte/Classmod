@@ -90,7 +90,7 @@ public class DefaultPropertyPersistenceTest {
     @Test
     public void test() throws JAXBException {
 
-        DummyStorage<String> storage = new DummyStorage<>();
+        DummyObjectStorage<String> storage = new DummyObjectStorage<>();
         DefaultProperty<String> property = new DefaultProperty<>("property", featureHolder, storage, null);
         initializeProperty(property);
 

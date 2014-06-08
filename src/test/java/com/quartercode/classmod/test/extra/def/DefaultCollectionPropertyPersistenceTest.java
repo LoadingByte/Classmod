@@ -98,7 +98,7 @@ public class DefaultCollectionPropertyPersistenceTest {
     @Test
     public void test() throws JAXBException {
 
-        DummyStorage<List<String>> storage = new DummyStorage<>();
+        DummyListStorage<String> storage = new DummyListStorage<>();
         DefaultCollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, storage);
         initializeCollectionProperty(collectionProperty);
 

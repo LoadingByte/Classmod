@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  * <li>{@link ObjectAdapter.MapWrapper}</li>
  * </ul>
  */
-public class ObjectAdapter extends XmlAdapter<Object, Object> {
+class ObjectAdapter extends XmlAdapter<Object, Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectAdapter.class);
 
