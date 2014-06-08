@@ -31,7 +31,6 @@ import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.ValueFactory;
-import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract property definition is used to retrieve a {@link Property} from a {@link FeatureHolder}.
@@ -70,8 +69,8 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
 
         this.storageTemplate = storageTemplate;
 
-        getter = FunctionDefinitionFactory.create(name);
-        setter = FunctionDefinitionFactory.create(name, Object.class);
+        getter = new InternalDefaultFunctionDefinition<>(name);
+        setter = new InternalDefaultFunctionDefinition<>(name, Object.class);
     }
 
     /**

@@ -32,7 +32,6 @@ import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.ValueFactory;
-import com.quartercode.classmod.util.FunctionDefinitionFactory;
 
 /**
  * An abstract collection property definition is used to retrieve a {@link CollectionProperty} from a {@link FeatureHolder}.
@@ -77,9 +76,9 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
         this.storageTemplate = storageTemplate;
         this.collectionFactory = collectionFactory;
 
-        getter = FunctionDefinitionFactory.create(name);
-        adder = FunctionDefinitionFactory.create(name, Object.class);
-        remover = FunctionDefinitionFactory.create(name, Object.class);
+        getter = new InternalDefaultFunctionDefinition<>(name);
+        adder = new InternalDefaultFunctionDefinition<>(name, Object.class);
+        remover = new InternalDefaultFunctionDefinition<>(name, Object.class);
     }
 
     /**
