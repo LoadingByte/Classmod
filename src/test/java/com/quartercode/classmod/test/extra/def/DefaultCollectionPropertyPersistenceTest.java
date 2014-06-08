@@ -36,11 +36,11 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import com.quartercode.classmod.Classmod;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultCollectionProperty;
-import com.quartercode.classmod.util.Classmod;
 
 public class DefaultCollectionPropertyPersistenceTest {
 

@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod.util;
+package com.quartercode.classmod;
 
 import javax.xml.bind.JAXBContext;
 

@@ -33,11 +33,11 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
+import com.quartercode.classmod.Classmod;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultProperty;
-import com.quartercode.classmod.util.Classmod;
 
 public class DefaultPropertyPersistenceTest {
 

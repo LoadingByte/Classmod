@@ -42,11 +42,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
+import com.quartercode.classmod.Classmod;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.storage.ReferenceStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
-import com.quartercode.classmod.util.Classmod;
 
 @RunWith (Parameterized.class)
 public class DefaultStoragesPersistenceTest {
