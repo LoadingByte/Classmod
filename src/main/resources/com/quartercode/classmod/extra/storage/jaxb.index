@@ -2,5 +2,6 @@ ObjectAdapter$ClassWrapper
 ObjectAdapter$ArrayWrapper
 ObjectAdapter$CollectionWrapper
 ObjectAdapter$MapWrapper
+ReferenceCollectionStorage
 ReferenceStorage
 StandardStorage

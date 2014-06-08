@@ -18,8 +18,8 @@
 
 package com.quartercode.classmod.extra.storage;
 
-import javax.xml.bind.annotation.XmlElement;
 import java.util.Collection;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -29,49 +29,43 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.extra.Storage;
 
 /**
- * The reference storage stores objects in a plain member variable and only serializes their {@link XmlID} references.
- * That means that the referenced object must have a {@link XmlID} annotation.<br>
- * <br>
- * Note that the {@link ReferenceCollectionStorage} class should be used for referencing entire collections.
+ * The reference collection storage stores multiple objects, whose {@link XmlID} references are serialized, in a plain member variable {@link Collection}.
+ * That means that the referenced collection entries objects must have a {@link XmlID} annotation.
  * 
- * @param <T> The type of object that can be stored inside the reference storage.
+ * @param <E> The type of object that can be referenced inside the reference collection.
+ * @param <C> The type of collection that can be stored by the reference collection storage.
  * @see Storage
  */
 @XmlRootElement
-public class ReferenceStorage<T> extends Storage<T> {
+public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Storage<C> {
 
-    @XmlElement (name = "reference")
+    @XmlElement (name = "referenceEntry")
     @XmlIDREF
-    private T reference;
+    private C referenceCollection;
 
     /**
-     * Creates a new empty reference storage.
+     * Creates a new empty reference collection storage.
      */
-    public ReferenceStorage() {
+    public ReferenceCollectionStorage() {
 
     }
 
     @Override
-    public T get() {
+    public C get() {
 
-        return reference;
+        return referenceCollection;
     }
 
     @Override
-    public void set(T object) {
+    public void set(C object) {
 
-        // Catch programming mistakes
-        if (object instanceof Collection) {
-            throw new IllegalStateException("ReferenceCollectionStorage instances should be used for referencing multiple objects in a collection");
-        }
-
-        this.reference = object;
+        this.referenceCollection = object;
     }
 
     @Override
-    public Storage<T> reproduce() {
+    public Storage<C> reproduce() {
 
-        return new ReferenceStorage<>();
+        return new ReferenceCollectionStorage<E, C>();
     }
 
     @Override
