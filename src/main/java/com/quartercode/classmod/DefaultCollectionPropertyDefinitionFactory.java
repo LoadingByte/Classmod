@@ -34,7 +34,7 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultCollectionPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "initialValue", "ignoreEquals" })
+    @Factory (parameters = { "name", "storage", "collection", "ignoreEquals" })
     public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean ignoreEquals) {
 
         Validate.notNull(name, "Name of new collection property definition cannot be null");
