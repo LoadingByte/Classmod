@@ -19,7 +19,6 @@
 package com.quartercode.classmod.test.extra.storage;
 
 import static org.junit.Assert.assertArrayEquals;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -33,6 +32,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -43,7 +43,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.Classmod;
-import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.storage.ReferenceStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
@@ -58,16 +57,22 @@ public class DefaultStoragesPersistenceTest {
 
         data.add(new Object[] { new Storage[] { new StandardStorage<>() } });
         data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), "Test") } });
+        data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), new DataObject(17, "Test")) } });
         data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), String.class) } });
         data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), new String[] { "Test1", "Test2", "Test3" }) } });
         data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList("Test1", "Test2", "Test3"))) } });
 
-        Map<String, Integer> map = new HashMap<>();
-        map.put("somekey1", 12);
-        map.put("somekey2", 300);
-        data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), map) } });
+        Map<String, Integer> simpleMap = new HashMap<>();
+        simpleMap.put("somekey1", 12);
+        simpleMap.put("somekey2", 300);
+        data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), simpleMap) } });
 
-        DefaultFeatureHolder referencedObject = new DefaultFeatureHolder();
+        Map<String, DataObject> complexMap = new HashMap<>();
+        complexMap.put("somekey1", new DataObject(12, "Test1"));
+        complexMap.put("somekey2", new DataObject(300, "Test2"));
+        data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), complexMap) } });
+
+        DataObject referencedObject = new DataObject(17, "Test");
         data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referencedObject), fillStorage(new StandardStorage<>(), referencedObject) } });
 
         return data;
@@ -103,36 +108,35 @@ public class DefaultStoragesPersistenceTest {
         }
     }
 
-    @SuppressWarnings ("unchecked")
     @Test
     public void test() throws JAXBException {
 
-        StorageContainer<DataObject> storageContainer = new StorageContainer<>(storages);
+        StorageContainer storageContainer = new StorageContainer(storages);
 
         StringWriter serialized = new StringWriter();
         marshaller.marshal(storageContainer, serialized);
 
-        StorageContainer<DataObject> copy = (StorageContainer<DataObject>) unmarshaller.unmarshal(new StringReader(serialized.toString()));
+        StorageContainer copy = (StorageContainer) unmarshaller.unmarshal(new StringReader(serialized.toString()));
         assertArrayEquals("Serialized-deserialized copy of the storages", storageContainer.getStorages(), copy.getStorages());
     }
 
     @XmlRootElement
-    private static class StorageContainer<T> {
+    private static class StorageContainer {
 
         @XmlElement (name = "storage")
-        private Storage<T>[] storages;
+        private Storage<?>[] storages;
 
         // Default constructor for JAXB
         private StorageContainer() {
 
         }
 
-        private StorageContainer(Storage<T>[] storages) {
+        private StorageContainer(Storage<?>[] storages) {
 
             this.storages = storages;
         }
 
-        private Storage<T>[] getStorages() {
+        private Storage<?>[] getStorages() {
 
             return storages;
         }
@@ -142,14 +146,25 @@ public class DefaultStoragesPersistenceTest {
     private static class DataObject {
 
         @XmlElement
-        private final int    value1;
+        private int    value1;
         @XmlElement
-        private final String value2;
+        private String value2;
+
+        // Default constructor for JAXB
+        private DataObject() {
+
+        }
 
         private DataObject(int value1, String value2) {
 
             this.value1 = value1;
             this.value2 = value2;
+        }
+
+        @XmlID
+        public String getId() {
+
+            return value1 + value2;
         }
 
         @Override
