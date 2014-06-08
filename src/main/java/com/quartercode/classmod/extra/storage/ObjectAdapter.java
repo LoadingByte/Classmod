@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod.extra.def.storage;
+package com.quartercode.classmod.extra.storage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

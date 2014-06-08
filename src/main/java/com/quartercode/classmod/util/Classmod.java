@@ -34,7 +34,7 @@ public class Classmod {
      * The constant doesn't has a ":" seperator at the start or the end.
      * The actual value is {@value #CONTEXT_PATH}.
      */
-    public static final String  CONTEXT_PATH = PACKAGE + ".base.def:" + PACKAGE + ".extra.def:" + PACKAGE + ".extra.def.storage";
+    public static final String  CONTEXT_PATH = PACKAGE + ".base.def:" + PACKAGE + ".extra.def:" + PACKAGE + ".extra.storage";
 
     private Classmod() {
 

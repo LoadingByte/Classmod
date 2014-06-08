@@ -27,8 +27,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.extra.Storage;
-import com.quartercode.classmod.extra.def.storage.ReferenceStorage;
-import com.quartercode.classmod.extra.def.storage.StandardStorage;
+import com.quartercode.classmod.extra.storage.ReferenceStorage;
+import com.quartercode.classmod.extra.storage.StandardStorage;
 
 @RunWith (Parameterized.class)
 public class DefaultStoragesTest {
