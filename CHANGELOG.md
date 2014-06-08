@@ -22,6 +22,7 @@
 * Removed the whole lock system; the old system wasn't compatible with the new property system and technically just added complexity instead of benefit.
 * Removed the limit/delay system; it was intended for update functions whose functionality should be implemented by a specialized feature.
 * Removed the AbstractFeature.setParent() method that was used to change the holder of a feature after creation.
+* Removed the FunctionDefinitionFactory utility class (it was replaced with a ClassmodFactory mapping).
 
 ### Fixes
 * The DefaultFunctionInvocation implementation can now handle null arguments.
@@ -36,6 +37,7 @@
 * Introducing many major performance improvements, especially related to functions. Classmod applications should run much smoother now.
 * The update changed the parameter order of every add/removeExecutor method to (name, variant, executor) in order to logically conform the new function executor override feature. Users of the function system must be refactored.
 * Some setLocked() statements and all Lockable annotations must be removed in order to conform with the new update (see the removals section for further explanation why).
+* The new storage and factory systems force all definition code to be updated.
 
 0.2.1
 -----
