@@ -39,6 +39,7 @@ class DefaultCollectionPropertyDefinitionFactory {
 
         Validate.notNull(name, "Name of new collection property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new collection property definition cannot be null");
+        Validate.notNull(collectionFactory, "Collection factory of new collection property definition cannot be null");
 
         return new AbstractCollectionPropertyDefinition<E, C>(name, storageTemplate, collectionFactory, ignoreEquals) {
 
