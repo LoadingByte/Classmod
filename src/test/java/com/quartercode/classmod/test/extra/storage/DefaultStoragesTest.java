@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod.test.extra.def.storage;
+package com.quartercode.classmod.test.extra.storage;
 
 import static org.junit.Assert.*;
 import java.util.ArrayList;
