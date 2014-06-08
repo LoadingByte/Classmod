@@ -28,8 +28,8 @@ import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Prioritized;
-import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
+import com.quartercode.classmod.extra.def.DefaultFunction;
 
 public class AbstractFunctionPriorityTest {
 
@@ -41,7 +41,7 @@ public class AbstractFunctionPriorityTest {
             @Override
             public Function<Integer> create(FeatureHolder holder) {
 
-                return new AbstractFunction<>(getName(), holder);
+                return new DefaultFunction<>(getName(), holder);
             }
 
         };

@@ -33,8 +33,8 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
+import com.quartercode.classmod.extra.def.DefaultFunction;
 
 @RunWith (Parameterized.class)
 public class AbstractFunctionDefinitionInheritanceTest {
@@ -80,7 +80,7 @@ public class AbstractFunctionDefinitionInheritanceTest {
             @Override
             public Function<Void> create(FeatureHolder holder) {
 
-                return new AbstractFunction<>(getName(), holder);
+                return new DefaultFunction<>(getName(), holder);
             }
 
         };

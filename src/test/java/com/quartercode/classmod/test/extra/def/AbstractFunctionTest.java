@@ -30,8 +30,8 @@ import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.def.AbstractFunction;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
+import com.quartercode.classmod.extra.def.DefaultFunction;
 
 public class AbstractFunctionTest {
 
@@ -43,7 +43,7 @@ public class AbstractFunctionTest {
             @Override
             public Function<Object> create(FeatureHolder holder) {
 
-                return new AbstractFunction<>(getName(), holder);
+                return new DefaultFunction<>(getName(), holder);
             }
 
         };

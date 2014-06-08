@@ -43,7 +43,7 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  * @see FunctionExecutor
  * @see Function
  */
-public class AbstractFunction<R> extends AbstractFeature implements Function<R> {
+public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
 
     private static final String[]            EXCLUDED_FIELDS = { "holder", "executors" };
 
@@ -57,7 +57,7 @@ public class AbstractFunction<R> extends AbstractFeature implements Function<R> 
      * @param name The name of the abstract function.
      * @param holder The feature holder type the abstract function is made for.
      */
-    public AbstractFunction(String name, FeatureHolder holder) {
+    public DefaultFunction(String name, FeatureHolder holder) {
 
         super(name, holder);
     }

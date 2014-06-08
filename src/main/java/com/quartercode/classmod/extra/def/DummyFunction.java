@@ -32,7 +32,7 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
  * 
  * @param <R> The return type of the dummy function.
  */
-class DummyFunction<R> extends AbstractFunction<R> {
+class DummyFunction<R> extends DefaultFunction<R> {
 
     private static final String[]                  EXCLUDED_FIELDS           = { "holder" };
     private static final String[]                  TO_STRING_EXCLUDED_FIELDS = { "holder", "parameters", "executors" };
