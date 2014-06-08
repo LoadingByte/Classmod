@@ -20,13 +20,16 @@ package com.quartercode.classmod.test.extra.storage;
 
 import static org.junit.Assert.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import org.apache.commons.lang3.ObjectUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.extra.Storage;
+import com.quartercode.classmod.extra.storage.ReferenceCollectionStorage;
 import com.quartercode.classmod.extra.storage.ReferenceStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 
@@ -38,45 +41,50 @@ public class DefaultStoragesTest {
 
         List<Object[]> data = new ArrayList<>();
 
-        data.add(new Object[] { new StandardStorage<>() });
-        data.add(new Object[] { new ReferenceStorage<>() });
+        data.add(new Object[] { new StandardStorage<>(), "test1", "test2" });
+        data.add(new Object[] { new ReferenceStorage<>(), "test1", "test2" });
+        data.add(new Object[] { new ReferenceCollectionStorage<>(), new ArrayList<>(Arrays.asList("test1", "test2")), new ArrayList<>(Arrays.asList("test3", "test4")) });
 
         return data;
     }
 
-    private final Storage<String> storage;
+    private final Storage<Object> storage;
+    private final Object          content1;
+    private final Object          content2;
 
-    public DefaultStoragesTest(Storage<String> storage) {
+    public DefaultStoragesTest(Storage<Object> storage, Object content1, Object content2) {
 
         this.storage = storage;
+        this.content1 = ObjectUtils.cloneIfPossible(content1);
+        this.content2 = ObjectUtils.cloneIfPossible(content2);
     }
 
     @Test
     public void testGetSet() {
 
-        storage.set("test");
-        assertEquals("Value that is stored by the storage", "test", storage.get());
+        storage.set(content1);
+        assertEquals("Value that is stored by the storage", content1, storage.get());
     }
 
     @Test
     public void testReproduce() {
 
-        storage.set("test");
-        Storage<String> newStorage = storage.reproduce();
+        storage.set(content1);
+        Storage<Object> newStorage = storage.reproduce();
 
-        assertEquals("Value that is stored by the original storage", "test", storage.get());
+        assertEquals("Value that is stored by the original storage", content1, storage.get());
         assertEquals("Value that is stored by the new storage", null, newStorage.get());
     }
 
     @Test
     public void testHashCodeAndEquals() {
 
-        Storage<String> storage2 = storage.reproduce();
-        Storage<String> storage3 = storage.reproduce();
+        Storage<Object> storage2 = storage.reproduce();
+        Storage<Object> storage3 = storage.reproduce();
 
-        storage.set("test");
-        storage2.set("test");
-        storage3.set("test2");
+        storage.set(content1);
+        storage2.set(content1);
+        storage3.set(content2);
 
         assertTrue("Storage objects with same content don't equal each other", storage.equals(storage2));
         assertEquals("Storage object with same content don't have the same hash code", storage.hashCode(), storage2.hashCode());

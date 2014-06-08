@@ -44,6 +44,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.Classmod;
 import com.quartercode.classmod.extra.Storage;
+import com.quartercode.classmod.extra.storage.ReferenceCollectionStorage;
 import com.quartercode.classmod.extra.storage.ReferenceStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 
@@ -72,8 +73,15 @@ public class DefaultStoragesPersistenceTest {
         complexMap.put("somekey2", new DataObject(300, "Test2"));
         data.add(new Object[] { new Storage[] { fillStorage(new StandardStorage<>(), complexMap) } });
 
-        DataObject referencedObject = new DataObject(17, "Test");
-        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referencedObject), fillStorage(new StandardStorage<>(), referencedObject) } });
+        DataObject referenced1 = new DataObject(17, "Test");
+        DataObject referenced2 = new DataObject(300, "Test2");
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referenced1), fillStorage(new StandardStorage<>(), referenced1) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referenced1), fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1))), fillStorage(new StandardStorage<>(), referenced1) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))), fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))) } });
+        // Reference to the same collection
+        List<DataObject> referencedCollection = new ArrayList<>(Arrays.asList(referenced1, referenced2));
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), referencedCollection), fillStorage(new StandardStorage<>(), referencedCollection) } });
 
         return data;
     }
