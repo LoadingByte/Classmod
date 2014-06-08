@@ -95,17 +95,13 @@ public class DefaultStoragesPersistenceTest {
     }
 
     @Before
-    public void setUp() throws IOException, ClassNotFoundException {
+    public void setUp() throws JAXBException {
 
-        try {
-            JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + DefaultStoragesPersistenceTest.class.getPackage().getName());
-            marshaller = context.createMarshaller();
-            // Only enable for debugging
-            // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            unmarshaller = context.createUnmarshaller();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + DefaultStoragesPersistenceTest.class.getPackage().getName());
+        marshaller = context.createMarshaller();
+        // Only enable for debugging
+        // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        unmarshaller = context.createUnmarshaller();
     }
 
     @Test

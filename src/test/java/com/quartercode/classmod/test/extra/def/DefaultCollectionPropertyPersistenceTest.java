@@ -19,7 +19,6 @@
 package com.quartercode.classmod.test.extra.def;
 
 import static org.junit.Assert.assertEquals;
-import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -81,17 +80,13 @@ public class DefaultCollectionPropertyPersistenceTest {
     }
 
     @Before
-    public void setUp() throws IOException, ClassNotFoundException {
+    public void setUp() throws JAXBException {
 
-        try {
-            JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + DefaultCollectionPropertyPersistenceTest.class.getPackage().getName());
-            marshaller = context.createMarshaller();
-            // Only enable for debugging
-            // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            unmarshaller = context.createUnmarshaller();
-        } catch (JAXBException e) {
-            e.printStackTrace();
-        }
+        JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + DefaultCollectionPropertyPersistenceTest.class.getPackage().getName());
+        marshaller = context.createMarshaller();
+        // Only enable for debugging
+        // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        unmarshaller = context.createUnmarshaller();
     }
 
     @SuppressWarnings ("unchecked")
