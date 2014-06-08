@@ -31,7 +31,7 @@ import com.quartercode.classmod.factory.Factory;
 /**
  * A factory for {@link AbstractPropertyDefinition}s that can create {@link DefaultProperty} objects.
  */
-public class DefaultPropertyDefinitionFactory {
+class DefaultPropertyDefinitionFactory {
 
     @Factory (parameters = { "name", "storage", "initialValue", "ignoreEquals" })
     public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean ignoreEquals) {

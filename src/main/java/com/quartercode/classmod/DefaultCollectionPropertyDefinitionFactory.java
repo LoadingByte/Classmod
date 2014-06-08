@@ -32,7 +32,7 @@ import com.quartercode.classmod.factory.Factory;
 /**
  * A factory for {@link AbstractCollectionPropertyDefinition}s that can create {@link DefaultCollectionProperty} objects.
  */
-public class DefaultCollectionPropertyDefinitionFactory {
+class DefaultCollectionPropertyDefinitionFactory {
 
     @Factory (parameters = { "name", "storage", "initialValue", "ignoreEquals" })
     public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean ignoreEquals) {
