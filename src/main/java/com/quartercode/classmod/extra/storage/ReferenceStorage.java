@@ -18,7 +18,6 @@
 
 package com.quartercode.classmod.extra.storage;
 
-import javax.xml.bind.annotation.XmlElement;
 import java.util.Collection;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -40,7 +39,6 @@ import com.quartercode.classmod.extra.Storage;
 @XmlRootElement
 public class ReferenceStorage<T> extends Storage<T> {
 
-    @XmlElement (name = "reference")
     @XmlIDREF
     private T reference;
 

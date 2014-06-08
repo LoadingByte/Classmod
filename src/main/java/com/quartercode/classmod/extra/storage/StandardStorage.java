@@ -35,7 +35,7 @@ import com.quartercode.classmod.extra.Storage;
 @XmlRootElement
 public class StandardStorage<T> extends Storage<T> {
 
-    @XmlElement (name = "object")
+    @XmlElement
     @XmlJavaTypeAdapter (ObjectAdapter.class)
     private T object;
 
