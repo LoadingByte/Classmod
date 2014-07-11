@@ -19,9 +19,10 @@
 package com.quartercode.classmod.base.def;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
@@ -47,7 +48,7 @@ import com.quartercode.classmod.base.Persistent;
  */
 public class DefaultFeatureHolder implements FeatureHolder {
 
-    private final List<Feature> features = new ArrayList<>();
+    private final Map<String, Feature> features = new HashMap<>();
 
     /*
      * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
@@ -59,21 +60,17 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
         Validate.notNull(definition, "Cannot retrieve feature for null feature definition");
 
+        String name = definition.getName();
         F feature = null;
 
-        // Retrieve existing feature instance from the local storage
-        for (Feature availableFeature : features) {
-            if (availableFeature.getName().equals(definition.getName())) {
-                feature = (F) availableFeature;
-                break;
-            }
-        }
+        // Try to retrieve existing feature instance from the local storage (will be null if it doesn't exist)
+        feature = (F) features.get(name);
 
         // Check whether there actually is a feature instance in the local storage
         if (feature == null) {
             // If not, create one and put it in the local storage
             feature = definition.create(this);
-            features.add(feature);
+            features.put(name, feature);
         }
 
         // Initialize the feature if it hasn't been done yet
@@ -103,7 +100,8 @@ public class DefaultFeatureHolder implements FeatureHolder {
     @Override
     public Iterator<Feature> iterator() {
 
-        return Collections.unmodifiableList(features).iterator();
+        // The value collection of a HashMap is unmodifiable
+        return features.values().iterator();
     }
 
     /**
@@ -135,7 +133,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
     public String toString() {
 
         List<String> featureNames = new ArrayList<>();
-        for (Feature feature : features) {
+        for (Feature feature : features.values()) {
             featureNames.add(new StringBuilder(feature.getName()).append(":").append(feature.getClass().getSimpleName()).toString());
         }
 
@@ -154,7 +152,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
             this.featureHolder = featureHolder;
 
             // Add all persistent features
-            for (Feature feature : featureHolder.features) {
+            for (Feature feature : featureHolder.features.values()) {
                 if (feature.getClass().isAnnotationPresent(Persistent.class)) {
                     // Don't use the overriden add() because that could have side-effects
                     super.add(feature);
@@ -165,7 +163,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
         @Override
         public boolean add(Feature feature) {
 
-            featureHolder.features.add(feature);
+            featureHolder.features.put(feature.getName(), feature);
             return super.add(feature);
         }
 
