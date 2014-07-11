@@ -43,13 +43,6 @@ public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Stor
     @XmlIDREF
     private C referenceCollection;
 
-    /**
-     * Creates a new empty reference collection storage.
-     */
-    public ReferenceCollectionStorage() {
-
-    }
-
     @Override
     public C get() {
 

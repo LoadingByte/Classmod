@@ -49,13 +49,6 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectAdapter.class);
 
-    /**
-     * Creates a new object adapter.
-     */
-    public ObjectAdapter() {
-
-    }
-
     @Override
     public Object unmarshal(Object v) {
 

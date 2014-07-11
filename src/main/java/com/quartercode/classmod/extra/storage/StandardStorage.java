@@ -39,13 +39,6 @@ public class StandardStorage<T> extends Storage<T> {
     @XmlJavaTypeAdapter (ObjectAdapter.class)
     private T object;
 
-    /**
-     * Creates a new empty standard storage.
-     */
-    public StandardStorage() {
-
-    }
-
     @Override
     public T get() {
 

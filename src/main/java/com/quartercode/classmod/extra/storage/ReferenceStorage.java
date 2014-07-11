@@ -42,13 +42,6 @@ public class ReferenceStorage<T> extends Storage<T> {
     @XmlIDREF
     private T reference;
 
-    /**
-     * Creates a new empty reference storage.
-     */
-    public ReferenceStorage() {
-
-    }
-
     @Override
     public T get() {
 

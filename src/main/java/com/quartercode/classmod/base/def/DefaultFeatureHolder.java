@@ -49,13 +49,6 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
     private final List<Feature> features = new ArrayList<>();
 
-    /**
-     * Creates a new default feature holder.
-     */
-    public DefaultFeatureHolder() {
-
-    }
-
     /*
      * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
      * Sadly, this method needs to perform unchecked casts in order to keep the whole type system consistent.
