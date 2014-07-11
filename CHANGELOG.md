@@ -2,6 +2,7 @@
 -----
 
 ### Additions
+* Improved the performance of the DefaultFeatureHolder's get() method by storing the features in a map with their names as the keys.
 * Added a new factory system which can be used to create implementations without directly depending on them.
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
