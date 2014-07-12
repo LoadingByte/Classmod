@@ -2,6 +2,7 @@ Classmod
 ========
 
 Classmod is a library for creating classes which can be modified at runtime.
+More information can be found on the [wiki page](http://quartercode.com/wiki/index.php?title=Classmod).
 
 License
 -------
@@ -21,3 +22,32 @@ We use maven to handle our dependencies and build, so you need the Java JDK and 
 * Navigate to the project folder of this repository which contains a `pom.xml` and run:
 
         mvn clean install
+
+Builds
+------
+
+* Classmod is built by a [Jenkins job](http://ci.quartercode.com/job/Classmod/) on the QuarterCode Jenkins instance.
+* Finished builds can be downloaded from the [QuarterCode DL website](http://quartercode.com/dl/projects/details?projectId=Classmod).
+* Builds are also available on the [QuarterCode maven repository](http://repo.quartercode.com).
+  In order to use Classmod in another maven project, the following lines must be added to the project's pom:
+
+        <repositories>
+            ...
+            <repository>
+                <id>quartercode-repository</id>
+                <url>http://repo.quartercode.com/content/groups/public/</url>
+            </repository>
+            ...
+        </repositories>
+
+        ...
+
+        <dependencies>
+            ...
+            <dependency>
+                <groupId>com.quartercode</groupId>
+                <artifactId>classmod</artifactId>
+                <version>...</version>
+            </dependency>
+            ...
+        </dependencies>
