@@ -131,11 +131,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
             return false;
         } else {
             DefaultFeatureHolder other = (DefaultFeatureHolder) obj;
-            if (!Objects.equals(features, other.features)) {
-                return false;
-            } else {
-                return true;
-            }
+            return Objects.equals(features, other.features);
         }
     }
 

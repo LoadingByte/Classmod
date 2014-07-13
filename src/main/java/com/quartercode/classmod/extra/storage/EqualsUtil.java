@@ -42,10 +42,8 @@ public class EqualsUtil {
             return false;
         } else if (Objects.equals(object1, object2)) {
             return true;
-        } else if (object1.getClass().isArray() && object2.getClass().isArray() && Arrays.equals((Object[]) object1, (Object[]) object2)) {
-            return true;
         } else {
-            return false;
+            return object1.getClass().isArray() && object2.getClass().isArray() && Arrays.equals((Object[]) object1, (Object[]) object2);
         }
     }
 

@@ -105,11 +105,7 @@ public class AbstractFeature implements Feature {
             return false;
         } else {
             AbstractFeature other = (AbstractFeature) obj;
-            if (!Objects.equals(name, other.name)) {
-                return false;
-            } else {
-                return true;
-            }
+            return Objects.equals(name, other.name);
         }
     }
 

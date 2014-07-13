@@ -176,15 +176,11 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
         if (this == obj) {
             return true;
-        } else if (obj == null || ! (obj instanceof DefaultProperty)) {
+        } else if (obj == null || ! (obj instanceof DefaultProperty) || !super.equals(obj)) {
             return false;
         } else {
             DefaultProperty<?> other = (DefaultProperty<?>) obj;
-            if (ignoreEquals != other.ignoreEquals || !Objects.equals(storage, other.storage)) {
-                return false;
-            } else {
-                return true;
-            }
+            return ignoreEquals == other.ignoreEquals && Objects.equals(storage, other.storage);
         }
     }
 

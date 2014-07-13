@@ -73,11 +73,7 @@ public class StandardStorage<T> extends Storage<T> {
             return false;
         } else {
             StandardStorage<?> other = (StandardStorage<?>) obj;
-            if (!EqualsUtil.equalsConsiderArrays(object, other.object)) {
-                return false;
-            } else {
-                return true;
-            }
+            return EqualsUtil.equalsConsiderArrays(object, other.object);
         }
     }
 

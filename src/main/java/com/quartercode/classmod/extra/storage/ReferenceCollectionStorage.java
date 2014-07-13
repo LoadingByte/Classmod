@@ -78,11 +78,7 @@ public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Stor
             return false;
         } else {
             ReferenceCollectionStorage<?, ?> other = (ReferenceCollectionStorage<?, ?>) obj;
-            if (!Objects.equals(referenceCollection, other.referenceCollection)) {
-                return false;
-            } else {
-                return true;
-            }
+            return Objects.equals(referenceCollection, other.referenceCollection);
         }
     }
 

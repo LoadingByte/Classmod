@@ -118,8 +118,26 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
         }
     }
 
-    /*
-     * Don't override hashCode() and equals() because we don't want to check for the parent (that would create a cycle)
-     */
+    @Override
+    public int hashCode() {
+
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (parentType == null ? 0 : parentType.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof DefaultChildFeatureHolder) || !super.equals(obj)) {
+            return false;
+        } else {
+            DefaultChildFeatureHolder<?> other = (DefaultChildFeatureHolder<?>) obj;
+            return parentType == other.parentType;
+        }
+    }
 
 }

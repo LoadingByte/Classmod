@@ -108,28 +108,28 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
                 return Integer.compare(getPriority(object2), getPriority(object1));
             }
 
-            private int getPriority(FunctionExecutor<?> executor) {
+        });
+    }
 
-                if (FE_PRIORITY_CACHE.containsKey(executor.getClass())) {
-                    return FE_PRIORITY_CACHE.get(executor.getClass());
-                } else {
-                    int priority = Prioritized.DEFAULT;
+    private int getPriority(FunctionExecutor<?> executor) {
 
-                    try {
-                        Method invokeMethod = executor.getClass().getMethod("invoke", FunctionInvocation.class, Object[].class);
-                        if (invokeMethod.isAnnotationPresent(Prioritized.class)) {
-                            priority = invokeMethod.getAnnotation(Prioritized.class).value();
-                        }
-                    } catch (NoSuchMethodException e) {
-                        LOGGER.error("Can't find invoke() method in function executor for retrieving priority (bytecode error: should be defined by interface)", e);
-                    }
+        if (FE_PRIORITY_CACHE.containsKey(executor.getClass())) {
+            return FE_PRIORITY_CACHE.get(executor.getClass());
+        } else {
+            int priority = Prioritized.DEFAULT;
 
-                    FE_PRIORITY_CACHE.put(executor.getClass(), priority);
-                    return priority;
+            try {
+                Method invokeMethod = executor.getClass().getMethod("invoke", FunctionInvocation.class, Object[].class);
+                if (invokeMethod.isAnnotationPresent(Prioritized.class)) {
+                    priority = invokeMethod.getAnnotation(Prioritized.class).value();
                 }
+            } catch (NoSuchMethodException e) {
+                LOGGER.error("Can't find invoke() method in function executor for retrieving priority (bytecode error: should be defined by interface)", e);
             }
 
-        });
+            FE_PRIORITY_CACHE.put(executor.getClass(), priority);
+            return priority;
+        }
     }
 
     @Override
@@ -170,17 +170,13 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj) {
+        if (this == obj || !super.equals(obj)) {
             return true;
         } else if (obj == null || ! (obj instanceof DefaultFunction)) {
             return false;
         } else {
             DefaultFunction<?> other = (DefaultFunction<?>) obj;
-            if (!Objects.equals(parameters, other.parameters) || !Objects.equals(executors, other.executors)) {
-                return false;
-            } else {
-                return true;
-            }
+            return Objects.equals(parameters, other.parameters) && Objects.equals(executors, other.executors);
         }
     }
 

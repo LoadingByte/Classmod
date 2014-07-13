@@ -81,11 +81,7 @@ public class ReferenceStorage<T> extends Storage<T> {
             return false;
         } else {
             ReferenceStorage<?> other = (ReferenceStorage<?>) obj;
-            if (!EqualsUtil.equalsConsiderArrays(reference, other.reference)) {
-                return false;
-            } else {
-                return true;
-            }
+            return EqualsUtil.equalsConsiderArrays(reference, other.reference);
         }
     }
 

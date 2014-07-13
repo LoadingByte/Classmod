@@ -183,15 +183,11 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
 
         if (this == obj) {
             return true;
-        } else if (obj == null || ! (obj instanceof DefaultCollectionProperty)) {
+        } else if (obj == null || ! (obj instanceof DefaultCollectionProperty) || !super.equals(obj)) {
             return false;
         } else {
             DefaultCollectionProperty<?, ?> other = (DefaultCollectionProperty<?, ?>) obj;
-            if (ignoreEquals != other.ignoreEquals || !Objects.equals(storage, other.storage)) {
-                return false;
-            } else {
-                return true;
-            }
+            return ignoreEquals == other.ignoreEquals && Objects.equals(storage, other.storage);
         }
     }
 
