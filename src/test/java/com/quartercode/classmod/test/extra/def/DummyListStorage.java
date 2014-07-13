@@ -29,7 +29,7 @@ import com.quartercode.classmod.extra.Storage;
 @XmlRootElement
 class DummyListStorage<T> extends Storage<List<T>> {
 
-    @XmlElement (name = "List")
+    @XmlElement (name = "list")
     private List<T> object;
 
     @Override

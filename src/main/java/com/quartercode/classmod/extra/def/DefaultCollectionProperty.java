@@ -23,7 +23,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -41,7 +40,6 @@ import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Storage;
 
@@ -116,25 +114,19 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         }
         storage.set(newCollection);
 
-        List<FunctionExecutorContext<C>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutorContext<Void>> adderExecutors = new ArrayList<>();
-        List<FunctionExecutorContext<Void>> removerExecutors = new ArrayList<>();
+        List<FunctionExecutor<C>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutor<Void>> adderExecutors = new ArrayList<>();
+        List<FunctionExecutor<Void>> removerExecutors = new ArrayList<>();
 
         // Add the custom getter/adder/remover executors
-        for (Entry<String, FunctionExecutor<C>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
-        for (Entry<String, FunctionExecutor<Void>> executor : definition.getAdderExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            adderExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
-        for (Entry<String, FunctionExecutor<Void>> executor : definition.getRemoverExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            removerExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
+        getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
+        adderExecutors.addAll(definition.getAdderExecutorsForVariant(getHolder().getClass()).values());
+        removerExecutors.addAll(definition.getRemoverExecutorsForVariant(getHolder().getClass()).values());
 
         // Add default executors
-        getterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultGetterFunctionExecutor()));
-        adderExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultAdderFunctionExecutor()));
-        removerExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultRemoverFunctionExecutor()));
+        getterExecutors.add(new DefaultGetterFunctionExecutor());
+        adderExecutors.add(new DefaultAdderFunctionExecutor());
+        removerExecutors.add(new DefaultRemoverFunctionExecutor());
 
         /*
          * Create the dummy getter/adder/remover functions

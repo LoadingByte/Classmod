@@ -28,7 +28,6 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunction;
@@ -82,10 +81,7 @@ public class AbstractFunctionDefinitionTest {
         expectedParameters.add(String.class);
         List<FunctionExecutor<Void>> expectedExecutors = new ArrayList<>();
         expectedExecutors.add(executor);
-        List<FunctionExecutor<Void>> actualExecutors = new ArrayList<>();
-        for (FunctionExecutorContext<Void> context : function.getExecutors()) {
-            actualExecutors.add(context.getExecutor());
-        }
+        List<FunctionExecutor<Void>> actualExecutors = new ArrayList<>(function.getExecutors());
         assertEquals("Function object's parameters", expectedParameters, function.getParameters());
         assertEquals("Function object's executors", expectedExecutors, actualExecutors);
     }

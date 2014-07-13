@@ -18,13 +18,15 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
+import com.quartercode.classmod.extra.FunctionExecutor;
 
 /**
  * Dummy functions are really simple {@link Function} implementations that use values which are set through the constructor.
@@ -34,11 +36,11 @@ import com.quartercode.classmod.extra.FunctionExecutorContext;
  */
 class DummyFunction<R> extends DefaultFunction<R> {
 
-    private static final String[]                  EXCLUDED_FIELDS           = { "holder" };
-    private static final String[]                  TO_STRING_EXCLUDED_FIELDS = { "holder", "parameters", "executors" };
+    private static final String[]           EXCLUDED_FIELDS           = { "holder" };
+    private static final String[]           TO_STRING_EXCLUDED_FIELDS = { "holder", "parameters", "executors" };
 
-    private final List<Class<?>>                   dummyParameters;
-    private final List<FunctionExecutorContext<R>> dummyExecutors;
+    private final List<Class<?>>            dummyParameters;
+    private final List<FunctionExecutor<R>> dummyExecutors;
 
     /**
      * Creates a new dummy function and sets the values the function should serve.
@@ -46,14 +48,21 @@ class DummyFunction<R> extends DefaultFunction<R> {
      * @param name The name of the function.
      * @param holder The {@link FeatureHolder} which supposedly holds the function.
      * @param dummyParameters The parameters the function has at all times.
-     * @param dummyExecutors The {@link FunctionExecutorContext}s the function has at all times.
+     * @param dummyExecutors The {@link FunctionExecutor}s the function has at all times.
      */
-    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> dummyParameters, List<FunctionExecutorContext<R>> dummyExecutors) {
+    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> dummyParameters, List<FunctionExecutor<R>> dummyExecutors) {
 
         super(name, holder);
 
         this.dummyParameters = dummyParameters;
-        this.dummyExecutors = dummyExecutors;
+
+        // Sort the executor list by priority
+        // By sorting at this point, sorting must not be done every time the function is invoked
+        List<FunctionExecutor<R>> sortedDummyExecutors = new ArrayList<>(dummyExecutors);
+        sortExecutorList(sortedDummyExecutors);
+
+        // Make the executor list unmodifiable
+        this.dummyExecutors = Collections.unmodifiableList(sortedDummyExecutors);
     }
 
     @Override
@@ -63,7 +72,7 @@ class DummyFunction<R> extends DefaultFunction<R> {
     }
 
     @Override
-    public List<FunctionExecutorContext<R>> getExecutors() {
+    public List<FunctionExecutor<R>> getExecutors() {
 
         return dummyExecutors;
     }

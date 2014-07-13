@@ -18,21 +18,26 @@
 
 package com.quartercode.classmod.extra.def;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map.Entry;
+import java.util.Map;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Prioritized;
 
 /**
  * An abstract function makes a method (also called a function) available.
@@ -45,11 +50,19 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
 
-    private static final String[]            EXCLUDED_FIELDS = { "holder", "executors" };
+    private static final Logger                 LOGGER            = LoggerFactory.getLogger(DefaultFunction.class);
 
-    private boolean                          initialized;
-    private List<Class<?>>                   parameters;
-    private List<FunctionExecutorContext<R>> executors;
+    private static final String[]               EXCLUDED_FIELDS   = { "holder", "executors" };
+
+    /*
+     * This field caches all priority values of all FunctionExecutor classes which were ever used inside a function.
+     * That is useful since retrieving the value every time is rather expensive.
+     */
+    private static final Map<Class<?>, Integer> FE_PRIORITY_CACHE = new HashMap<>();
+
+    private boolean                             initialized;
+    private List<Class<?>>                      parameters;
+    private List<FunctionExecutor<R>>           executors;
 
     /**
      * Creates a new abstract function with the given name and {@link FeatureHolder} type.
@@ -72,11 +85,54 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
             Validate.notNull(parameter, "Null parameters are not allowed");
         }
 
-        executors = new ArrayList<>();
-        for (Entry<String, FunctionExecutor<R>> executor : definition.getExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            executors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
+        executors = new ArrayList<>(definition.getExecutorsForVariant(getHolder().getClass()).values());
+
+        // Sort the executor list by priority
+        // By sorting at this point, sorting must not be done every time the function is invoked
+        sortExecutorList(executors);
+
+        // Make the executor list unmodifiable
         executors = Collections.unmodifiableList(executors);
+    }
+
+    /**
+     * Sorts the given {@link FunctionExecutor} list by the priorities of the function executors.
+     * This method is used internally and by subclasses.
+     * 
+     * @param list The list which should be sorted.
+     */
+    protected void sortExecutorList(List<FunctionExecutor<R>> list) {
+
+        Collections.sort(list, new Comparator<FunctionExecutor<R>>() {
+
+            @Override
+            public int compare(FunctionExecutor<R> object1, FunctionExecutor<R> object2) {
+
+                return Integer.compare(getPriority(object2), getPriority(object1));
+            }
+
+            private int getPriority(FunctionExecutor<?> executor) {
+
+                if (FE_PRIORITY_CACHE.containsKey(executor.getClass())) {
+                    return FE_PRIORITY_CACHE.get(executor.getClass());
+                } else {
+                    int priority = Prioritized.DEFAULT;
+
+                    try {
+                        Method invokeMethod = executor.getClass().getMethod("invoke", FunctionInvocation.class, Object[].class);
+                        if (invokeMethod.isAnnotationPresent(Prioritized.class)) {
+                            priority = invokeMethod.getAnnotation(Prioritized.class).value();
+                        }
+                    } catch (NoSuchMethodException e) {
+                        LOGGER.error("Can't find invoke() method in function executor for retrieving priority (bytecode error: should be defined by interface)", e);
+                    }
+
+                    FE_PRIORITY_CACHE.put(executor.getClass(), priority);
+                    return priority;
+                }
+            }
+
+        });
     }
 
     @Override
@@ -92,7 +148,7 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     }
 
     @Override
-    public List<FunctionExecutorContext<R>> getExecutors() {
+    public List<FunctionExecutor<R>> getExecutors() {
 
         return executors;
     }

@@ -43,6 +43,9 @@ public class AbstractFunctionParameterTest {
 
         List<Object[]> data = new ArrayList<>();
 
+        // No parameters and arguments test
+        data.add(new Object[] { new Class<?>[] {}, new Object[] {}, true });
+
         // Simple arguments test
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { "" }, true });
         data.add(new Object[] { new Class<?>[] { String.class }, new Object[] { 0 }, false });

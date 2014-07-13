@@ -20,7 +20,6 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
@@ -33,7 +32,6 @@ import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
@@ -113,20 +111,16 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
         ignoreEquals = definition.isIgnoreEquals();
 
-        List<FunctionExecutorContext<T>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutorContext<Void>> setterExecutors = new ArrayList<>();
+        List<FunctionExecutor<T>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutor<Void>> setterExecutors = new ArrayList<>();
 
         // Add the custom getter/setter executors
-        for (Entry<String, FunctionExecutor<T>> executor : definition.getGetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            getterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
-        for (Entry<String, FunctionExecutor<Void>> executor : definition.getSetterExecutorsForVariant(getHolder().getClass()).entrySet()) {
-            setterExecutors.add(new DefaultFunctionExecutorContext<>(executor.getKey(), executor.getValue()));
-        }
+        getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
+        setterExecutors.addAll(definition.getSetterExecutorsForVariant(getHolder().getClass()).values());
 
         // Add default executor
-        getterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultGetterFunctionExecutor()));
-        setterExecutors.add(new DefaultFunctionExecutorContext<>("default", new DefaultSetterFunctionExecutor()));
+        getterExecutors.add(new DefaultGetterFunctionExecutor());
+        setterExecutors.add(new DefaultSetterFunctionExecutor());
 
         /*
          * Create the dummy getter/setter functions

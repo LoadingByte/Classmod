@@ -19,8 +19,6 @@
 package com.quartercode.classmod.extra.def;
 
 import java.lang.reflect.Array;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
@@ -31,9 +29,7 @@ import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionExecutorContext;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
 
 /**
  * A default implementation of the {@link FunctionInvocation} interface for executing a {@link Function}.
@@ -44,36 +40,21 @@ import com.quartercode.classmod.extra.Prioritized;
  */
 public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
 
-    private final Function<R>                       source;
-    private final Queue<FunctionExecutorContext<R>> remainingExecutors;
+    private final Function<R>                source;
+    private final Queue<FunctionExecutor<R>> remainingExecutors;
 
     /**
      * Creates a new default function invocation for the given {@link Function}.
-     * The required data is taken from the given {@link Function} object.
-     * This constructor also takes the available {@link FunctionExecutor}s and sorts them so they
+     * The required data, like the {@link FunctionExecutor} collection, is taken from the function object.
      * 
-     * @param source The {@link Function} the default function invocation is used by.
+     * @param source The function the default function invocation is used by.
      */
     public DefaultFunctionInvocation(Function<R> source) {
 
         this.source = source;
 
-        // Specify the list type for using this as a queue later on
-        // We need a list here for sorting the executors
-        LinkedList<FunctionExecutorContext<R>> executors = new LinkedList<>();
-        executors.addAll(source.getExecutors());
-
-        Collections.sort(executors, new Comparator<FunctionExecutorContext<R>>() {
-
-            @Override
-            public int compare(FunctionExecutorContext<R> o1, FunctionExecutorContext<R> o2) {
-
-                return ((Integer) o2.getValue(Prioritized.class, "value")).compareTo((Integer) o1.getValue(Prioritized.class, "value"));
-            }
-
-        });
-
-        remainingExecutors = executors;
+        // Fill the remaining executors queue with the function executors of the provided function
+        remainingExecutors = new LinkedList<>(source.getExecutors());
     }
 
     @Override
