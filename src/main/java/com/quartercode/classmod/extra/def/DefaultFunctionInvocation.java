@@ -24,7 +24,6 @@ import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
@@ -86,19 +85,17 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     @Override
     public R next(Object... arguments) {
 
-        // Use a clone of the argument array in order to prevent it from outside modification
-        Object[] actualArguments = arguments.clone();
-
-        // Performance: Skip argument validation if there are no arguments and no parameters
-        if (!source.getParameters().isEmpty() || actualArguments.length > 0) {
-            // Validate the arguments and transform varargs into arrays
-            actualArguments = checkArguments(actualArguments);
-        }
-
         if (remainingExecutors.isEmpty()) {
-            // Stop because all executors were already invoked
+            // Stop because all executors have already been invoked
             return null;
         } else {
+            // Use a clone of the argument array in order to prevent it from outside modification
+            Object[] actualArguments = arguments.clone();
+
+            // Validate the arguments and transform varargs into arrays
+            actualArguments = checkArguments(actualArguments);
+
+            // Poll the next executor and invoke it with the checked arguments
             return remainingExecutors.poll().invoke(this, actualArguments);
         }
     }
@@ -107,19 +104,14 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
 
         List<Class<?>> parameters = source.getParameters();
 
-        // Generate error message
-        StringBuilder errorStringBuilder = new StringBuilder();
-        for (Class<?> parameter : parameters) {
-            errorStringBuilder.append(", ").append(parameter.getSimpleName());
-        }
-        String errorString = "Wrong arguments: '" + (errorStringBuilder.length() == 0 ? "" : errorStringBuilder.substring(2)) + "' required";
-
         // Abort check if there are no parameters
         if (parameters.isEmpty()) {
             // Throw an error if there are arguments while there are no parameters
             if (arguments.length != 0) {
-                throw new IllegalArgumentException(errorString);
-            } else {
+                throw new IllegalArgumentException(generateParameterErrorMessage(parameters));
+            }
+            // Skip argument validation if there are no arguments and no parameters
+            else {
                 return arguments;
             }
         }
@@ -132,12 +124,16 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             hasVararg = false;
         }
         // Check whether there is a correct argument count (if there is a vararg, we don't need to check)
-        Validate.isTrue(hasVararg || parameters.size() == arguments.length, errorString);
+        if (!hasVararg && parameters.size() != arguments.length) {
+            throw new IllegalArgumentException(generateParameterErrorMessage(parameters));
+        }
         // Check all parameters; if there is a vararg, don't check the last one
         for (int index = 0; index < parameters.size() - (hasVararg ? 1 : 0); index++) {
             Class<?> parameter = parameters.get(index);
             // Check whether the argument matches the parameter
-            Validate.isTrue(arguments[index] == null || TypeUtils.isInstance(arguments[index], parameter), errorString);
+            if (arguments[index] != null && !TypeUtils.isInstance(arguments[index], parameter)) {
+                throw new IllegalArgumentException(generateParameterErrorMessage(parameters));
+            }
         }
 
         // Vararg validation
@@ -154,13 +150,15 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
                     varargArguments[index] = arguments[parameters.size() + index - 1];
                 } catch (ArrayStoreException e) {
                     // The vararg argument has no the same type as the vararg
-                    throw new IllegalArgumentException(errorString);
+                    throw new IllegalArgumentException(generateParameterErrorMessage(parameters));
                 }
             }
 
             // Check whether all vararg arguments are of the actual vararg type
             for (Object varargArgument : varargArguments) {
-                Validate.isInstanceOf(varargType, varargArgument, errorString);
+                if (!varargType.isInstance(varargArgument)) {
+                    throw new IllegalArgumentException(generateParameterErrorMessage(parameters));
+                }
             }
 
             // Create a new array with an array containing the vararg arguments at the last index
@@ -172,6 +170,15 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
         } else {
             return arguments;
         }
+    }
+
+    private String generateParameterErrorMessage(List<Class<?>> parameters) {
+
+        StringBuilder errorStringBuilder = new StringBuilder();
+        for (Class<?> parameter : parameters) {
+            errorStringBuilder.append(", ").append(parameter.getSimpleName());
+        }
+        return "Wrong arguments: '" + (errorStringBuilder.length() == 0 ? "" : errorStringBuilder.substring(2)) + "' required";
     }
 
     @Override

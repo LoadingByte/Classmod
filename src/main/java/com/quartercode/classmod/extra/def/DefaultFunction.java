@@ -67,7 +67,7 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
 
         initialized = true;
 
-        parameters = definition.getParameters();
+        parameters = Collections.unmodifiableList(definition.getParameters());
         for (Class<?> parameter : parameters) {
             Validate.notNull(parameter, "Null parameters are not allowed");
         }
@@ -88,7 +88,7 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     @Override
     public List<Class<?>> getParameters() {
 
-        return Collections.unmodifiableList(parameters);
+        return parameters;
     }
 
     @Override

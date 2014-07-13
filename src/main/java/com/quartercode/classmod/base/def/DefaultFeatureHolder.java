@@ -26,7 +26,6 @@ import java.util.Map;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
-import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -57,8 +56,6 @@ public class DefaultFeatureHolder implements FeatureHolder {
     @SuppressWarnings ("unchecked")
     @Override
     public <F extends Feature> F get(FeatureDefinition<F> definition) {
-
-        Validate.notNull(definition, "Cannot retrieve feature for null feature definition");
 
         String name = definition.getName();
         F feature = null;
