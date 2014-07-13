@@ -18,11 +18,10 @@
 
 package com.quartercode.classmod.base.def;
 
+import java.util.Objects;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -36,11 +35,9 @@ import com.quartercode.classmod.base.FeatureHolder;
  */
 public class AbstractFeature implements Feature {
 
-    private static final String[] EXCLUDED_FIELDS = { "holder" };
-
     @XmlAttribute
-    private String                name;
-    private FeatureHolder         holder;
+    private String        name;
+    private FeatureHolder holder;
 
     /**
      * Creates a new empty abstract feature.
@@ -93,19 +90,33 @@ public class AbstractFeature implements Feature {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof AbstractFeature)) {
+            return false;
+        } else {
+            AbstractFeature other = (AbstractFeature) obj;
+            if (!Objects.equals(name, other.name)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+        return ReflectionToStringBuilder.toStringExclude(this, "holder");
     }
 
 }

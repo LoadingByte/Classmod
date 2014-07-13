@@ -19,12 +19,11 @@
 package com.quartercode.classmod.extra.storage;
 
 import java.util.Collection;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.extra.Storage;
 
@@ -64,13 +63,27 @@ public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Stor
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (referenceCollection == null ? 0 : referenceCollection.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof ReferenceCollectionStorage)) {
+            return false;
+        } else {
+            ReferenceCollectionStorage<?, ?> other = (ReferenceCollectionStorage<?, ?>) obj;
+            if (!Objects.equals(referenceCollection, other.referenceCollection)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override

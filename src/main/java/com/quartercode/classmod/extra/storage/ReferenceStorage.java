@@ -22,8 +22,6 @@ import java.util.Collection;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.extra.Storage;
 
@@ -68,13 +66,27 @@ public class ReferenceStorage<T> extends Storage<T> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (reference == null ? 0 : reference.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof ReferenceStorage)) {
+            return false;
+        } else {
+            ReferenceStorage<?> other = (ReferenceStorage<?>) obj;
+            if (!EqualsUtil.equalsConsiderArrays(reference, other.reference)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override

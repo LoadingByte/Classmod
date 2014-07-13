@@ -21,8 +21,6 @@ package com.quartercode.classmod.extra.storage;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.extra.Storage;
 
@@ -60,13 +58,27 @@ public class StandardStorage<T> extends Storage<T> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (object == null ? 0 : object.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof StandardStorage)) {
+            return false;
+        } else {
+            StandardStorage<?> other = (StandardStorage<?>) obj;
+            if (!EqualsUtil.equalsConsiderArrays(object, other.object)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override

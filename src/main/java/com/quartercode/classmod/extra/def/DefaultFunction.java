@@ -25,9 +25,8 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +50,6 @@ import com.quartercode.classmod.extra.Prioritized;
 public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
 
     private static final Logger                 LOGGER            = LoggerFactory.getLogger(DefaultFunction.class);
-
-    private static final String[]               EXCLUDED_FIELDS   = { "holder", "executors" };
 
     /*
      * This field caches all priority values of all FunctionExecutor classes which were ever used inside a function.
@@ -163,19 +160,34 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (executors == null ? 0 : executors.hashCode());
+        result = prime * result + (parameters == null ? 0 : parameters.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof DefaultFunction)) {
+            return false;
+        } else {
+            DefaultFunction<?> other = (DefaultFunction<?>) obj;
+            if (!Objects.equals(parameters, other.parameters) || !Objects.equals(executors, other.executors)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "intialized");
     }
 
 }

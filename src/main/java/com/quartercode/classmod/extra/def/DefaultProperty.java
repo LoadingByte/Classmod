@@ -20,10 +20,9 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -50,8 +49,6 @@ import com.quartercode.classmod.extra.Storage;
 @Persistent
 @XmlRootElement
 public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
-
-    private static final String[]       EXCLUDED_FIELDS   = { "holder", "initialValue", "intialized", "getter", "setter" };
 
     private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<>();
     private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<>();
@@ -156,20 +153,45 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
+        return ignoreEquals ? 0 : realHashCode();
+    }
+
+    private int realHashCode() {
+
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (ignoreEquals ? 1231 : 1237);
+        result = prime * result + (storage == null ? 0 : storage.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
         boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultProperty && ((DefaultProperty<?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
+        return doIgnoreEquals ? true : realEquals(obj);
+    }
+
+    private boolean realEquals(Object obj) {
+
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof DefaultProperty)) {
+            return false;
+        } else {
+            DefaultProperty<?> other = (DefaultProperty<?>) obj;
+            if (ignoreEquals != other.ignoreEquals || !Objects.equals(storage, other.storage)) {
+                return false;
+            } else {
+                return true;
+            }
+        }
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+        return ReflectionToStringBuilder.toStringExclude(this, "holder", "initialValue", "intialized", "getter", "setter");
     }
 
     private class DefaultGetterFunctionExecutor implements FunctionExecutor<T> {
