@@ -63,7 +63,7 @@ public class DefaultCollectionPropertyPersistenceTest {
             allowing(definition).newCollection();
                 will(returnValue(new ArrayList<>()));
 
-            allowing(definition).isIgnoreEquals();
+            allowing(definition).isHidden();
                 will(returnValue(false));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));

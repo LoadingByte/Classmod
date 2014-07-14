@@ -33,13 +33,13 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "initialValue", "ignoreEquals" })
-    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean ignoreEquals) {
+    @Factory (parameters = { "name", "storage", "initialValue", "hidden" })
+    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden) {
 
         Validate.notNull(name, "Name of new property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new property definition cannot be null");
 
-        return new AbstractPropertyDefinition<T>(name, storageTemplate, initialValueFactory, ignoreEquals) {
+        return new AbstractPropertyDefinition<T>(name, storageTemplate, initialValueFactory, hidden) {
 
             @Override
             public Property<T> create(FeatureHolder holder) {

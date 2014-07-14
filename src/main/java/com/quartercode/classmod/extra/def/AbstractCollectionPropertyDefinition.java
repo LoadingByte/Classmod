@@ -25,6 +25,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
@@ -52,7 +53,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
 
     private Storage<C>                     storageTemplate;
     private ValueFactory<C>                collectionFactory;
-    private boolean                        ignoreEquals;
+    private boolean                        hidden;
 
     private final FunctionDefinition<C>    getter;
     private final FunctionDefinition<Void> adder;
@@ -82,19 +83,20 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     /**
-     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name, {@link Storage} implementation, and "ignoreEquals" flag.
+     * Creates a new abstract collection property definition for defining a {@link CollectionProperty} with the given name, {@link Storage} implementation, and hiding flag.
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
-     * @param ignoreEquals Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     *        See {@link Hideable} for more information.
      */
-    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean ignoreEquals) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden) {
 
         this(name, storageTemplate, collectionFactory);
 
-        this.ignoreEquals = ignoreEquals;
+        this.hidden = hidden;
     }
 
     @Override
@@ -104,9 +106,9 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public boolean isIgnoreEquals() {
+    public boolean isHidden() {
 
-        return ignoreEquals;
+        return hidden;
     }
 
     @Override

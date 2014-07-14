@@ -25,6 +25,7 @@ import org.junit.Test;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
@@ -37,6 +38,7 @@ public class DefaultFeatureHolderTest {
     private static FeatureDefinition<TestFeature2> TEST_FEATURE_2;
     private static FeatureDefinition<TestFeature3> TEST_FEATURE_3;
     private static FeatureDefinition<TestFeature3> TEST_FEATURE_3_WRONG_DEFINITION_TYPE;
+    private static FeatureDefinition<TestFeature4> TEST_FEATURE_4;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -81,6 +83,16 @@ public class DefaultFeatureHolderTest {
             public TestFeature3 create(FeatureHolder holder) {
 
                 return new TestFeature3(getName(), holder);
+            }
+
+        };
+
+        TEST_FEATURE_4 = new AbstractFeatureDefinition<TestFeature4>("testFeature4") {
+
+            @Override
+            public TestFeature4 create(FeatureHolder holder) {
+
+                return new TestFeature4(getName(), holder);
             }
 
         };
@@ -134,6 +146,58 @@ public class DefaultFeatureHolderTest {
     public void testGetInitializeWrongDefinitionType() {
 
         featureHolder.get(TEST_FEATURE_3_WRONG_DEFINITION_TYPE);
+    }
+
+    @Test
+    public void testHashCode() {
+
+        DefaultFeatureHolder featureHolder2 = new DefaultFeatureHolder();
+
+        featureHolder.get(TEST_FEATURE_1);
+        featureHolder2.get(TEST_FEATURE_1);
+        assertTrue("Hash codes of the two feature holders are not the same", featureHolder.hashCode() == featureHolder2.hashCode());
+
+        featureHolder.get(TEST_FEATURE_2);
+        assertTrue("Hash codes of the two feature holders are the same", featureHolder.hashCode() != featureHolder2.hashCode());
+    }
+
+    @Test
+    public void testEquals() {
+
+        DefaultFeatureHolder featureHolder2 = new DefaultFeatureHolder();
+
+        featureHolder.get(TEST_FEATURE_1);
+        featureHolder2.get(TEST_FEATURE_1);
+        assertTrue("The two feature holders do not equal", featureHolder.equals(featureHolder2) && featureHolder2.equals(featureHolder));
+
+        featureHolder.get(TEST_FEATURE_2);
+        assertTrue("The two feature holders do equal", !featureHolder.equals(featureHolder2) && !featureHolder2.equals(featureHolder));
+    }
+
+    @Test
+    public void testHashCodeHidden() {
+
+        DefaultFeatureHolder featureHolder2 = new DefaultFeatureHolder();
+
+        // Only the first feature holder has testFeature4 (which is hidden)
+        featureHolder.get(TEST_FEATURE_1);
+        featureHolder.get(TEST_FEATURE_4);
+        featureHolder2.get(TEST_FEATURE_1);
+
+        assertTrue("Hash codes of the two feature holders are not the same", featureHolder.hashCode() == featureHolder2.hashCode());
+    }
+
+    @Test
+    public void testEqualsHidden() {
+
+        DefaultFeatureHolder featureHolder2 = new DefaultFeatureHolder();
+
+        // Only the first feature holder has testFeature4 (which is hidden)
+        featureHolder.get(TEST_FEATURE_1);
+        featureHolder.get(TEST_FEATURE_4);
+        featureHolder2.get(TEST_FEATURE_1);
+
+        assertTrue("The two feature holders do not equal", featureHolder.equals(featureHolder2) && featureHolder2.equals(featureHolder));
     }
 
     private static class TestFeature1 extends AbstractFeature {
@@ -190,6 +254,21 @@ public class DefaultFeatureHolderTest {
         public TestFeature3 create(FeatureHolder holder) {
 
             return new TestFeature3(getName(), holder);
+        }
+
+    }
+
+    private static class TestFeature4 extends AbstractFeature implements Hideable {
+
+        private TestFeature4(String name, FeatureHolder holder) {
+
+            super(name, holder);
+        }
+
+        @Override
+        public boolean isHidden() {
+
+            return true;
         }
 
     }

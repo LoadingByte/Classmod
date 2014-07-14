@@ -19,7 +19,6 @@
 package com.quartercode.classmod.test.extra.def;
 
 import static com.quartercode.classmod.test.ExtraAssert.assertListEquals;
-import static org.junit.Assert.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -66,7 +65,7 @@ public class DefaultCollectionPropertyTest {
         // @formatter:on
     }
 
-    private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property, final boolean ignoreEquals, FunctionExecutor<C> getterExecutor, FunctionExecutor<Void> adderExecutor, FunctionExecutor<Void> removerExecutor) {
+    private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property, final boolean hidden, FunctionExecutor<C> getterExecutor, FunctionExecutor<Void> adderExecutor, FunctionExecutor<Void> removerExecutor) {
 
         final Map<String, FunctionExecutor<C>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
@@ -89,8 +88,8 @@ public class DefaultCollectionPropertyTest {
             allowing(definition).newCollection();
                 will(returnValue(new ArrayList<>()));
 
-            allowing(definition).isIgnoreEquals();
-                will(returnValue(ignoreEquals));
+            allowing(definition).isHidden();
+                will(returnValue(hidden));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(getterExecutors));
@@ -414,44 +413,6 @@ public class DefaultCollectionPropertyTest {
         // @formatter:on
 
         collectionProperty.remove(childFeatureHolder);
-    }
-
-    @Test
-    public void testIgnoreEquals() {
-
-        final StorageInterface<List<String>> storage1 = context.mock(StorageInterface.class, "storage1");
-        final StorageInterface<List<String>> storage2 = context.mock(StorageInterface.class, "storage2");
-        final StorageInterface<List<String>> storage3 = context.mock(StorageInterface.class, "storage3");
-        final StorageInterface<List<String>> storage4 = context.mock(StorageInterface.class, "storage4");
-
-        addInitializeExpectationsToStorage(storage1);
-        addInitializeExpectationsToStorage(storage2);
-        addInitializeExpectationsToStorage(storage3);
-        addInitializeExpectationsToStorage(storage4);
-
-        CollectionProperty<String, List<String>> collectionProperty1 = new DefaultCollectionProperty<>("collectionProperty1", featureHolder, new StorageWrapper<>(storage1));
-        CollectionProperty<String, List<String>> collectionProperty2 = new DefaultCollectionProperty<>("collectionProperty2", featureHolder, new StorageWrapper<>(storage2));
-        CollectionProperty<String, List<String>> collectionProperty3 = new DefaultCollectionProperty<>("collectionProperty3", featureHolder, new StorageWrapper<>(storage3));
-        CollectionProperty<String, List<String>> collectionProperty4 = new DefaultCollectionProperty<>("collectionProperty4", featureHolder, new StorageWrapper<>(storage4));
-
-        initializeCollectionProperty(collectionProperty1, false, null, null, null);
-        initializeCollectionProperty(collectionProperty2, false, null, null, null);
-        initializeCollectionProperty(collectionProperty3, true, null, null, null);
-        initializeCollectionProperty(collectionProperty4, true, null, null, null);
-
-        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, collectionProperty1.hashCode());
-        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, collectionProperty2.hashCode());
-        assertEquals("Hash code of property with ignoreEquals=false", 0, collectionProperty3.hashCode());
-        assertEquals("Hash code of property with ignoreEquals=false", 0, collectionProperty4.hashCode());
-
-        assertTrue("Two different properties with ignoreEquals=false on both do equal", !collectionProperty1.equals(collectionProperty2));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", collectionProperty1.equals(collectionProperty3));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", collectionProperty1.equals(collectionProperty4));
-
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", collectionProperty2.equals(collectionProperty3));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", collectionProperty2.equals(collectionProperty4));
-
-        assertTrue("Two different properties with ignoreEquals=true on both don't equal", collectionProperty3.equals(collectionProperty4));
     }
 
     private static interface OtherFeatureHolder extends FeatureHolder {

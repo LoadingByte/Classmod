@@ -57,7 +57,7 @@ public class DefaultPropertyPersistenceTest {
         // @formatter:off
         context.checking(new Expectations() {{
 
-            allowing(definition).isIgnoreEquals();
+            allowing(definition).isHidden();
                 will(returnValue(false));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));

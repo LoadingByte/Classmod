@@ -73,7 +73,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     private T                           initialValue;
 
     private boolean                     intialized;
-    private boolean                     ignoreEquals;
+    private boolean                     hidden;
     private Function<T>                 getter;
     private Function<Void>              setter;
 
@@ -102,11 +102,17 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     }
 
     @Override
+    public boolean isHidden() {
+
+        return hidden;
+    }
+
+    @Override
     public void initialize(PropertyDefinition<T> definition) {
 
         intialized = true;
 
-        ignoreEquals = definition.isIgnoreEquals();
+        hidden = definition.isHidden();
 
         List<FunctionExecutor<T>> getterExecutors = new ArrayList<>();
         List<FunctionExecutor<Void>> setterExecutors = new ArrayList<>();
@@ -153,14 +159,9 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : realHashCode();
-    }
-
-    private int realHashCode() {
-
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + (ignoreEquals ? 1231 : 1237);
+        result = prime * result + (hidden ? 1231 : 1237);
         result = prime * result + (storage == null ? 0 : storage.hashCode());
         return result;
     }
@@ -168,19 +169,13 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public boolean equals(Object obj) {
 
-        boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultProperty && ((DefaultProperty<?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : realEquals(obj);
-    }
-
-    private boolean realEquals(Object obj) {
-
         if (this == obj) {
             return true;
         } else if (obj == null || ! (obj instanceof DefaultProperty) || !super.equals(obj)) {
             return false;
         } else {
             DefaultProperty<?> other = (DefaultProperty<?>) obj;
-            return ignoreEquals == other.ignoreEquals && Objects.equals(storage, other.storage);
+            return hidden == other.hidden && Objects.equals(storage, other.storage);
         }
     }
 

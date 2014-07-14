@@ -31,6 +31,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
 import com.quartercode.classmod.base.Persistent;
 
@@ -46,7 +47,10 @@ import com.quartercode.classmod.base.Persistent;
  */
 public class DefaultFeatureHolder implements FeatureHolder {
 
-    private final Map<String, Feature> features = new HashMap<>();
+    private final Map<String, Feature> features         = new HashMap<>();
+
+    // Performance: Cache for all unhidden features in order to make the hashCode() and equals() methods faster
+    private final List<Feature>        unhiddenFeatures = new ArrayList<>();
 
     /*
      * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
@@ -76,6 +80,20 @@ public class DefaultFeatureHolder implements FeatureHolder {
             } catch (ClassCastException e) {
                 throw new IllegalArgumentException("Unknown generics error with feature definition '" + definition.getName() + "' and its created feature (Initializable cast)", e);
             }
+        }
+
+        // Update the unhiddenFeatures list with the feature
+        boolean presentInUnhiddenList = unhiddenFeatures.contains(feature);
+        if (feature instanceof Hideable) {
+            boolean hidden = ((Hideable) feature).isHidden();
+
+            if (hidden && presentInUnhiddenList) {
+                unhiddenFeatures.remove(feature);
+            } else if (!hidden && !presentInUnhiddenList) {
+                unhiddenFeatures.add(feature);
+            }
+        } else if (!presentInUnhiddenList) {
+            unhiddenFeatures.add(feature);
         }
 
         return feature;
@@ -118,7 +136,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
         final int prime = 31;
         int result = 1;
-        result = prime * result + (features == null ? 0 : features.hashCode());
+        result = prime * result + (unhiddenFeatures == null ? 0 : unhiddenFeatures.hashCode());
         return result;
     }
 
@@ -131,7 +149,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
             return false;
         } else {
             DefaultFeatureHolder other = (DefaultFeatureHolder) obj;
-            return Objects.equals(features, other.features);
+            return Objects.equals(unhiddenFeatures, other.unhiddenFeatures);
         }
     }
 
@@ -170,6 +188,8 @@ public class DefaultFeatureHolder implements FeatureHolder {
         public boolean add(Feature feature) {
 
             featureHolder.features.put(feature.getName(), feature);
+            featureHolder.unhiddenFeatures.add(feature);
+
             return super.add(feature);
         }
 

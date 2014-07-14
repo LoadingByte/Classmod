@@ -20,15 +20,17 @@ package com.quartercode.classmod.extra;
 
 import java.util.Collection;
 import com.quartercode.classmod.base.Feature;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
 
 /**
  * A collection property is a simple {@link Feature} which stores a {@link Collection} object.
+ * Please note that all collection property implementations must allow to be hidden by setting the hiding flag in the definition.
  * 
  * @param <E> The type of object that can be stored inside the collection property's collection.
  * @param <C> The type of collection that can be stored inside the collection property.
  */
-public interface CollectionProperty<E, C extends Collection<E>> extends Feature, ValueSupplier<C>, Initializable<CollectionPropertyDefinition<E, C>> {
+public interface CollectionProperty<E, C extends Collection<E>> extends Feature, Hideable, ValueSupplier<C>, Initializable<CollectionPropertyDefinition<E, C>> {
 
     /**
      * Returns the {@link Collection} which is stored inside the property.

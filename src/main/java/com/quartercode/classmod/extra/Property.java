@@ -19,14 +19,16 @@
 package com.quartercode.classmod.extra;
 
 import com.quartercode.classmod.base.Feature;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
 
 /**
  * A property is a simple {@link Feature} which stores an object.
+ * Please note that all property implementations must allow to be hidden by setting the hiding flag in the definition.
  * 
  * @param <T> The type of object that can be stored inside the property.
  */
-public interface Property<T> extends Feature, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
+public interface Property<T> extends Feature, Hideable, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
 
     /**
      * Returns the object which is stored inside the property.

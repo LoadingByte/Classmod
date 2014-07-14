@@ -18,7 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
 import org.jmock.Expectations;
@@ -45,7 +45,7 @@ public class DefaultPropertyTest {
     @Mock
     private FeatureHolder   featureHolder;
 
-    private <T> void initializeProperty(Property<T> property, final boolean ignoreEquals, FunctionExecutor<T> getterExecutor, FunctionExecutor<Void> setterExecutor) {
+    private <T> void initializeProperty(Property<T> property, final boolean hidden, FunctionExecutor<T> getterExecutor, FunctionExecutor<Void> setterExecutor) {
 
         final Map<String, FunctionExecutor<T>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
@@ -61,8 +61,8 @@ public class DefaultPropertyTest {
         // @formatter:off
         context.checking(new Expectations() {{
 
-            allowing(definition).isIgnoreEquals();
-                will(returnValue(ignoreEquals));
+            allowing(definition).isHidden();
+                will(returnValue(hidden));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(getterExecutors));
@@ -331,39 +331,6 @@ public class DefaultPropertyTest {
 
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), "initialValue");
         initializeProperty(property, false, null, null);
-    }
-
-    @Test
-    public void testIgnoreEquals() {
-
-        final StorageInterface<String> storage1 = context.mock(StorageInterface.class, "storage1");
-        final StorageInterface<String> storage2 = context.mock(StorageInterface.class, "storage2");
-        final StorageInterface<String> storage3 = context.mock(StorageInterface.class, "storage3");
-        final StorageInterface<String> storage4 = context.mock(StorageInterface.class, "storage4");
-
-        Property<String> property1 = new DefaultProperty<>("property1", featureHolder, new StorageWrapper<>(storage1), null);
-        Property<String> property2 = new DefaultProperty<>("property2", featureHolder, new StorageWrapper<>(storage2), null);
-        Property<String> property3 = new DefaultProperty<>("property3", featureHolder, new StorageWrapper<>(storage3), null);
-        Property<String> property4 = new DefaultProperty<>("property4", featureHolder, new StorageWrapper<>(storage4), null);
-
-        initializeProperty(property1, false, null, null);
-        initializeProperty(property2, false, null, null);
-        initializeProperty(property3, true, null, null);
-        initializeProperty(property4, true, null, null);
-
-        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property1.hashCode());
-        assertNotEquals("Hash code of property with ignoreEquals=false should not be 0", 0, property2.hashCode());
-        assertEquals("Hash code of property with ignoreEquals=false", 0, property3.hashCode());
-        assertEquals("Hash code of property with ignoreEquals=false", 0, property4.hashCode());
-
-        assertTrue("Two different properties with ignoreEquals=false on both do equal", !property1.equals(property2));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property3));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property1.equals(property4));
-
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property3));
-        assertTrue("Two different properties with ignoreEquals=true on one don't equal", property2.equals(property4));
-
-        assertTrue("Two different properties with ignoreEquals=true on both don't equal", property3.equals(property4));
     }
 
     private static interface OtherFeatureHolder extends FeatureHolder {

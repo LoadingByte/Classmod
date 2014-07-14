@@ -70,7 +70,7 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     private Storage<C>                  storage;
 
     private boolean                     intialized;
-    private boolean                     ignoreEquals;
+    private boolean                     hidden;
     private Function<C>                 getter;
     private Function<Void>              adder;
     private Function<Void>              remover;
@@ -98,11 +98,17 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     }
 
     @Override
+    public boolean isHidden() {
+
+        return hidden;
+    }
+
+    @Override
     public void initialize(CollectionPropertyDefinition<E, C> definition) {
 
         intialized = true;
 
-        ignoreEquals = definition.isIgnoreEquals();
+        hidden = definition.isHidden();
 
         C newCollection = definition.newCollection();
         C oldCollection = storage.get();
@@ -160,14 +166,9 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     @Override
     public int hashCode() {
 
-        return ignoreEquals ? 0 : realHashCode();
-    }
-
-    private int realHashCode() {
-
         final int prime = 31;
         int result = super.hashCode();
-        result = prime * result + (ignoreEquals ? 1231 : 1237);
+        result = prime * result + (hidden ? 1231 : 1237);
         result = prime * result + (storage == null ? 0 : storage.hashCode());
         return result;
     }
@@ -175,19 +176,13 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     @Override
     public boolean equals(Object obj) {
 
-        boolean doIgnoreEquals = ignoreEquals || obj instanceof DefaultCollectionProperty && ((DefaultCollectionProperty<?, ?>) obj).ignoreEquals;
-        return doIgnoreEquals ? true : realEquals(obj);
-    }
-
-    private boolean realEquals(Object obj) {
-
         if (this == obj) {
             return true;
         } else if (obj == null || ! (obj instanceof DefaultCollectionProperty) || !super.equals(obj)) {
             return false;
         } else {
             DefaultCollectionProperty<?, ?> other = (DefaultCollectionProperty<?, ?>) obj;
-            return ignoreEquals == other.ignoreEquals && Objects.equals(storage, other.storage);
+            return hidden == other.hidden && Objects.equals(storage, other.storage);
         }
     }
 

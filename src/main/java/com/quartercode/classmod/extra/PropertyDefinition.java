@@ -21,6 +21,7 @@ package com.quartercode.classmod.extra;
 import java.util.Map;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Hideable;
 
 /**
  * A property definition is used to retrieve a {@link Property} from a {@link FeatureHolder}.
@@ -37,11 +38,12 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface PropertyDefinition<T> extends FeatureDefinition<Property<T>>, ValueSupplierDefinition<T, Property<T>> {
 
     /**
-     * Returns whether the value of the defined property should be excluded from equality checks of its feature holder.
+     * Returns the hiding flag for all created {@link Property} instances.
+     * See {@link Hideable#isHidden()} for more information on that attribute.
      * 
-     * @return Whether the "ignoreEquals" flag is set.
+     * @return The hiding flag of the definition.
      */
-    public boolean isIgnoreEquals();
+    public boolean isHidden();
 
     /**
      * Returns all registered getter {@link FunctionExecutor}s mapped by their names for the given variant and all supervariants.

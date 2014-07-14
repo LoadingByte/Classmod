@@ -20,18 +20,21 @@ package com.quartercode.classmod.extra;
 
 import java.util.List;
 import com.quartercode.classmod.base.Feature;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
 
 /**
  * A function makes a method (also called a function) available.
  * Functions are executed by different {@link FunctionExecutor}s. That makes the function concept flexible.
- * For invoking a function, the object creates a new {@link FunctionInvocation} which takes care of calling all the executors.
+ * For invoking a function, the object creates a new {@link FunctionInvocation} which takes care of calling all the executors.<br>
+ * <br>
+ * Please note that all function implementations must be hidden.
  * 
  * @param <R> The type of the return value of the used function executors.
  * @see FunctionExecutor
  * @see FunctionInvocation
  */
-public interface Function<R> extends Feature, Initializable<FunctionDefinition<R>> {
+public interface Function<R> extends Feature, Hideable, Initializable<FunctionDefinition<R>> {
 
     /**
      * Returns a list of all parameters which are used by the {@link FunctionExecutor}s.

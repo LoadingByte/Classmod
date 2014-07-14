@@ -24,6 +24,7 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
@@ -50,7 +51,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
 
     private Storage<T>                     storageTemplate;
     private ValueFactory<T>                initialValueFactory;
-    private boolean                        ignoreEquals;
+    private boolean                        hidden;
 
     private final FunctionDefinition<T>    getter;
     private final FunctionDefinition<Void> setter;
@@ -88,39 +89,41 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     /**
-     * Creates a new abstract property definition for defining a {@link Property} with the given name and "ignoreEquals" flag.
+     * Creates a new abstract property definition for defining a {@link Property} with the given name and hiding flag.
      * 
      * @param name The name of the defined {@link Property}.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
-     * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     *        See {@link Hideable} for more information.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, boolean ignoreEquals) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, boolean hidden) {
 
         this(name, storageTemplate);
 
-        this.ignoreEquals = ignoreEquals;
+        this.hidden = hidden;
     }
 
     /**
-     * Creates a new abstract property definition for defining a {@link Property} with the given name, initial value, and "ignoreEquals" flag.
+     * Creates a new abstract property definition for defining a {@link Property} with the given name, initial value, and hiding flag.
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
      * @param initialValueFactory A {@link ValueFactory} that returns initial value objects for all created properties.
-     * @param ignoreEquals Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     *        See {@link Hideable} for more information.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean ignoreEquals) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden) {
 
         this(name, storageTemplate);
 
         this.initialValueFactory = initialValueFactory;
-        this.ignoreEquals = ignoreEquals;
+        this.hidden = hidden;
     }
 
     @Override
-    public boolean isIgnoreEquals() {
+    public boolean isHidden() {
 
-        return ignoreEquals;
+        return hidden;
     }
 
     @Override

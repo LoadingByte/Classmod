@@ -73,6 +73,12 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     }
 
     @Override
+    public boolean isHidden() {
+
+        return true;
+    }
+
+    @Override
     public void initialize(FunctionDefinition<R> definition) {
 
         initialized = true;
