@@ -27,6 +27,7 @@ import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.ValueFactory;
 import com.quartercode.classmod.extra.def.AbstractCollectionPropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultCollectionProperty;
+import com.quartercode.classmod.extra.def.TransientCollectionProperty;
 import com.quartercode.classmod.factory.Factory;
 
 /**
@@ -34,8 +35,8 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultCollectionPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "collection", "hidden" })
-    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden) {
+    @Factory (parameters = { "name", "storage", "collection", "transient", "hidden" })
+    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, final boolean trans, boolean hidden) {
 
         Validate.notNull(name, "Name of new collection property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new collection property definition cannot be null");
@@ -46,7 +47,11 @@ class DefaultCollectionPropertyDefinitionFactory {
             @Override
             public CollectionProperty<E, C> create(FeatureHolder holder) {
 
-                return new DefaultCollectionProperty<>(getName(), holder, newStorage());
+                if (trans) {
+                    return new TransientCollectionProperty<>(getName(), holder, newStorage());
+                } else {
+                    return new DefaultCollectionProperty<>(getName(), holder, newStorage());
+                }
             }
 
         };

@@ -26,6 +26,7 @@ import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.ValueFactory;
 import com.quartercode.classmod.extra.def.AbstractPropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultProperty;
+import com.quartercode.classmod.extra.def.TransientProperty;
 import com.quartercode.classmod.factory.Factory;
 
 /**
@@ -33,8 +34,8 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "initialValue", "hidden" })
-    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden) {
+    @Factory (parameters = { "name", "storage", "initialValue", "transient", "hidden" })
+    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, final boolean trans, boolean hidden) {
 
         Validate.notNull(name, "Name of new property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new property definition cannot be null");
@@ -44,7 +45,11 @@ class DefaultPropertyDefinitionFactory {
             @Override
             public Property<T> create(FeatureHolder holder) {
 
-                return new DefaultProperty<>(getName(), holder, newStorage(), newInitialValue());
+                if (trans) {
+                    return new TransientProperty<>(getName(), holder, newStorage(), newInitialValue());
+                } else {
+                    return new DefaultProperty<>(getName(), holder, newStorage(), newInitialValue());
+                }
             }
 
         };
