@@ -73,6 +73,15 @@ public class DefaultFeatureHolder implements FeatureHolder {
             features.put(name, feature);
         }
 
+        // Initialize the feature and update the unhidden features list
+        updateFeature(definition, feature);
+
+        return feature;
+    }
+
+    @SuppressWarnings ("unchecked")
+    private <F extends Feature> void updateFeature(FeatureDefinition<F> definition, F feature) {
+
         // Initialize the feature if it hasn't been done yet
         if (feature instanceof Initializable && ! ((Initializable<?>) feature).isInitialized()) {
             try {
@@ -95,8 +104,6 @@ public class DefaultFeatureHolder implements FeatureHolder {
         } else if (!presentInUnhiddenList) {
             unhiddenFeatures.add(feature);
         }
-
-        return feature;
     }
 
     /**
@@ -120,7 +127,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
     /**
      * Returns the unique serialization id for the default feature holder.
-     * The id is just the identy hash code ({@link System#identityHashCode(Object)}) of the object as a hexadecimal string.
+     * The id is just the identity hash code ({@link System#identityHashCode(Object)}) of the object as a hexadecimal string.
      * 
      * @return The unique serialization id for the default feature holder.
      */
@@ -178,7 +185,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
             // Add all persistent features
             for (Feature feature : featureHolder.features.values()) {
                 if (feature.getClass().isAnnotationPresent(Persistent.class)) {
-                    // Don't use the overriden add() because that could have side-effects
+                    // Don't use the overridden add() method because that could have side effects
                     super.add(feature);
                 }
             }
