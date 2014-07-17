@@ -88,6 +88,12 @@ public class TreeInitializer {
 
                 if (value instanceof FeatureHolder) {
                     apply((FeatureHolder) value, visitedHolders);
+                } else if (value instanceof List) {
+                    for (Object entry : (List<?>) value) {
+                        if (entry instanceof FeatureHolder) {
+                            apply((FeatureHolder) entry, visitedHolders);
+                        }
+                    }
                 }
             }
         }

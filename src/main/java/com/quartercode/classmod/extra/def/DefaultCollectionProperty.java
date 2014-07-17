@@ -148,7 +148,13 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     @Override
     public C get() {
 
-        return getter.invoke();
+        if (getter != null) {
+            return getter.invoke();
+        } else {
+            // Allow to retrieve the stored value even if the feature wasn't initialized yet
+            // That is needed for FeatureHolder tree walkers to be able to retrieve children from ValueSupplier objects
+            return storage.get();
+        }
     }
 
     @Override

@@ -21,6 +21,7 @@ package com.quartercode.classmod.test.util;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -156,6 +157,42 @@ public class TreeInitializerTest {
 
         holder1.checkExpected();
         holder2.checkExpected();
+    }
+
+    @Test
+    public void testInitializeMultipleHoldersValueSupplierList() {
+
+        TestFeatureHolder1 holder1 = new TestFeatureHolder1();
+        final Pair<FeatureDefinition<?>, ValueSupplier<?>> feature1 = createValueSupplier("feature1", holder1);
+
+        final TestFeatureHolder2 holder2 = new TestFeatureHolder2();
+        Pair<FeatureDefinition<?>, Feature> feature2 = createFeature("feature2", holder2);
+
+        final TestFeatureHolder2 holder3 = new TestFeatureHolder2();
+        Pair<FeatureDefinition<?>, Feature> feature3 = createFeature("feature3", holder3);
+
+        // @formatter:off
+        context.checking(new Expectations() {{
+
+            allowing(feature1.getRight()).get();
+                will(returnValue(Arrays.asList(holder2, holder3)));
+
+        }});
+        // @formatter:on
+
+        holder1.expectedGetCalls.add(feature1.getLeft());
+        holder2.expectedGetCalls.add(feature2.getLeft());
+        holder3.expectedGetCalls.add(feature3.getLeft());
+
+        TreeInitializer initializer = new TreeInitializer();
+        initializer.addInitializationDefinition(TestFeatureHolder1.class, feature1.getLeft());
+        initializer.addInitializationDefinition(TestFeatureHolder2.class, feature2.getLeft());
+        initializer.addInitializationDefinition(TestFeatureHolder2.class, feature3.getLeft());
+        initializer.apply(holder1);
+
+        holder1.checkExpected();
+        holder2.checkExpected();
+        holder3.checkExpected();
     }
 
     @Test

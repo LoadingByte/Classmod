@@ -147,7 +147,13 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public T get() {
 
-        return getter.invoke();
+        if (getter != null) {
+            return getter.invoke();
+        } else {
+            // Allow to retrieve the stored value even if the feature wasn't initialized yet
+            // That is needed for FeatureHolder tree walkers to be able to retrieve children from ValueSupplier objects
+            return storage.get();
+        }
     }
 
     @Override
