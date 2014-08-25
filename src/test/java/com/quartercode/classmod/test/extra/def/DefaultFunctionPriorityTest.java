@@ -31,7 +31,7 @@ import com.quartercode.classmod.extra.Prioritized;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunction;
 
-public class AbstractFunctionPriorityTest {
+public class DefaultFunctionPriorityTest {
 
     @Test
     public void testInvoke() {

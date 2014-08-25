@@ -33,7 +33,7 @@ import com.quartercode.classmod.extra.FunctionInvocation;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunction;
 
-public class AbstractFunctionTest {
+public class DefaultFunctionTest {
 
     @Test
     public void testInvoke() {

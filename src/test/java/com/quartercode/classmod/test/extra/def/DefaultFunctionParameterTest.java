@@ -36,7 +36,7 @@ import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunction;
 
 @RunWith (Parameterized.class)
-public class AbstractFunctionParameterTest {
+public class DefaultFunctionParameterTest {
 
     @Parameters
     public static Collection<Object[]> data() {
@@ -96,7 +96,7 @@ public class AbstractFunctionParameterTest {
     private final Object[]   arguments;
     private final boolean    works;
 
-    public AbstractFunctionParameterTest(Class<?>[] parameters, Object[] arguments, boolean works) {
+    public DefaultFunctionParameterTest(Class<?>[] parameters, Object[] arguments, boolean works) {
 
         this.parameters = parameters;
         this.arguments = arguments;
