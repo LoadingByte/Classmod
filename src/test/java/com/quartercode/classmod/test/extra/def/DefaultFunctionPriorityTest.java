@@ -19,7 +19,7 @@
 package com.quartercode.classmod.test.extra.def;
 
 import static org.junit.Assert.*;
-import java.util.concurrent.atomic.AtomicBoolean;
+import org.apache.commons.lang3.mutable.MutableBoolean;
 import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -46,54 +46,54 @@ public class DefaultFunctionPriorityTest {
 
         };
 
-        final AtomicBoolean invokedFunctionExecutor1 = new AtomicBoolean();
+        final MutableBoolean invokedFunctionExecutor1 = new MutableBoolean();
         definition.addExecutor("1", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (4)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
-                invokedFunctionExecutor1.set(true);
+                invokedFunctionExecutor1.setTrue();
                 return invocation.next(arguments);
             }
 
         });
 
-        final AtomicBoolean invokedFunctionExecutor2 = new AtomicBoolean();
+        final MutableBoolean invokedFunctionExecutor2 = new MutableBoolean();
         definition.addExecutor("2", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (3)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
-                invokedFunctionExecutor2.set(true);
+                invokedFunctionExecutor2.setTrue();
                 invocation.next(arguments); // Execute next, but don't return next value
                 return 2;
             }
 
         });
 
-        final AtomicBoolean invokedFunctionExecutor3 = new AtomicBoolean();
+        final MutableBoolean invokedFunctionExecutor3 = new MutableBoolean();
         definition.addExecutor("3", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (2)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
-                invokedFunctionExecutor3.set(true);
+                invokedFunctionExecutor3.setTrue();
                 return 3; // Do not even execute next
             }
 
         });
 
-        final AtomicBoolean invokedFunctionExecutor4 = new AtomicBoolean();
+        final MutableBoolean invokedFunctionExecutor4 = new MutableBoolean();
         definition.addExecutor("4", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
             @Prioritized (1)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
-                invokedFunctionExecutor4.set(true);
+                invokedFunctionExecutor4.setTrue();
                 invocation.next(arguments);
                 return 4;
             }
@@ -104,10 +104,10 @@ public class DefaultFunctionPriorityTest {
 
         int result = function.invoke();
 
-        assertTrue("Executor 1 wasn't invoked", invokedFunctionExecutor1.get());
-        assertTrue("Executor 2 wasn't invoked", invokedFunctionExecutor2.get());
-        assertTrue("Executor 3 wasn't invoked", invokedFunctionExecutor3.get());
-        assertFalse("Executor 4 was invoked", invokedFunctionExecutor4.get());
+        assertTrue("Executor 1 wasn't invoked", invokedFunctionExecutor1.getValue());
+        assertTrue("Executor 2 wasn't invoked", invokedFunctionExecutor2.getValue());
+        assertTrue("Executor 3 wasn't invoked", invokedFunctionExecutor3.getValue());
+        assertFalse("Executor 4 was invoked", invokedFunctionExecutor4.getValue());
         assertEquals("Return value", 2, result);
     }
 
