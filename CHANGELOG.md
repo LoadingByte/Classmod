@@ -17,6 +17,7 @@
 * The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
 * ChildFeatureHolders must provide the type of their parent objects as a class object for more type-safety.
 * The new TreeInitializer utility allows to walk over FeatureHolder trees and call the FeatureHolder.get() method with predefined definitions. That enables to initialize features after deserialization.
+* FeatureDefinitionReference objects allow to create serializable references to feature definitions.
 
 ### Removals
 * Removed the FunctionExecutorContext which was used to store FunctionExecutor metadata. Since there is no more metadata to be stored, the concept is no longer required.
