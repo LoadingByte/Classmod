@@ -46,13 +46,11 @@ import com.quartercode.classmod.extra.FunctionExecutor;
  */
 public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefinition<Function<R>> implements FunctionDefinition<R> {
 
-    private static final String[]                                                       EXCLUDED_FIELDS = { "executors", "variantCache" };
-
-    private final List<Class<?>>                                                        parameters      = new ArrayList<>();
-    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors       = new HashMap<>();
+    private final List<Class<?>>                                                        parameters   = new ArrayList<>();
+    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors    = new HashMap<>();
 
     // Performance: Cache for different variants
-    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache    = new HashMap<>();
+    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache = new HashMap<>();
 
     /**
      * Creates a new abstract function definition for defining a {@link Function} with the given name and parameters.
@@ -150,19 +148,19 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
+        return HashCodeBuilder.reflectionHashCode(this, "executors", "variantCache");
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
+        return EqualsBuilder.reflectionEquals(this, obj, "executors", "variantCache");
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+        return ReflectionToStringBuilder.toStringExclude(this, "executors", "variantCache");
     }
 
 }

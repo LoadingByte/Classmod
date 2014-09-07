@@ -49,8 +49,6 @@ import com.quartercode.classmod.extra.ValueFactory;
  */
 public abstract class AbstractCollectionPropertyDefinition<E, C extends Collection<E>> extends AbstractFeatureDefinition<CollectionProperty<E, C>> implements CollectionPropertyDefinition<E, C> {
 
-    private static final String[]          EXCLUDED_FIELDS = { "getter", "adder", "remover" };
-
     private Storage<C>                     storageTemplate;
     private ValueFactory<C>                collectionFactory;
     private boolean                        hidden;
@@ -179,19 +177,19 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, EXCLUDED_FIELDS);
+        return HashCodeBuilder.reflectionHashCode(this, "getter", "adder", "remover");
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, EXCLUDED_FIELDS);
+        return EqualsBuilder.reflectionEquals(this, obj, "getter", "adder", "remover");
     }
 
     @Override
     public String toString() {
 
-        return ReflectionToStringBuilder.toStringExclude(this, EXCLUDED_FIELDS);
+        return ReflectionToStringBuilder.toStringExclude(this, "getter", "adder", "remover");
     }
 
 }
