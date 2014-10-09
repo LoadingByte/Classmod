@@ -30,7 +30,7 @@ import com.quartercode.classmod.base.FeatureHolder;
 public interface FunctionInvocation<R> {
 
     /**
-     * Returns The {@link FeatureHolder} which holds the {@link Function} using the function invocation.
+     * Returns the {@link FeatureHolder} which holds the {@link Function} using the function invocation.
      * 
      * @return The feature holder the function invocation is used by.
      */
