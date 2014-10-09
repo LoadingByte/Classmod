@@ -3,6 +3,7 @@
 
 ### Additions
 * Added a new factory system which can be used to create implementations without directly depending on them.
+* The new CFeatureHolder family integrates convenience methods like invoke() directly into the holder class removing the need for structures like holder.get(...).invoke(...).
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
 * Hidden features are excluded from the hashCode() and equals() methods of their parent feature holders.
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
