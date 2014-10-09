@@ -27,6 +27,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.extra.CFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
@@ -61,6 +62,12 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     public FeatureHolder getHolder() {
 
         return source.getHolder();
+    }
+
+    @Override
+    public CFeatureHolder getCHolder() {
+
+        return (CFeatureHolder) getHolder();
     }
 
     @Override

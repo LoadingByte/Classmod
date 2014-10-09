@@ -37,6 +37,13 @@ public interface FunctionInvocation<R> {
     public FeatureHolder getHolder();
 
     /**
+     * Returns the {@link FeatureHolder} which holds the {@link Function} using the function invocation casted to a {@link CFeatureHolder}.
+     * 
+     * @return The convenient feature holder the function invocation is used by.
+     */
+    public CFeatureHolder getCHolder();
+
+    /**
      * Invokes the next {@link FunctionExecutor} in the chain with the given arguments and returns its return value.
      * If there is no next function executor with a lower priority than the one invoked before, the method returns null.
      * The method should be used by function executors to keep the invocation chain going.
