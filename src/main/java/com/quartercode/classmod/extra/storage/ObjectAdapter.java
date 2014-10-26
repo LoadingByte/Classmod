@@ -24,19 +24,22 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.XmlValue;
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import com.quartercode.classmod.extra.XmlPassthroughElement;
 
 /**
  * The object adapter is used for mapping an {@link Object} field.
  * There are some bugs in JAXB the adapter works around.<br>
  * <br>
  * Note that this way of getting around the limitations of JAXB is really hacky, but currently there is no other solution.
- * Also note that you must add the following classs to the context path of your jaxb context:
+ * Also note that you must add the following classes to the context path of your jaxb context:
  * 
  * <ul>
  * <li>{@link ObjectAdapter.ClassWrapper}</li>
@@ -77,14 +80,29 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
         }
     }
 
-    private static interface Wrapper<T> {
+    @XmlTransient
+    private static abstract class Wrapper<T> implements XmlPassthroughElement {
 
-        public T getObject();
+        private Object xmlParent;
+
+        @Override
+        public Object getXmlParent() {
+
+            return xmlParent;
+        }
+
+        @SuppressWarnings ("unused")
+        protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
+
+            xmlParent = parent;
+        }
+
+        abstract T getObject();
 
     }
 
     @XmlType (name = "class")
-    private static class ClassWrapper implements Wrapper<Class<?>> {
+    private static class ClassWrapper extends Wrapper<Class<?>> {
 
         @XmlValue
         private Class<?> object;
@@ -107,7 +125,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     }
 
     @XmlType (name = "array")
-    private static class ArrayWrapper implements Wrapper<Object[]> {
+    private static class ArrayWrapper extends Wrapper<Object[]> {
 
         @XmlElement (name = "item")
         private Object[] object;
@@ -140,7 +158,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     }
 
     @XmlType (name = "collection")
-    private static class CollectionWrapper implements Wrapper<Collection<?>> {
+    private static class CollectionWrapper extends Wrapper<Collection<?>> {
 
         @XmlElement (name = "item")
         private Collection<?> object;
@@ -163,7 +181,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     }
 
     @XmlType (name = "map")
-    private static class MapWrapper implements Wrapper<Map<?, ?>> {
+    private static class MapWrapper extends Wrapper<Map<?, ?>> {
 
         @XmlElement
         private Class<?>       mapType;

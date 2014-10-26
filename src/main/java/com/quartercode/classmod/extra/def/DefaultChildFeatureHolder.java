@@ -25,6 +25,7 @@ import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
+import com.quartercode.classmod.extra.XmlPassthroughElement;
 
 /**
  * A child feature holder is a {@link FeatureHolder} which stores its parent {@link FeatureHolder}.
@@ -109,11 +110,17 @@ public class DefaultChildFeatureHolder<P extends FeatureHolder> extends DefaultF
     @SuppressWarnings ("unchecked")
     protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
 
-        if (parent instanceof Feature) {
+        // Resolve the next parent feature that is only separated with XmlPassthroughChild objects from this holder
+        Object effectiveParent = parent;
+        while (! (effectiveParent instanceof Feature) && effectiveParent instanceof XmlPassthroughElement) {
+            effectiveParent = ((XmlPassthroughElement) effectiveParent).getXmlParent();
+        }
+
+        if (effectiveParent instanceof Feature) {
             try {
-                this.parent = (P) ((Feature) parent).getHolder();
+                this.parent = (P) ((Feature) effectiveParent).getHolder();
             } catch (ClassCastException e) {
-                throw new IllegalStateException("Unexpected parent type '" + parent.getClass().getName() + "': " + e.getMessage(), e);
+                throw new IllegalStateException("Unexpected parent type '" + effectiveParent.getClass().getName() + "': " + e.getMessage(), e);
             }
         }
     }

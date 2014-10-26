@@ -18,6 +18,8 @@
 
 package com.quartercode.classmod.extra;
 
+import javax.xml.bind.Unmarshaller;
+
 /**
  * A storage object just stores another object inside of it.
  * The stored object can be changed with the {@link #set(Object)} method and retrieved with the {@link #get()} method.
@@ -27,7 +29,20 @@ package com.quartercode.classmod.extra;
  * 
  * @param <T> The type of object that can be stored inside the storage.
  */
-public abstract class Storage<T> {
+public abstract class Storage<T> implements XmlPassthroughElement {
+
+    private transient Object xmlParent;
+
+    @Override
+    public Object getXmlParent() {
+
+        return xmlParent;
+    }
+
+    protected void beforeUnmarshal(Unmarshaller unmarshaller, Object parent) {
+
+        xmlParent = parent;
+    }
 
     /**
      * Returns the object that is stored by the storage.
