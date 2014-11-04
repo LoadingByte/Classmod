@@ -30,9 +30,9 @@ import com.quartercode.classmod.base.FeatureHolder;
  * @see #invoke(FeatureDefinition, Object...)
  * @see #getObj(FeatureDefinition)
  * @see #setObj(FeatureDefinition, Object)
- * @see #getCol(FeatureDefinition)
- * @see #addCol(FeatureDefinition, Object)
- * @see #removeCol(FeatureDefinition, Object)
+ * @see #getColl(FeatureDefinition)
+ * @see #addToColl(FeatureDefinition, Object)
+ * @see #removeFromColl(FeatureDefinition, Object)
  */
 public interface CFeatureHolder extends FeatureHolder {
 
@@ -89,7 +89,7 @@ public interface CFeatureHolder extends FeatureHolder {
      * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      * @see CollectionProperty#get()
      */
-    public <E, C extends Collection<E>> C getCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition);
+    public <E, C extends Collection<E>> C getColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition);
 
     /**
      * Adds the given object to the collection which is stored inside the {@link CollectionProperty} defined by the given collection property definition.
@@ -102,7 +102,7 @@ public interface CFeatureHolder extends FeatureHolder {
      * @throws RuntimeException An adder function executor throws a custom adder-related exception.
      * @see CollectionProperty#add(Object)
      */
-    public <E, C extends Collection<E>> void addCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element);
+    public <E, C extends Collection<E>> void addToColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element);
 
     /**
      * Removes the given object from the collection which is stored inside the {@link CollectionProperty} defined by the given collection property definition.
@@ -115,6 +115,6 @@ public interface CFeatureHolder extends FeatureHolder {
      * @throws RuntimeException A remover function executor throws a custom remover-related exception.
      * @see CollectionProperty#remove(Object)
      */
-    public <E, C extends Collection<E>> void removeCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element);
+    public <E, C extends Collection<E>> void removeFromColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element);
 
 }

@@ -55,19 +55,19 @@ public class DefaultCFeatureHolder extends DefaultFeatureHolder implements CFeat
     }
 
     @Override
-    public <E, C extends Collection<E>> C getCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition) {
+    public <E, C extends Collection<E>> C getColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition) {
 
         return get(collectionPropertyDefinition).get();
     }
 
     @Override
-    public <E, C extends Collection<E>> void addCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element) {
+    public <E, C extends Collection<E>> void addToColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element) {
 
         get(collectionPropertyDefinition).add(element);
     }
 
     @Override
-    public <E, C extends Collection<E>> void removeCol(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element) {
+    public <E, C extends Collection<E>> void removeFromColl(FeatureDefinition<? extends CollectionProperty<E, C>> collectionPropertyDefinition, E element) {
 
         get(collectionPropertyDefinition).remove(element);
     }
