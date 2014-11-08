@@ -19,6 +19,7 @@
 package com.quartercode.classmod.test.util.test;
 
 import static com.quartercode.classmod.ClassmodFactory.create;
+import static com.quartercode.classmod.extra.Priorities.LEVEL_7;
 import static com.quartercode.classmod.test.ExtraAssert.assertListEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,7 +34,6 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.extra.valuefactory.CloneValueFactory;
 import com.quartercode.classmod.util.test.DefaultModMockery;
@@ -69,7 +69,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
 
         assertListEquals("Return value of mocked getter is wrong", new TestFHChild1().get(TestFHChild1.COLL_PROP).get(), "testReturn");
     }
@@ -90,7 +90,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
         modMockery.close();
 
         assertListEquals("Return value of mocked getter is wrong", holder.get(TestFHChild1.COLL_PROP).get(), "origValue");
@@ -115,7 +115,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropGetter(TestFHChild1.COLL_PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         assertListEquals("Return value of unmocked getter is wrong", holder1.get(TestFHChild2.COLL_PROP).get(), "origValue1");
@@ -138,7 +138,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, LEVEL_7);
 
         new TestFHChild1().get(TestFHChild1.COLL_PROP).add("testParam");
     }
@@ -156,7 +156,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, LEVEL_7);
         modMockery.close();
 
         new TestFHChild1().get(TestFHChild1.COLL_PROP).add("testParam");
@@ -175,7 +175,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropAdder(TestFHChild1.COLL_PROP, "mockAdder", TestFHChild1.class, adderExecutor, LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         new TestFHChild2().get(TestFHChild2.COLL_PROP).add("testParam");
@@ -198,7 +198,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, LEVEL_7);
 
         new TestFHChild1().get(TestFHChild1.COLL_PROP).remove("testParam");
     }
@@ -216,7 +216,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, LEVEL_7);
         modMockery.close();
 
         new TestFHChild1().get(TestFHChild1.COLL_PROP).remove("testParam");
@@ -235,7 +235,7 @@ public class DefaultModMockeryCollectionPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, Priorities.LEVEL_7);
+        modMockery.addCollPropRemover(TestFHChild1.COLL_PROP, "mockRemover", TestFHChild1.class, removerExecutor, LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         new TestFHChild2().get(TestFHChild2.COLL_PROP).remove("testParam");

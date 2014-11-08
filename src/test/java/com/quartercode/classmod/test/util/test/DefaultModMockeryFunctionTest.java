@@ -19,6 +19,7 @@
 package com.quartercode.classmod.test.util.test;
 
 import static com.quartercode.classmod.ClassmodFactory.create;
+import static com.quartercode.classmod.extra.Priorities.LEVEL_7;
 import static org.junit.Assert.assertEquals;
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
@@ -30,7 +31,6 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.util.test.DefaultModMockery;
 
 @SuppressWarnings ("unchecked")
@@ -124,7 +124,7 @@ public class DefaultModMockeryFunctionTest {
                     return "prefix-" + invocation.next(arguments);
                 }
 
-            }, Priorities.LEVEL_7);
+            }, LEVEL_7);
 
         }
 

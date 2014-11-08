@@ -19,6 +19,7 @@
 package com.quartercode.classmod.test.util.test;
 
 import static com.quartercode.classmod.ClassmodFactory.create;
+import static com.quartercode.classmod.extra.Priorities.LEVEL_7;
 import static org.junit.Assert.assertEquals;
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
@@ -29,7 +30,6 @@ import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.util.test.DefaultModMockery;
@@ -65,7 +65,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
 
         assertEquals("Return value of mocked getter", "testReturn", new TestFHChild1().get(TestFHChild1.PROP).get());
     }
@@ -86,7 +86,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
         modMockery.close();
 
         assertEquals("Return value of unmocked getter", "origValue", holder.get(TestFHChild1.PROP).get());
@@ -111,7 +111,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         assertEquals("Return value of unmocked getter", "origValue1", holder1.get(TestFHChild2.PROP).get());
@@ -134,7 +134,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, LEVEL_7);
 
         new TestFHChild1().get(TestFHChild1.PROP).set("testParam");
     }
@@ -152,7 +152,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, LEVEL_7);
         modMockery.close();
 
         new TestFHChild1().get(TestFHChild1.PROP).set("testParam");
@@ -171,7 +171,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         new TestFHChild2().get(TestFHChild2.PROP).set("testParam");

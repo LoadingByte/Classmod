@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static com.quartercode.classmod.extra.Priorities.LEVEL_8;
 import static org.junit.Assert.assertEquals;
 import java.util.HashMap;
 import java.util.Map;
@@ -32,7 +33,6 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunctionExecutorWrapper;
@@ -52,11 +52,11 @@ public class DefaultPropertyTest {
 
         final Map<String, FunctionExecutorWrapper<T>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
-            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, Priorities.LEVEL_8));
+            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, LEVEL_8));
         }
         final Map<String, FunctionExecutorWrapper<Void>> setterExecutors = new HashMap<>();
         if (setterExecutor != null) {
-            setterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(setterExecutor, Priorities.LEVEL_8));
+            setterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(setterExecutor, LEVEL_8));
         }
 
         final PropertyDefinition<T> definition = context.mock(PropertyDefinition.class, property.getName() + "Definition");

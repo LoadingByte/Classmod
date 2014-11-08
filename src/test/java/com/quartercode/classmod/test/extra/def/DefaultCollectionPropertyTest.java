@@ -18,6 +18,7 @@
 
 package com.quartercode.classmod.test.extra.def;
 
+import static com.quartercode.classmod.extra.Priorities.LEVEL_8;
 import static com.quartercode.classmod.test.ExtraAssert.assertListEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,6 @@ import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.def.DefaultCollectionProperty;
 import com.quartercode.classmod.extra.def.DefaultFunctionExecutorWrapper;
 import com.quartercode.classmod.test.extra.def.StorageWrapper.StorageInterface;
@@ -72,15 +72,15 @@ public class DefaultCollectionPropertyTest {
 
         final Map<String, FunctionExecutorWrapper<C>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
-            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, Priorities.LEVEL_8));
+            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, LEVEL_8));
         }
         final Map<String, FunctionExecutorWrapper<Void>> adderExecutors = new HashMap<>();
         if (adderExecutor != null) {
-            adderExecutors.put("default", new DefaultFunctionExecutorWrapper<>(adderExecutor, Priorities.LEVEL_8));
+            adderExecutors.put("default", new DefaultFunctionExecutorWrapper<>(adderExecutor, LEVEL_8));
         }
         final Map<String, FunctionExecutorWrapper<Void>> removerExecutors = new HashMap<>();
         if (removerExecutor != null) {
-            removerExecutors.put("default", new DefaultFunctionExecutorWrapper<>(removerExecutor, Priorities.LEVEL_8));
+            removerExecutors.put("default", new DefaultFunctionExecutorWrapper<>(removerExecutor, LEVEL_8));
         }
 
         final CollectionPropertyDefinition<E, C> definition = context.mock(CollectionPropertyDefinition.class, property.getName() + "Definition");
