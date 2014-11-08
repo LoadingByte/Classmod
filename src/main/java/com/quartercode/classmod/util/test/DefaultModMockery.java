@@ -24,6 +24,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.PropertyDefinition;
 
 /**
@@ -41,34 +42,52 @@ public class DefaultModMockery implements ModMockery {
     @Override
     public <R> void addFuncExec(FunctionDefinition<R> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor) {
 
+        addFuncExec(definition, name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public <R> void addFuncExec(FunctionDefinition<R> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor, int priority) {
+
         // Store the mock function executor
         Pair<String, Class<? extends FeatureHolder>> params = Pair.<String, Class<? extends FeatureHolder>> of(name, variant);
         funcExecutors.add(Pair.<FunctionDefinition<?>, Pair<String, Class<? extends FeatureHolder>>> of(definition, params));
 
         // Register the mock function executor
-        definition.addExecutor(name, variant, executor);
+        definition.addExecutor(name, variant, executor, priority);
     }
 
     @Override
     public <T> void addPropGetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor) {
+
+        addPropGetter(definition, name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public <T> void addPropGetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor, int priority) {
 
         // Store the mock property getter
         Pair<String, Class<? extends FeatureHolder>> params = Pair.<String, Class<? extends FeatureHolder>> of(name, variant);
         propGetters.add(Pair.<PropertyDefinition<?>, Pair<String, Class<? extends FeatureHolder>>> of(definition, params));
 
         // Register the mock property getter
-        definition.addGetterExecutor(name, variant, executor);
+        definition.addGetterExecutor(name, variant, executor, priority);
     }
 
     @Override
     public <T> void addPropSetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
+
+        addPropSetter(definition, name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public <T> void addPropSetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor, int priority) {
 
         // Store the mock property setter
         Pair<String, Class<? extends FeatureHolder>> params = Pair.<String, Class<? extends FeatureHolder>> of(name, variant);
         propSetters.add(Pair.<PropertyDefinition<?>, Pair<String, Class<? extends FeatureHolder>>> of(definition, params));
 
         // Register the mock property setter
-        definition.addSetterExecutor(name, variant, executor);
+        definition.addSetterExecutor(name, variant, executor, priority);
     }
 
     @Override

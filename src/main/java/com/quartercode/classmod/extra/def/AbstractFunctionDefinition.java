@@ -32,31 +32,33 @@ import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
+import com.quartercode.classmod.extra.Priorities;
 
 /**
  * An abstract function definition is used to retrieve a {@link Function} from a {@link FeatureHolder}.
  * It's an implementation of the {@link FunctionDefinition} interface.<br>
  * <br>
- * Every definition contains the name of the {@link Function}, the parameters and the {@link FunctionExecutor}s that are used.
- * You can use an abstract function definition to construct a new instance of the defined {@link Function} through {@link #create(FeatureHolder)}.
+ * Every definition contains the name of the function, the parameters and the {@link FunctionExecutor}s that are used.
+ * You can use an abstract function definition to construct a new instance of the defined function through {@link #create(FeatureHolder)}.
  * 
- * @param <R> The type of the return value of the defined {@link Function}.
+ * @param <R> The type of the return value of the defined function.
  * @see FunctionDefinition
  * @see Function
  */
 public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefinition<Function<R>> implements FunctionDefinition<R> {
 
-    private final List<Class<?>>                                                        parameters   = new ArrayList<>();
-    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors    = new HashMap<>();
+    private final List<Class<?>>                                                               parameters   = new ArrayList<>();
+    private final Map<String, Map<Class<? extends FeatureHolder>, FunctionExecutorWrapper<R>>> executors    = new HashMap<>();
 
     // Performance: Cache for different variants
-    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutor<R>>> variantCache = new HashMap<>();
+    private final Map<Class<? extends FeatureHolder>, Map<String, FunctionExecutorWrapper<R>>> variantCache = new HashMap<>();
 
     /**
      * Creates a new abstract function definition for defining a {@link Function} with the given name and parameters.
      * Of course, the parameters can be changed later on using {@link #setParameter(int, Class)}.
      * 
-     * @param name The name of the defined {@link Function}.
+     * @param name The name of the defined function.
      * @param parameters The parameters for the defined function. See {@link #setParameter(int, Class)} for further explanation.
      */
     public AbstractFunctionDefinition(String name, Class<?>... parameters) {
@@ -89,14 +91,14 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     }
 
     @Override
-    public Map<String, FunctionExecutor<R>> getExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<R>> getExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
-        Map<String, FunctionExecutor<R>> variantExecutors = variantCache.get(variant);
+        Map<String, FunctionExecutorWrapper<R>> variantExecutors = variantCache.get(variant);
 
         if (variantExecutors == null) {
             variantExecutors = new HashMap<>();
 
-            for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutor<R>>> executors : this.executors.entrySet()) {
+            for (Entry<String, Map<Class<? extends FeatureHolder>, FunctionExecutorWrapper<R>>> executors : this.executors.entrySet()) {
                 // Select the executor whose variant is as near as possible to the given variant
                 Class<? extends FeatureHolder> currentExecutorVariant = null;
                 for (Class<? extends FeatureHolder> executorVariant : executors.getValue().keySet()) {
@@ -120,11 +122,17 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     @Override
     public void addExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor) {
 
+        addExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor, int priority) {
+
         if (!executors.containsKey(name)) {
-            executors.put(name, new HashMap<Class<? extends FeatureHolder>, FunctionExecutor<R>>());
+            executors.put(name, new HashMap<Class<? extends FeatureHolder>, FunctionExecutorWrapper<R>>());
         }
 
-        executors.get(name).put(variant, executor);
+        executors.get(name).put(variant, new DefaultFunctionExecutorWrapper<>(executor, priority));
 
         // Invalidate variant cache
         variantCache.clear();

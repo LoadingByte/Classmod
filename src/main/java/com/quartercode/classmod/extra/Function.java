@@ -45,12 +45,13 @@ public interface Function<R> extends Feature, Hideable, Initializable<FunctionDe
     public List<Class<?>> getParameters();
 
     /**
-     * Returns a {@link List} of all {@link FunctionExecutor}s which are used by the function.
+     * Returns all used {@link FunctionExecutorWrapper}s sorted by their priorities in descending order.
      * They are used for actually handling a function call.
+     * Note that the returned wrapper objects contain real {@link FunctionExecutor}s.
      * 
      * @return All function executors which are used by the function.
      */
-    public List<FunctionExecutor<R>> getExecutors();
+    public List<FunctionExecutorWrapper<R>> getExecutors();
 
     /**
      * Invokes the defined function by invoking the first {@link FunctionExecutor}s which starts the invocation chain.

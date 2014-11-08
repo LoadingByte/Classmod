@@ -29,7 +29,7 @@ import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.util.test.DefaultModMockery;
 
 @SuppressWarnings ("unchecked")
@@ -112,17 +112,16 @@ public class DefaultModMockeryFunctionTest {
 
             FUNC = create(new TypeLiteral<FunctionDefinition<String>>() {}, "name", "func", "parameters", new Class[] { String.class });
 
-            // Add a default executor which is executed before the mock ones
+            // Add a default executor (priority level 7) which is executed before the mock ones
             FUNC.addExecutor("default", TestFH.class, new FunctionExecutor<String>() {
 
                 @Override
-                @Prioritized (Prioritized.LEVEL_7)
                 public String invoke(FunctionInvocation<String> invocation, Object... arguments) {
 
                     return "prefix-" + invocation.next(arguments);
                 }
 
-            });
+            }, Priorities.LEVEL_7);
 
         }
 

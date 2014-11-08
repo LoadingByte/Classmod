@@ -37,8 +37,11 @@ import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.def.DefaultCollectionProperty;
+import com.quartercode.classmod.extra.def.DefaultFunctionExecutorWrapper;
 import com.quartercode.classmod.test.extra.def.StorageWrapper.StorageInterface;
 
 @SuppressWarnings ("unchecked")
@@ -67,17 +70,17 @@ public class DefaultCollectionPropertyTest {
 
     private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property, final boolean hidden, FunctionExecutor<C> getterExecutor, FunctionExecutor<Void> adderExecutor, FunctionExecutor<Void> removerExecutor) {
 
-        final Map<String, FunctionExecutor<C>> getterExecutors = new HashMap<>();
+        final Map<String, FunctionExecutorWrapper<C>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
-            getterExecutors.put("default", getterExecutor);
+            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, Priorities.LEVEL_8));
         }
-        final Map<String, FunctionExecutor<Void>> adderExecutors = new HashMap<>();
+        final Map<String, FunctionExecutorWrapper<Void>> adderExecutors = new HashMap<>();
         if (adderExecutor != null) {
-            adderExecutors.put("default", adderExecutor);
+            adderExecutors.put("default", new DefaultFunctionExecutorWrapper<>(adderExecutor, Priorities.LEVEL_8));
         }
-        final Map<String, FunctionExecutor<Void>> removerExecutors = new HashMap<>();
+        final Map<String, FunctionExecutorWrapper<Void>> removerExecutors = new HashMap<>();
         if (removerExecutor != null) {
-            removerExecutors.put("default", removerExecutor);
+            removerExecutors.put("default", new DefaultFunctionExecutorWrapper<>(removerExecutor, Priorities.LEVEL_8));
         }
 
         final CollectionPropertyDefinition<E, C> definition = context.mock(CollectionPropertyDefinition.class, property.getName() + "Definition");

@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.util.test.DefaultModMockery;
@@ -57,7 +57,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, new Priority7Executor<>(getterExecutor));
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
 
         String result = new TestFHChild1().get(TestFHChild1.PROP).get();
         assertEquals("Return value of mock invocation", "testReturn", result);
@@ -82,7 +82,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, new Priority7Executor<>(getterExecutor));
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         String result1 = holder1.get(TestFHChild2.PROP).get();
@@ -108,7 +108,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, new Priority7Executor<>(setterExecutor));
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
 
         new TestFHChild1().get(TestFHChild1.PROP).set("testParam");
     }
@@ -126,7 +126,7 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, new Priority7Executor<>(setterExecutor));
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
         new TestFHChild2().get(TestFHChild2.PROP).set("origValue1");
@@ -152,24 +152,6 @@ public class DefaultModMockeryPropertyTest {
     }
 
     public static class TestFHChild2 extends TestFH {
-
-    }
-
-    private static class Priority7Executor<R> implements FunctionExecutor<R> {
-
-        private final FunctionExecutor<R> wrapped;
-
-        private Priority7Executor(FunctionExecutor<R> wrapped) {
-
-            this.wrapped = wrapped;
-        }
-
-        @Override
-        @Prioritized (Prioritized.LEVEL_7)
-        public R invoke(FunctionInvocation<R> invocation, Object... arguments) {
-
-            return wrapped.invoke(invocation, arguments);
-        }
 
     }
 

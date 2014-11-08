@@ -20,13 +20,18 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
+import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Function;
+import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
+import com.quartercode.classmod.extra.FunctionInvocation;
 
 /**
  * Dummy functions are really simple {@link Function} implementations that use values which are set through the constructor.
@@ -34,10 +39,10 @@ import com.quartercode.classmod.extra.FunctionExecutor;
  * 
  * @param <R> The return type of the dummy function.
  */
-class DummyFunction<R> extends DefaultFunction<R> {
+class DummyFunction<R> extends AbstractFeature implements Function<R> {
 
-    private final List<Class<?>>            dummyParameters;
-    private final List<FunctionExecutor<R>> dummyExecutors;
+    private final List<Class<?>>                   dummyParameters;
+    private final List<FunctionExecutorWrapper<R>> dummyExecutors;
 
     /**
      * Creates a new dummy function and sets the values the function should serve.
@@ -45,9 +50,9 @@ class DummyFunction<R> extends DefaultFunction<R> {
      * @param name The name of the function.
      * @param holder The {@link FeatureHolder} which supposedly holds the function.
      * @param dummyParameters The parameters the function has at all times.
-     * @param dummyExecutors The {@link FunctionExecutor}s the function has at all times.
+     * @param dummyExecutors The {@link FunctionExecutor}s the function has at all times (as {@link FunctionExecutorWrapper}s).
      */
-    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> dummyParameters, List<FunctionExecutor<R>> dummyExecutors) {
+    public DummyFunction(String name, FeatureHolder holder, List<Class<?>> dummyParameters, List<FunctionExecutorWrapper<R>> dummyExecutors) {
 
         super(name, holder);
 
@@ -55,11 +60,42 @@ class DummyFunction<R> extends DefaultFunction<R> {
 
         // Sort the executor list by priority
         // By sorting at this point, sorting must not be done every time the function is invoked
-        List<FunctionExecutor<R>> sortedDummyExecutors = new ArrayList<>(dummyExecutors);
+        List<FunctionExecutorWrapper<R>> sortedDummyExecutors = new ArrayList<>(dummyExecutors);
         sortExecutorList(sortedDummyExecutors);
 
         // Make the executor list unmodifiable
         this.dummyExecutors = Collections.unmodifiableList(sortedDummyExecutors);
+    }
+
+    private void sortExecutorList(List<FunctionExecutorWrapper<R>> list) {
+
+        Collections.sort(list, new Comparator<FunctionExecutorWrapper<R>>() {
+
+            @Override
+            public int compare(FunctionExecutorWrapper<R> object1, FunctionExecutorWrapper<R> object2) {
+
+                return Integer.compare(object2.getPriority(), object1.getPriority());
+            }
+
+        });
+    }
+
+    @Override
+    public boolean isHidden() {
+
+        return true;
+    }
+
+    @Override
+    public void initialize(FunctionDefinition<R> definition) {
+
+        throw new UnsupportedOperationException("Initializing a dummy function is not supported");
+    }
+
+    @Override
+    public boolean isInitialized() {
+
+        return true;
     }
 
     @Override
@@ -69,9 +105,16 @@ class DummyFunction<R> extends DefaultFunction<R> {
     }
 
     @Override
-    public List<FunctionExecutor<R>> getExecutors() {
+    public List<FunctionExecutorWrapper<R>> getExecutors() {
 
         return dummyExecutors;
+    }
+
+    @Override
+    public R invoke(Object... arguments) {
+
+        FunctionInvocation<R> invocation = new DefaultFunctionInvocation<>(this);
+        return invocation.next(arguments);
     }
 
     @Override

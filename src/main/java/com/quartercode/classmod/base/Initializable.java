@@ -24,17 +24,17 @@ package com.quartercode.classmod.base;
  * Moreover, there is an {@link #isInitialized()} method that returns whether the initialize method has already been called.<br>
  * <br>
  * The difference between the initialize method and the constructor has to do with custom definitions and persistence.
- * Say you have a persistent {@link Feature} F. F has some some non-persistent attributes that are stored in its {@link FeatureDefinition}.
+ * Say you have a persistent feature F. F has some some non-persistent attributes that are stored in its feature definition.
  * These attributes need to be transfered into every new instance of F.
- * That problem could be solved with a custom constructor F's {@link FeatureDefinition} uses.
+ * That problem could be solved with a custom constructor F's feature definition uses.
  * However, when F is saved and loaded again (persistence), the loading algorithm uses a default no-arg constructor.
- * So how do you transfer the non-persistent attributes from the custom {@link FeatureDefinition} again?<br>
+ * So how do you transfer the non-persistent attributes from the custom feature definition again?<br>
  * <br>
- * The initialize method is called with the custom {@link FeatureDefinition} every time F is requested and {@link #isInitialized()} is false.
+ * The initialize method is called with the custom feature definition every time F is requested and {@link #isInitialized()} is false.
  * If you set the {@code initialized} variable to non-persistent, the method is invoked the first time F is requested in every new "session".
  * That way, you can work around the custom constructor problem, as well as have a nicer design.
  * 
- * @param <D> The type of the {@link FeatureDefinition} the implementing {@link Feature} is using; used in {@link #initialize(FeatureDefinition)}.
+ * @param <D> The type of the feature definition the implementing feature is using; used in {@link #initialize(FeatureDefinition)}.
  */
 public interface Initializable<D extends FeatureDefinition<?>> extends Feature {
 
@@ -42,7 +42,7 @@ public interface Initializable<D extends FeatureDefinition<?>> extends Feature {
      * Initializes the {@link Feature} with the contents of the given {@link FeatureDefinition}.<br>
      * See the {@link Initializable} docs for more details.
      * 
-     * @param definition The feature definition the implementing feature is retrieving the intialization data from.
+     * @param definition The feature definition the implementing feature is retrieving the initialization data from.
      */
     public void initialize(D definition);
 

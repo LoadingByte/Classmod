@@ -18,86 +18,76 @@
 
 package com.quartercode.classmod.extra;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * {@link FunctionExecutor}s which have this annotation define their priority.
- * The priority is used for determinating the order in which the available {@link FunctionExecutor}s are invoked.
- * This should be annotated at the actual {@link FunctionExecutor#invoke(FunctionInvocation, Object...)} method.
- * 
- * @see FunctionExecutor
+ * A class that defines different priority constants.
+ * See {@link FunctionExecutorWrapper#getPriority()} for more information on priorities.
  */
-@Target (ElementType.METHOD)
-@Retention (RetentionPolicy.RUNTIME)
-public @interface Prioritized {
+public class Priorities {
 
     /**
      * {@link FunctionExecutor}s with the priority level 0 are invoked last.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_0    = 0;
 
     /**
      * {@link FunctionExecutor}s with the priority level 1 are invoked ninthly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_1    = 10;
 
     /**
      * {@link FunctionExecutor}s with the priority level 2 are invoked eighthly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_2    = 20;
 
     /**
      * {@link FunctionExecutor}s with the priority level 3 are invoked seventh.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_3    = 30;
 
     /**
      * {@link FunctionExecutor}s with the priority level 4 are invoked sixthly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_4    = 40;
 
     /**
      * {@link FunctionExecutor}s with the priority level 5 are invoked fifthly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      * Level five is the default level.
      */
     public static final int LEVEL_5    = 50;
 
     /**
      * {@link FunctionExecutor}s with the priority level 6 are invoked fourthly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_6    = 60;
 
     /**
      * {@link FunctionExecutor}s with the priority level 7 are invoked thirdly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_7    = 70;
 
     /**
      * {@link FunctionExecutor}s with the priority level 8 are invoked secondly.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_8    = 80;
 
     /**
      * {@link FunctionExecutor}s with the priority level 9 are invoked first.
-     * The priority level sets the tier of the {@link FunctionExecutor}.
+     * The priority level sets the tier of the function executor.
      */
     public static final int LEVEL_9    = 90;
 
     /**
      * {@link FunctionExecutor}s with the sublevel 0 are invoked last inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      * Sublevel 0 is the default sublevel.
@@ -106,7 +96,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 1 are invoked ninthly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -114,7 +104,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 2 are invoked eighthly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -122,7 +112,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 3 are invoked seventh inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -130,7 +120,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 4 are invoked sixthly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -138,7 +128,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 5 are invoked fifthly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -146,7 +136,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 6 are invoked fourthly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -154,7 +144,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 7 are invoked thirdly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -162,7 +152,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 8 are invoked secondly inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -170,7 +160,7 @@ public @interface Prioritized {
 
     /**
      * {@link FunctionExecutor}s with the sublevel 9 are invoked first inside their priority level or tier.
-     * The sublevel sets the importance of the {@link FunctionExecutor} inside their tier.
+     * The sublevel sets the importance of the function executor inside their tier.
      * For example, if {@link #LEVEL_5} is for changing some priorities, the changes could be placed on {@link #SUBLEVEL_0} while checks are placed on {@link #SUBLEVEL_1}.
      * You can combine a tier with a sublevel by simply writing {@code LEVEL_X + SUBLEVEL_X}.
      */
@@ -178,13 +168,12 @@ public @interface Prioritized {
 
     /**
      * The default priority {@link FunctionExecutor}s without this annotation have.
-     * This priority is using {@link #LEVEL_4}, so the total value is 40.
+     * This priority is using {@link #LEVEL_4}, so the total value is {@code 40}.
      */
     public static final int DEFAULT    = LEVEL_4;
 
-    /**
-     * The actual priority the {@link FunctionExecutor} has.
-     */
-    int value ();
+    private Priorities() {
+
+    }
 
 }

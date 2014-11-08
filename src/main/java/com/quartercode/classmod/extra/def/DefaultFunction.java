@@ -18,25 +18,20 @@
 
 package com.quartercode.classmod.extra.def;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
 
 /**
  * An abstract function makes a method (also called a function) available.
@@ -49,17 +44,9 @@ import com.quartercode.classmod.extra.Prioritized;
  */
 public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
 
-    private static final Logger                 LOGGER            = LoggerFactory.getLogger(DefaultFunction.class);
-
-    /*
-     * This field caches all priority values of all FunctionExecutor classes which were ever used inside a function.
-     * That is useful since retrieving the value every time is rather expensive.
-     */
-    private static final Map<Class<?>, Integer> FE_PRIORITY_CACHE = new HashMap<>();
-
-    private boolean                             initialized;
-    private List<Class<?>>                      parameters;
-    private List<FunctionExecutor<R>>           executors;
+    private boolean                          initialized;
+    private List<Class<?>>                   parameters;
+    private List<FunctionExecutorWrapper<R>> executors;
 
     /**
      * Creates a new abstract function with the given name and {@link FeatureHolder} type.
@@ -98,44 +85,17 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
         executors = Collections.unmodifiableList(executors);
     }
 
-    /**
-     * Sorts the given {@link FunctionExecutor} list by the priorities of the function executors.
-     * This method is used internally and by subclasses.
-     * 
-     * @param list The list which should be sorted.
-     */
-    protected void sortExecutorList(List<FunctionExecutor<R>> list) {
+    private void sortExecutorList(List<FunctionExecutorWrapper<R>> list) {
 
-        Collections.sort(list, new Comparator<FunctionExecutor<R>>() {
+        Collections.sort(list, new Comparator<FunctionExecutorWrapper<R>>() {
 
             @Override
-            public int compare(FunctionExecutor<R> object1, FunctionExecutor<R> object2) {
+            public int compare(FunctionExecutorWrapper<R> object1, FunctionExecutorWrapper<R> object2) {
 
-                return Integer.compare(getPriority(object2), getPriority(object1));
+                return Integer.compare(object2.getPriority(), object1.getPriority());
             }
 
         });
-    }
-
-    private int getPriority(FunctionExecutor<?> executor) {
-
-        if (FE_PRIORITY_CACHE.containsKey(executor.getClass())) {
-            return FE_PRIORITY_CACHE.get(executor.getClass());
-        } else {
-            int priority = Prioritized.DEFAULT;
-
-            try {
-                Method invokeMethod = executor.getClass().getMethod("invoke", FunctionInvocation.class, Object[].class);
-                if (invokeMethod.isAnnotationPresent(Prioritized.class)) {
-                    priority = invokeMethod.getAnnotation(Prioritized.class).value();
-                }
-            } catch (NoSuchMethodException e) {
-                LOGGER.error("Can't find invoke() method in function executor for retrieving priority (bytecode error: should be defined by interface)", e);
-            }
-
-            FE_PRIORITY_CACHE.put(executor.getClass(), priority);
-            return priority;
-        }
     }
 
     @Override
@@ -151,7 +111,7 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
     }
 
     @Override
-    public List<FunctionExecutor<R>> getExecutors() {
+    public List<FunctionExecutorWrapper<R>> getExecutors() {
 
         return executors;
     }

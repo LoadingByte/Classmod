@@ -20,7 +20,6 @@ package com.quartercode.classmod.test.extra.def;
 
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
 
 class DummyFunctionExecutor<R> implements FunctionExecutor<R> {
 
@@ -34,7 +33,6 @@ class DummyFunctionExecutor<R> implements FunctionExecutor<R> {
     }
 
     @Override
-    @Prioritized (Prioritized.LEVEL_8)
     public R invoke(FunctionInvocation<R> invocation, Object... arguments) {
 
         R dummyReturnValue = dummy.invoke(invocation, arguments);

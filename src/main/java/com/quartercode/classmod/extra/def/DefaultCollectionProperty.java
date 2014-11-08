@@ -39,7 +39,9 @@ import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Storage;
 
 /**
@@ -117,9 +119,9 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         }
         storage.set(newCollection);
 
-        List<FunctionExecutor<C>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutor<Void>> adderExecutors = new ArrayList<>();
-        List<FunctionExecutor<Void>> removerExecutors = new ArrayList<>();
+        List<FunctionExecutorWrapper<C>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutorWrapper<Void>> adderExecutors = new ArrayList<>();
+        List<FunctionExecutorWrapper<Void>> removerExecutors = new ArrayList<>();
 
         // Add the custom getter/adder/remover executors
         getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
@@ -127,9 +129,9 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         removerExecutors.addAll(definition.getRemoverExecutorsForVariant(getHolder().getClass()).values());
 
         // Add default executors
-        getterExecutors.add(new DefaultGetterFunctionExecutor());
-        adderExecutors.add(new DefaultAdderFunctionExecutor());
-        removerExecutors.add(new DefaultRemoverFunctionExecutor());
+        getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
+        adderExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultAdderFunctionExecutor(), Priorities.DEFAULT));
+        removerExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultRemoverFunctionExecutor(), Priorities.DEFAULT));
 
         /*
          * Create the dummy getter/adder/remover functions

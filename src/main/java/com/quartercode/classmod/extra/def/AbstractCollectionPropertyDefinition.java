@@ -31,6 +31,8 @@ import com.quartercode.classmod.extra.CollectionProperty;
 import com.quartercode.classmod.extra.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.ValueFactory;
 
@@ -62,7 +64,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
-     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created collection property for storing collections.
+     * @param storageTemplate A storage implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      */
     public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory) {
@@ -85,7 +87,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
-     * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created collection property for storing collections.
+     * @param storageTemplate A storage implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
      * @param hidden Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
      *        See {@link Hideable} for more information.
@@ -110,7 +112,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public Map<String, FunctionExecutor<C>> getGetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<C>> getGetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         return getter.getExecutorsForVariant(variant);
     }
@@ -118,7 +120,13 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<C> executor) {
 
-        getter.addExecutor(name, variant, executor);
+        addGetterExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<C> executor, int priority) {
+
+        getter.addExecutor(name, variant, executor, priority);
     }
 
     @Override
@@ -128,7 +136,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public Map<String, FunctionExecutor<Void>> getAdderExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<Void>> getAdderExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         return adder.getExecutorsForVariant(variant);
     }
@@ -136,7 +144,13 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public void addAdderExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        adder.addExecutor(name, variant, executor);
+        addAdderExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addAdderExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor, int priority) {
+
+        adder.addExecutor(name, variant, executor, priority);
     }
 
     @Override
@@ -146,7 +160,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     }
 
     @Override
-    public Map<String, FunctionExecutor<Void>> getRemoverExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<Void>> getRemoverExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         return remover.getExecutorsForVariant(variant);
     }
@@ -154,7 +168,13 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public void addRemoverExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        remover.addExecutor(name, variant, executor);
+        addRemoverExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addRemoverExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor, int priority) {
+
+        remover.addExecutor(name, variant, executor, priority);
     }
 
     @Override

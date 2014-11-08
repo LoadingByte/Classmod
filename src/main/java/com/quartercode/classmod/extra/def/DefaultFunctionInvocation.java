@@ -30,6 +30,7 @@ import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.CFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
 
 /**
@@ -41,8 +42,8 @@ import com.quartercode.classmod.extra.FunctionInvocation;
  */
 public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
 
-    private final Function<R>                source;
-    private final Queue<FunctionExecutor<R>> remainingExecutors;
+    private final Function<R>                       source;
+    private final Queue<FunctionExecutorWrapper<R>> remainingExecutors;
 
     /**
      * Creates a new default function invocation for the given {@link Function}.
@@ -84,7 +85,7 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             actualArguments = checkArguments(actualArguments);
 
             // Poll the next executor and invoke it with the checked arguments
-            return remainingExecutors.poll().invoke(this, actualArguments);
+            return remainingExecutors.poll().getExecutor().invoke(this, actualArguments);
         }
     }
 

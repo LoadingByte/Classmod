@@ -41,15 +41,33 @@ public class JUnitRuleModMockery extends ExternalResource implements ModMockery 
     }
 
     @Override
+    public <R> void addFuncExec(FunctionDefinition<R> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<R> executor, int priority) {
+
+        modMockery.addFuncExec(definition, name, variant, executor, priority);
+    }
+
+    @Override
     public <T> void addPropGetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor) {
 
         modMockery.addPropGetter(definition, name, variant, executor);
     }
 
     @Override
+    public <T> void addPropGetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor, int priority) {
+
+        modMockery.addPropGetter(definition, name, variant, executor, priority);
+    }
+
+    @Override
     public <T> void addPropSetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
         modMockery.addPropSetter(definition, name, variant, executor);
+    }
+
+    @Override
+    public <T> void addPropSetter(PropertyDefinition<T> definition, String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor, int priority) {
+
+        modMockery.addPropSetter(definition, name, variant, executor, priority);
     }
 
     @Override

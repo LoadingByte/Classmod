@@ -28,6 +28,8 @@ import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.Storage;
@@ -89,7 +91,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     /**
      * Creates a new abstract property definition for defining a {@link Property} with the given name and hiding flag.
      * 
-     * @param name The name of the defined {@link Property}.
+     * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
      * @param hidden Whether the value of the defined property should be excluded from equality checks of its feature holder.
      *        See {@link Hideable} for more information.
@@ -125,7 +127,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     @Override
-    public Map<String, FunctionExecutor<T>> getGetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<T>> getGetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         return getter.getExecutorsForVariant(variant);
     }
@@ -133,7 +135,13 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     @Override
     public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor) {
 
-        getter.addExecutor(name, variant, executor);
+        addGetterExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addGetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<T> executor, int priority) {
+
+        getter.addExecutor(name, variant, executor, priority);
     }
 
     @Override
@@ -143,7 +151,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     @Override
-    public Map<String, FunctionExecutor<Void>> getSetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
+    public Map<String, FunctionExecutorWrapper<Void>> getSetterExecutorsForVariant(Class<? extends FeatureHolder> variant) {
 
         return setter.getExecutorsForVariant(variant);
     }
@@ -151,7 +159,13 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     @Override
     public void addSetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor) {
 
-        setter.addExecutor(name, variant, executor);
+        addSetterExecutor(name, variant, executor, Priorities.DEFAULT);
+    }
+
+    @Override
+    public void addSetterExecutor(String name, Class<? extends FeatureHolder> variant, FunctionExecutor<Void> executor, int priority) {
+
+        setter.addExecutor(name, variant, executor, priority);
     }
 
     @Override

@@ -36,7 +36,7 @@ public interface CollectionProperty<E, C extends Collection<E>> extends Feature,
      * Returns the {@link Collection} which is stored inside the property.
      * Note that all getter function executors are invoked when this is called.
      * 
-     * @return The stored {@link Collection}.
+     * @return The stored collection.
      * @throws RuntimeException A getter function executor throws a custom getter-related exception.
      */
     @Override
@@ -46,7 +46,7 @@ public interface CollectionProperty<E, C extends Collection<E>> extends Feature,
      * Adds an element to the {@link Collection} which is stored inside the property.
      * Note that all adder function executors are invoked when this is called.
      * 
-     * @param element The object to add to the stored {@link Collection}.
+     * @param element The object to add to the stored collection.
      * @throws RuntimeException An adder function executor throws a custom adder-related exception.
      */
     public void add(E element);
@@ -55,7 +55,7 @@ public interface CollectionProperty<E, C extends Collection<E>> extends Feature,
      * Removes an element from the {@link Collection} which is stored inside the property.
      * Note that all remover function executors are invoked when this is called.
      * 
-     * @param element The object to remove from the stored {@link Collection}.
+     * @param element The object to remove from the stored collection.
      * @throws RuntimeException A remover function executor throws a custom remover-related exception.
      */
     public void remove(E element);

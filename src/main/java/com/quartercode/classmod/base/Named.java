@@ -19,7 +19,7 @@
 package com.quartercode.classmod.base;
 
 /**
- * The named interface is used for determinating if an object has a name and getting it.
+ * The named interface is used for determining if an object has a name and getting it.
  */
 public interface Named {
 

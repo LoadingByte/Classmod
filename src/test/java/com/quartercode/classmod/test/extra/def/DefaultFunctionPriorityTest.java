@@ -27,7 +27,6 @@ import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionDefinition;
 import com.quartercode.classmod.extra.FunctionExecutor;
 import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Prioritized;
 import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
 import com.quartercode.classmod.extra.def.DefaultFunction;
 
@@ -50,20 +49,18 @@ public class DefaultFunctionPriorityTest {
         definition.addExecutor("1", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
-            @Prioritized (4)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor1.setTrue();
                 return invocation.next(arguments);
             }
 
-        });
+        }, 4);
 
         final MutableBoolean invokedFunctionExecutor2 = new MutableBoolean();
         definition.addExecutor("2", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
-            @Prioritized (3)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor2.setTrue();
@@ -71,26 +68,24 @@ public class DefaultFunctionPriorityTest {
                 return 2;
             }
 
-        });
+        }, 3);
 
         final MutableBoolean invokedFunctionExecutor3 = new MutableBoolean();
         definition.addExecutor("3", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
-            @Prioritized (2)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor3.setTrue();
                 return 3; // Do not even execute next
             }
 
-        });
+        }, 2);
 
         final MutableBoolean invokedFunctionExecutor4 = new MutableBoolean();
         definition.addExecutor("4", FeatureHolder.class, new FunctionExecutor<Integer>() {
 
             @Override
-            @Prioritized (1)
             public Integer invoke(FunctionInvocation<Integer> invocation, Object... arguments) {
 
                 invokedFunctionExecutor4.setTrue();
@@ -98,7 +93,7 @@ public class DefaultFunctionPriorityTest {
                 return 4;
             }
 
-        });
+        }, 1);
 
         Function<Integer> function = new DefaultFeatureHolder().get(definition);
 

@@ -31,7 +31,9 @@ import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.Function;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
 import com.quartercode.classmod.extra.Storage;
@@ -114,16 +116,16 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
         hidden = definition.isHidden();
 
-        List<FunctionExecutor<T>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutor<Void>> setterExecutors = new ArrayList<>();
+        List<FunctionExecutorWrapper<T>> getterExecutors = new ArrayList<>();
+        List<FunctionExecutorWrapper<Void>> setterExecutors = new ArrayList<>();
 
         // Add the custom getter/setter executors
         getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
         setterExecutors.addAll(definition.getSetterExecutorsForVariant(getHolder().getClass()).values());
 
         // Add default executor
-        getterExecutors.add(new DefaultGetterFunctionExecutor());
-        setterExecutors.add(new DefaultSetterFunctionExecutor());
+        getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
+        setterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultSetterFunctionExecutor(), Priorities.DEFAULT));
 
         /*
          * Create the dummy getter/setter functions

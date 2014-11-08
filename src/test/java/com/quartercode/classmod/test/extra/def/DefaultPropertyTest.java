@@ -30,9 +30,12 @@ import org.junit.Test;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
 import com.quartercode.classmod.extra.FunctionExecutor;
+import com.quartercode.classmod.extra.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.extra.Priorities;
 import com.quartercode.classmod.extra.Property;
 import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.def.DefaultFunctionExecutorWrapper;
 import com.quartercode.classmod.extra.def.DefaultProperty;
 import com.quartercode.classmod.test.extra.def.StorageWrapper.StorageInterface;
 
@@ -47,13 +50,13 @@ public class DefaultPropertyTest {
 
     private <T> void initializeProperty(Property<T> property, final boolean hidden, FunctionExecutor<T> getterExecutor, FunctionExecutor<Void> setterExecutor) {
 
-        final Map<String, FunctionExecutor<T>> getterExecutors = new HashMap<>();
+        final Map<String, FunctionExecutorWrapper<T>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
-            getterExecutors.put("default", getterExecutor);
+            getterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(getterExecutor, Priorities.LEVEL_8));
         }
-        final Map<String, FunctionExecutor<Void>> setterExecutors = new HashMap<>();
+        final Map<String, FunctionExecutorWrapper<Void>> setterExecutors = new HashMap<>();
         if (setterExecutor != null) {
-            setterExecutors.put("default", setterExecutor);
+            setterExecutors.put("default", new DefaultFunctionExecutorWrapper<>(setterExecutor, Priorities.LEVEL_8));
         }
 
         final PropertyDefinition<T> definition = context.mock(PropertyDefinition.class, property.getName() + "Definition");
