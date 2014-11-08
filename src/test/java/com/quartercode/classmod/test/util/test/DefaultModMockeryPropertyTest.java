@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -40,6 +41,13 @@ public class DefaultModMockeryPropertyTest {
     public JUnitRuleMockery         context    = new JUnitRuleMockery();
 
     private final DefaultModMockery modMockery = new DefaultModMockery();
+
+    @After
+    public void tearDown() {
+
+        // Revert mockery changes
+        modMockery.close();
+    }
 
     // ----- Getter -----
 
@@ -59,8 +67,29 @@ public class DefaultModMockeryPropertyTest {
 
         modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
 
-        String result = new TestFHChild1().get(TestFHChild1.PROP).get();
-        assertEquals("Return value of mock invocation", "testReturn", result);
+        assertEquals("Return value of mocked getter", "testReturn", new TestFHChild1().get(TestFHChild1.PROP).get());
+    }
+
+    @Test
+    public void testAddPropGetterAndClose() {
+
+        TestFHChild1 holder = new TestFHChild1();
+        holder.get(TestFHChild1.PROP).set("origValue");
+
+        final FunctionExecutor<String> getterExecutor = context.mock(FunctionExecutor.class);
+
+        // @formatter:off
+        context.checking(new Expectations() {{
+
+            never(getterExecutor).invoke(with(any(FunctionInvocation.class)), with(any(Object[].class)));
+
+        }});
+        // @formatter:on
+
+        modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
+        modMockery.close();
+
+        assertEquals("Return value of unmocked getter", "origValue", holder.get(TestFHChild1.PROP).get());
     }
 
     @Test
@@ -85,12 +114,9 @@ public class DefaultModMockeryPropertyTest {
         modMockery.addPropGetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, getterExecutor, Priorities.LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
-        String result1 = holder1.get(TestFHChild2.PROP).get();
-        assertEquals("Return value of unmocked invocation", "origValue1", result1);
-
+        assertEquals("Return value of unmocked getter", "origValue1", holder1.get(TestFHChild2.PROP).get());
         // Use TestFH instead of TestFHChild1
-        String result2 = holder2.get(TestFH.PROP).get();
-        assertEquals("Return value of unmocked invocation", "origValue2", result2);
+        assertEquals("Return value of unmocked getter", "origValue2", holder2.get(TestFH.PROP).get());
     }
 
     // ----- Setter -----
@@ -114,6 +140,25 @@ public class DefaultModMockeryPropertyTest {
     }
 
     @Test
+    public void testAddPropSetterAndClose() {
+
+        final FunctionExecutor<Void> setterExecutor = context.mock(FunctionExecutor.class);
+
+        // @formatter:off
+        context.checking(new Expectations() {{
+
+            never(setterExecutor).invoke(with(any(FunctionInvocation.class)), with(any(Object[].class)));
+
+        }});
+        // @formatter:on
+
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
+        modMockery.close();
+
+        new TestFHChild1().get(TestFHChild1.PROP).set("testParam");
+    }
+
+    @Test
     public void testAddPropSetterOtherVariants() {
 
         final FunctionExecutor<Void> setterExecutor = context.mock(FunctionExecutor.class);
@@ -126,13 +171,12 @@ public class DefaultModMockeryPropertyTest {
         }});
         // @formatter:on
 
-        modMockery.addPropSetter(TestFHChild1.PROP, "mockGetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
+        modMockery.addPropSetter(TestFHChild1.PROP, "mockSetter", TestFHChild1.class, setterExecutor, Priorities.LEVEL_7);
 
         // Use TestFHChild2 instead of TestFHChild1
-        new TestFHChild2().get(TestFHChild2.PROP).set("origValue1");
-
+        new TestFHChild2().get(TestFHChild2.PROP).set("testParam");
         // Use TestFH instead of TestFHChild1
-        new TestFH().get(TestFH.PROP).set("origValue2");
+        new TestFH().get(TestFH.PROP).set("testParam");
     }
 
     public static class TestFH extends DefaultFeatureHolder {

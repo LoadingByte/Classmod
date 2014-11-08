@@ -23,6 +23,7 @@ import static org.junit.Assert.assertEquals;
 import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
+import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
 import com.quartercode.classmod.base.def.DefaultFeatureHolder;
@@ -40,6 +41,13 @@ public class DefaultModMockeryFunctionTest {
 
     private final DefaultModMockery modMockery = new DefaultModMockery();
 
+    @After
+    public void tearDown() {
+
+        // Revert mockery changes
+        modMockery.close();
+    }
+
     @Test
     public void testAddFuncExec() {
 
@@ -56,8 +64,7 @@ public class DefaultModMockeryFunctionTest {
 
         modMockery.addFuncExec(TestFHChild1.FUNC, "mock", TestFHChild1.class, funcExecutor);
 
-        String result = new TestFHChild1().get(TestFHChild1.FUNC).invoke("testParam");
-        assertEquals("Return value of mock invocation", "prefix-testReturn", result);
+        assertEquals("Return value of mock invocation", "prefix-testReturn", new TestFHChild1().get(TestFHChild1.FUNC).invoke("testParam"));
     }
 
     @Test
@@ -76,8 +83,7 @@ public class DefaultModMockeryFunctionTest {
         modMockery.addFuncExec(TestFHChild1.FUNC, "mock", TestFHChild1.class, funcExecutor);
         modMockery.close();
 
-        String result = new TestFHChild1().get(TestFHChild1.FUNC).invoke("testParam");
-        assertEquals("Return value of mock invocation", "prefix-null", result);
+        assertEquals("Return value of mock invocation", "prefix-null", new TestFHChild1().get(TestFHChild1.FUNC).invoke("testParam"));
     }
 
     @Test
@@ -96,12 +102,9 @@ public class DefaultModMockeryFunctionTest {
         modMockery.addFuncExec(TestFHChild1.FUNC, "mock", TestFHChild1.class, funcExecutor);
 
         // Use TestFHChild2 instead of TestFHChild1
-        String result1 = new TestFHChild2().get(TestFHChild2.FUNC).invoke("testParam");
-        assertEquals("Return value of unmocked invocation", "prefix-null", result1);
-
+        assertEquals("Return value of unmocked invocation", "prefix-null", new TestFHChild2().get(TestFHChild2.FUNC).invoke("testParam"));
         // Use TestFH instead of TestFHChild1
-        String result2 = new TestFH().get(TestFH.FUNC).invoke("testParam");
-        assertEquals("Return value of unmocked invocation", "prefix-null", result2);
+        assertEquals("Return value of unmocked invocation", "prefix-null", new TestFH().get(TestFH.FUNC).invoke("testParam"));
     }
 
     public static class TestFH extends DefaultFeatureHolder {
