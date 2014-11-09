@@ -22,9 +22,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
+import java.util.Objects;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeature;
 import com.quartercode.classmod.extra.Function;
@@ -120,19 +118,24 @@ class DummyFunction<R> extends AbstractFeature implements Function<R> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "holder");
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (dummyExecutors == null ? 0 : dummyExecutors.hashCode());
+        result = prime * result + (dummyParameters == null ? 0 : dummyParameters.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "holder");
-    }
-
-    @Override
-    public String toString() {
-
-        return ReflectionToStringBuilder.toStringExclude(this, "holder", "parameters", "executors");
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof DummyFunction) || !super.equals(obj)) {
+            return false;
+        } else {
+            DummyFunction<?> other = (DummyFunction<?>) obj;
+            return Objects.equals(dummyParameters, other.dummyParameters) && Objects.equals(dummyExecutors, other.dummyExecutors);
+        }
     }
 
 }

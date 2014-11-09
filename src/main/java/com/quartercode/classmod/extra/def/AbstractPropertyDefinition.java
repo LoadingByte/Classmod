@@ -19,9 +19,8 @@
 package com.quartercode.classmod.extra.def;
 
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
@@ -200,13 +199,25 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "getter", "setter");
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (hidden ? 1231 : 1237);
+        result = prime * result + (initialValueFactory == null ? 0 : initialValueFactory.hashCode());
+        result = prime * result + (storageTemplate == null ? 0 : storageTemplate.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "getter", "setter");
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof AbstractPropertyDefinition) || !super.equals(obj)) {
+            return false;
+        } else {
+            AbstractPropertyDefinition<?> other = (AbstractPropertyDefinition<?>) obj;
+            return hidden == other.hidden && Objects.equals(initialValueFactory, other.initialValueFactory) && Objects.equals(storageTemplate, other.storageTemplate);
+        }
     }
 
     @Override

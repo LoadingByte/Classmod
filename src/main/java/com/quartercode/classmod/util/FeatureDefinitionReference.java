@@ -20,10 +20,9 @@ package com.quartercode.classmod.util;
 
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.util.Objects;
 import javax.xml.bind.annotation.XmlAttribute;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.base.FeatureDefinition;
 
@@ -180,13 +179,24 @@ public class FeatureDefinitionReference<D extends FeatureDefinition<?>> implemen
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, false);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (definitionClass == null ? 0 : definitionClass.hashCode());
+        result = prime * result + (definitionFieldName == null ? 0 : definitionFieldName.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, false);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof FeatureDefinitionReference)) {
+            return false;
+        } else {
+            FeatureDefinitionReference<?> other = (FeatureDefinitionReference<?>) obj;
+            return definitionClass == other.definitionClass && Objects.equals(definitionFieldName, other.definitionFieldName);
+        }
     }
 
     @Override

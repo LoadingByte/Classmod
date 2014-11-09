@@ -24,8 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
+import java.util.Objects;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
@@ -156,13 +155,23 @@ public abstract class AbstractFunctionDefinition<R> extends AbstractFeatureDefin
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "executors", "variantCache");
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (parameters == null ? 0 : parameters.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "executors", "variantCache");
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof AbstractFunctionDefinition) || !super.equals(obj)) {
+            return false;
+        } else {
+            AbstractFunctionDefinition<?> other = (AbstractFunctionDefinition<?>) obj;
+            return Objects.equals(parameters, other.parameters);
+        }
     }
 
     @Override

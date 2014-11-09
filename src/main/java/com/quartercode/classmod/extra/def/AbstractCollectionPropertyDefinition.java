@@ -20,9 +20,8 @@ package com.quartercode.classmod.extra.def;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Objects;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
@@ -197,13 +196,25 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this, "getter", "adder", "remover");
+        final int prime = 31;
+        int result = super.hashCode();
+        result = prime * result + (collectionFactory == null ? 0 : collectionFactory.hashCode());
+        result = prime * result + (hidden ? 1231 : 1237);
+        result = prime * result + (storageTemplate == null ? 0 : storageTemplate.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj, "getter", "adder", "remover");
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof AbstractCollectionPropertyDefinition) || !super.equals(obj)) {
+            return false;
+        } else {
+            AbstractCollectionPropertyDefinition<?, ?> other = (AbstractCollectionPropertyDefinition<?, ?>) obj;
+            return hidden == other.hidden && Objects.equals(collectionFactory, other.collectionFactory) && Objects.equals(storageTemplate, other.storageTemplate);
+        }
     }
 
     @Override

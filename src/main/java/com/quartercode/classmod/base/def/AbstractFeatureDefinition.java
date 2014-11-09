@@ -18,9 +18,8 @@
 
 package com.quartercode.classmod.base.def;
 
+import java.util.Objects;
 import org.apache.commons.lang3.Validate;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
@@ -61,13 +60,23 @@ public abstract class AbstractFeatureDefinition<F extends Feature> implements Fe
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (name == null ? 0 : name.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof AbstractFeatureDefinition)) {
+            return false;
+        } else {
+            AbstractFeatureDefinition<?> other = (AbstractFeatureDefinition<?>) obj;
+            return Objects.equals(name, other.name);
+        }
     }
 
     @Override

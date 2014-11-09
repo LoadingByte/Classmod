@@ -21,9 +21,8 @@ package com.quartercode.classmod.extra.def;
 import java.lang.reflect.Array;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -173,13 +172,24 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
     @Override
     public int hashCode() {
 
-        return HashCodeBuilder.reflectionHashCode(this);
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + (remainingExecutors == null ? 0 : remainingExecutors.hashCode());
+        result = prime * result + (source == null ? 0 : source.hashCode());
+        return result;
     }
 
     @Override
     public boolean equals(Object obj) {
 
-        return EqualsBuilder.reflectionEquals(this, obj);
+        if (this == obj) {
+            return true;
+        } else if (obj == null || ! (obj instanceof DefaultFunctionInvocation)) {
+            return false;
+        } else {
+            DefaultFunctionInvocation<?> other = (DefaultFunctionInvocation<?>) obj;
+            return Objects.equals(remainingExecutors, other.remainingExecutors) && Objects.equals(source, other.source);
+        }
     }
 
     @Override
