@@ -160,22 +160,46 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     @XmlType (name = "collection")
     private static class CollectionWrapper extends Wrapper<Collection<?>> {
 
+        @XmlElement
+        private Class<?>      collectionType;
         @XmlElement (name = "item")
-        private Collection<?> object;
+        private Collection<?> collection;
 
         private CollectionWrapper() {
 
         }
 
-        private CollectionWrapper(Collection<?> object) {
+        private CollectionWrapper(Collection<?> collection) {
 
-            this.object = object;
+            // ArrayList is the default collection type; therefore, there is no need for storing it
+            if (collection.getClass() != ArrayList.class) {
+                collectionType = collection.getClass();
+            }
+
+            this.collection = collection;
         }
 
         @Override
         public Collection<?> getObject() {
 
-            return object;
+            // Consider the default collection type (ArrayList) if no specific collection type is set and and ArrayList has been unmarshalled by JAXB
+            if (collectionType == null && collection.getClass() == ArrayList.class) {
+                return collection;
+            }
+            // Otherwise, create a new collection of the specified type and copy all elements into it
+            else {
+                Class<?> effectiveCollectionType = collectionType == null ? ArrayList.class : collectionType;
+
+                try {
+                    @SuppressWarnings ("unchecked")
+                    Collection<Object> returnCollection = (Collection<Object>) effectiveCollectionType.newInstance();
+                    returnCollection.addAll(collection);
+                    return returnCollection;
+                } catch (InstantiationException | IllegalAccessException e) {
+                    LOGGER.warn("Cannot instantiate collection type '{}'", effectiveCollectionType.getName(), e);
+                    return null;
+                }
+            }
         }
 
     }
@@ -192,12 +216,15 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
 
         }
 
-        private MapWrapper(Map<?, ?> object) {
+        private MapWrapper(Map<?, ?> map) {
 
-            mapType = object.getClass();
+            // HashMap is the default map type; therefore, there is no need for storing it
+            if (map.getClass() != HashMap.class) {
+                mapType = map.getClass();
+            }
 
             entries = new ArrayList<>();
-            for (Entry<?, ?> entry : object.entrySet()) {
+            for (Entry<?, ?> entry : map.entrySet()) {
                 MapEntry entryObject = new MapEntry();
                 entryObject.key = entry.getKey();
                 entryObject.value = entry.getValue();
@@ -208,15 +235,18 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
         @Override
         public Map<?, ?> getObject() {
 
+            Class<?> effectiveMapType = mapType == null ? HashMap.class : mapType;
+
+            // Create a new map with the stored entries
             try {
                 @SuppressWarnings ("unchecked")
-                Map<Object, Object> map = (Map<Object, Object>) mapType.newInstance();
+                Map<Object, Object> returnMap = (Map<Object, Object>) effectiveMapType.newInstance();
                 for (MapEntry entry : entries) {
-                    map.put(entry.key, entry.value);
+                    returnMap.put(entry.key, entry.value);
                 }
-                return map;
+                return returnMap;
             } catch (InstantiationException | IllegalAccessException e) {
-                LOGGER.warn("Cannot instantiate map type '{}'", mapType.getName(), e);
+                LOGGER.warn("Cannot instantiate map type '{}'", effectiveMapType.getName(), e);
                 return null;
             }
         }
