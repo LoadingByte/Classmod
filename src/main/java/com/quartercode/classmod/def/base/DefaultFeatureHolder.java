@@ -33,13 +33,13 @@ import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
-import com.quartercode.classmod.base.Persistent;
+import com.quartercode.classmod.base.Persistable;
 
 /**
  * A default feature holder is a class which is modifiable through {@link Feature}s.
  * It is just an implementation of {@link FeatureHolder}.
- * A user can get {@link Feature}s through the central access method {@link #get(FeatureDefinition)}.
- * Such {@link Feature}s are defined by {@link FeatureDefinition} which describe how a feature looks like.
+ * A user can get features through the central access method {@link #get(FeatureDefinition)}.
+ * Such features are defined by {@link FeatureDefinition} which describe how a feature looks like.
  * 
  * @see FeatureHolder
  * @see Feature
@@ -107,10 +107,11 @@ public class DefaultFeatureHolder implements FeatureHolder {
     }
 
     /**
-     * Returns a {@link List} of all {@link Persistent} {@link Feature}s of the default feature holder.
-     * Additions to the returned {@link List} are applied back to the feature holder.
+     * Returns a {@link List} of all persistent {@link Feature}s of the default feature holder.
+     * Such features implement {@link Persistable} and return {@code true} for {@link Persistable#isPersistent()}.
+     * Additions to the returned list are applied back to the feature holder.
      * 
-     * @return All {@link Persistent} {@link Feature}s of the default feature holder.
+     * @return All persistent features of the default feature holder.
      */
     @XmlAnyElement (lax = true)
     public List<Feature> getPersistentFeatures() {
@@ -184,7 +185,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
             // Add all persistent features
             for (Feature feature : featureHolder.features.values()) {
-                if (feature.getClass().isAnnotationPresent(Persistent.class)) {
+                if (feature instanceof Persistable && ((Persistable) feature).isPersistent()) {
                     // Don't use the overridden add() method because that could have side effects
                     super.add(feature);
                 }

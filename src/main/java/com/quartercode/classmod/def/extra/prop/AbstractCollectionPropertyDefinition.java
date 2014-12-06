@@ -25,6 +25,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
+import com.quartercode.classmod.base.Persistable;
 import com.quartercode.classmod.def.base.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.func.FunctionDefinition;
 import com.quartercode.classmod.extra.func.FunctionExecutor;
@@ -53,6 +54,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     private Storage<C>                     storageTemplate;
     private ValueFactory<C>                collectionFactory;
     private boolean                        hidden;
+    private boolean                        persistent;
 
     private final FunctionDefinition<C>    getter;
     private final FunctionDefinition<Void> adder;
@@ -88,14 +90,17 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
      * @param name The name of the defined collection property.
      * @param storageTemplate A storage implementation that should be reproduced and used by every created collection property for storing collections.
      * @param collectionFactory A {@link ValueFactory} that returns new collections for all created collection properties.
-     * @param hidden Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the defined collection property should be excluded from equality checks of its feature holder.
      *        See {@link Hideable} for more information.
+     * @param persistent Whether the defined collection property should be serializable.
+     *        See {@link Persistable} for more information.
      */
-    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden) {
+    public AbstractCollectionPropertyDefinition(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden, boolean persistent) {
 
         this(name, storageTemplate, collectionFactory);
 
         this.hidden = hidden;
+        this.persistent = persistent;
     }
 
     @Override
@@ -108,6 +113,12 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
     public boolean isHidden() {
 
         return hidden;
+    }
+
+    @Override
+    public boolean isPersistent() {
+
+        return persistent;
     }
 
     @Override
@@ -200,6 +211,7 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
         int result = super.hashCode();
         result = prime * result + (collectionFactory == null ? 0 : collectionFactory.hashCode());
         result = prime * result + (hidden ? 1231 : 1237);
+        result = prime * result + (persistent ? 1231 : 1237);
         result = prime * result + (storageTemplate == null ? 0 : storageTemplate.hashCode());
         return result;
     }
@@ -213,7 +225,10 @@ public abstract class AbstractCollectionPropertyDefinition<E, C extends Collecti
             return false;
         } else {
             AbstractCollectionPropertyDefinition<?, ?> other = (AbstractCollectionPropertyDefinition<?, ?>) obj;
-            return hidden == other.hidden && Objects.equals(collectionFactory, other.collectionFactory) && Objects.equals(storageTemplate, other.storageTemplate);
+            return hidden == other.hidden
+                    && persistent == other.persistent
+                    && Objects.equals(collectionFactory, other.collectionFactory)
+                    && Objects.equals(storageTemplate, other.storageTemplate);
         }
     }
 

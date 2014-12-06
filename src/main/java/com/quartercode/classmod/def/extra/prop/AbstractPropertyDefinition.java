@@ -24,6 +24,7 @@ import org.apache.commons.lang3.Validate;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
+import com.quartercode.classmod.base.Persistable;
 import com.quartercode.classmod.def.base.AbstractFeatureDefinition;
 import com.quartercode.classmod.extra.func.FunctionDefinition;
 import com.quartercode.classmod.extra.func.FunctionExecutor;
@@ -51,6 +52,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     private Storage<T>                     storageTemplate;
     private ValueFactory<T>                initialValueFactory;
     private boolean                        hidden;
+    private boolean                        persistent;
 
     private final FunctionDefinition<T>    getter;
     private final FunctionDefinition<Void> setter;
@@ -88,41 +90,53 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
     }
 
     /**
-     * Creates a new abstract property definition for defining a {@link Property} with the given name and hiding flag.
+     * Creates a new abstract property definition for defining a {@link Property} with the given name, hiding flag, and persistent flag.
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
-     * @param hidden Whether the value of the defined property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the defined property should be excluded from equality checks of its feature holder.
      *        See {@link Hideable} for more information.
+     * @param persistent Whether the defined property should be serializable.
+     *        See {@link Persistable} for more information.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, boolean hidden) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, boolean hidden, boolean persistent) {
 
         this(name, storageTemplate);
 
         this.hidden = hidden;
+        this.persistent = persistent;
     }
 
     /**
-     * Creates a new abstract property definition for defining a {@link Property} with the given name, initial value, and hiding flag.
+     * Creates a new abstract property definition for defining a {@link Property} with the given name, initial value, hiding flag, and persistent flag.
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
      * @param initialValueFactory A {@link ValueFactory} that returns initial value objects for all created properties.
-     * @param hidden Whether the value of the defined collection property should be excluded from equality checks of its feature holder.
+     * @param hidden Whether the defined property should be excluded from equality checks of its feature holder.
      *        See {@link Hideable} for more information.
+     * @param persistent Whether the defined property should be serializable.
+     *        See {@link Persistable} for more information.
      */
-    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden) {
+    public AbstractPropertyDefinition(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden, boolean persistent) {
 
         this(name, storageTemplate);
 
         this.initialValueFactory = initialValueFactory;
         this.hidden = hidden;
+        this.persistent = persistent;
     }
 
     @Override
     public boolean isHidden() {
 
         return hidden;
+    }
+
+    @Override
+    public boolean isPersistent() {
+
+        return persistent;
     }
 
     @Override
@@ -203,6 +217,7 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
         int result = super.hashCode();
         result = prime * result + (hidden ? 1231 : 1237);
         result = prime * result + (initialValueFactory == null ? 0 : initialValueFactory.hashCode());
+        result = prime * result + (persistent ? 1231 : 1237);
         result = prime * result + (storageTemplate == null ? 0 : storageTemplate.hashCode());
         return result;
     }
@@ -216,7 +231,10 @@ public abstract class AbstractPropertyDefinition<T> extends AbstractFeatureDefin
             return false;
         } else {
             AbstractPropertyDefinition<?> other = (AbstractPropertyDefinition<?>) obj;
-            return hidden == other.hidden && Objects.equals(initialValueFactory, other.initialValueFactory) && Objects.equals(storageTemplate, other.storageTemplate);
+            return hidden == other.hidden
+                    && persistent == other.persistent
+                    && Objects.equals(initialValueFactory, other.initialValueFactory)
+                    && Objects.equals(storageTemplate, other.storageTemplate);
         }
     }
 

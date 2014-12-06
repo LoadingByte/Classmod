@@ -23,7 +23,6 @@ import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.def.extra.prop.AbstractCollectionPropertyDefinition;
 import com.quartercode.classmod.def.extra.prop.DefaultCollectionProperty;
-import com.quartercode.classmod.def.extra.prop.TransientCollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
@@ -35,23 +34,19 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultCollectionPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "collection", "transient", "hidden" })
-    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, final boolean trans, boolean hidden) {
+    @Factory (parameters = { "name", "storage", "collection", "hidden", "transient" })
+    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden, boolean trans) {
 
         Validate.notNull(name, "Name of new collection property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new collection property definition cannot be null");
         Validate.notNull(collectionFactory, "Collection factory of new collection property definition cannot be null");
 
-        return new AbstractCollectionPropertyDefinition<E, C>(name, storageTemplate, collectionFactory, hidden) {
+        return new AbstractCollectionPropertyDefinition<E, C>(name, storageTemplate, collectionFactory, hidden, !trans) {
 
             @Override
             public CollectionProperty<E, C> create(FeatureHolder holder) {
 
-                if (trans) {
-                    return new TransientCollectionProperty<>(getName(), holder, newStorage());
-                } else {
-                    return new DefaultCollectionProperty<>(getName(), holder, newStorage());
-                }
+                return new DefaultCollectionProperty<>(getName(), holder, newStorage());
             }
 
         };

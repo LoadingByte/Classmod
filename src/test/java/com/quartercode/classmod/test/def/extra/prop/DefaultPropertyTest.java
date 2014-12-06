@@ -66,6 +66,8 @@ public class DefaultPropertyTest {
 
             allowing(definition).isHidden();
                 will(returnValue(hidden));
+            allowing(definition).isPersistent();
+                will(returnValue(false));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(getterExecutors));

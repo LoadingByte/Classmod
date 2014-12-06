@@ -22,7 +22,6 @@ import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.def.extra.prop.AbstractPropertyDefinition;
 import com.quartercode.classmod.def.extra.prop.DefaultProperty;
-import com.quartercode.classmod.def.extra.prop.TransientProperty;
 import com.quartercode.classmod.extra.prop.Property;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
@@ -34,22 +33,18 @@ import com.quartercode.classmod.factory.Factory;
  */
 class DefaultPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "initialValue", "transient", "hidden" })
-    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, final boolean trans, boolean hidden) {
+    @Factory (parameters = { "name", "storage", "initialValue", "hidden", "transient" })
+    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden, boolean trans) {
 
         Validate.notNull(name, "Name of new property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new property definition cannot be null");
 
-        return new AbstractPropertyDefinition<T>(name, storageTemplate, initialValueFactory, hidden) {
+        return new AbstractPropertyDefinition<T>(name, storageTemplate, initialValueFactory, hidden, !trans) {
 
             @Override
             public Property<T> create(FeatureHolder holder) {
 
-                if (trans) {
-                    return new TransientProperty<>(getName(), holder, newStorage(), newInitialValue());
-                } else {
-                    return new DefaultProperty<>(getName(), holder, newStorage(), newInitialValue());
-                }
+                return new DefaultProperty<>(getName(), holder, newStorage(), newInitialValue());
             }
 
         };

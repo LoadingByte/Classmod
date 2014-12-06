@@ -18,16 +18,19 @@
 
 package com.quartercode.classmod.base;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 /**
- * {@link Feature}s which have this annotation are persistent and can be serialized.
+ * Persistable features can be serialized.
+ * Actually, they should be serialized when their parent {@link FeatureHolder} is serialized.
+ * The persistence state of a feature is supplied with the {@link #isPersistent()} method.
  */
-@Target (ElementType.TYPE)
-@Retention (RetentionPolicy.RUNTIME)
-public @interface Persistent {
+public interface Persistable extends Feature {
+
+    /**
+     * Returns whether the feature is currently serializable.
+     * If this returns {@code true}, it should be serialized when its parent {@link FeatureHolder} is serialized.
+     * 
+     * @return The current persistence state of the feature.
+     */
+    public boolean isPersistent();
 
 }

@@ -65,6 +65,8 @@ public class DefaultCollectionPropertyPersistenceTest {
 
             allowing(definition).isHidden();
                 will(returnValue(false));
+            allowing(definition).isPersistent();
+                will(returnValue(false)); // Return false because this flag should not affect the serialization of an isolated feature
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(new HashMap<>()));

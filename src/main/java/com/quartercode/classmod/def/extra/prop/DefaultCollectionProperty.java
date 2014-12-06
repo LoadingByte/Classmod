@@ -21,18 +21,15 @@ package com.quartercode.classmod.def.extra.prop;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.def.base.AbstractFeature;
 import com.quartercode.classmod.def.extra.func.DefaultFunctionExecutorWrapper;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -46,7 +43,7 @@ import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
 
 /**
- * The {@link Persistent} default implementation of the {@link CollectionProperty} interface.<br>
+ * The default implementation of the {@link CollectionProperty} interface.<br>
  * <br>
  * The adder and the remover of every default collection property keep track of {@link ChildFeatureHolder}s.
  * That means that the parent of a {@link ChildFeatureHolder} value is set to the holder of the property on add.
@@ -56,7 +53,6 @@ import com.quartercode.classmod.extra.storage.Storage;
  * @param <C> The type of collection that can be stored inside the default collection property.
  * @see CollectionProperty
  */
-@Persistent
 @XmlRootElement
 public class DefaultCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
@@ -74,6 +70,7 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
 
     private boolean                     intialized;
     private boolean                     hidden;
+    private boolean                     persistent;
     private Function<C>                 getter;
     private Function<Void>              adder;
     private Function<Void>              remover;
@@ -107,11 +104,18 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     }
 
     @Override
+    public boolean isPersistent() {
+
+        return persistent;
+    }
+
+    @Override
     public void initialize(CollectionPropertyDefinition<E, C> definition) {
 
         intialized = true;
 
         hidden = definition.isHidden();
+        persistent = definition.isPersistent();
 
         C newCollection = definition.newCollection();
         C oldCollection = storage.get();
@@ -178,6 +182,7 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (hidden ? 1231 : 1237);
+        result = prime * result + (persistent ? 1231 : 1237);
         result = prime * result + (storage == null ? 0 : storage.hashCode());
         return result;
     }
@@ -191,7 +196,9 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
             return false;
         } else {
             DefaultCollectionProperty<?, ?> other = (DefaultCollectionProperty<?, ?>) obj;
-            return hidden == other.hidden && Objects.equals(storage, other.storage);
+            return hidden == other.hidden
+                    && persistent == other.persistent
+                    && Objects.equals(storage, other.storage);
         }
     }
 

@@ -23,6 +23,7 @@ import java.util.Map;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Hideable;
+import com.quartercode.classmod.base.Persistable;
 import com.quartercode.classmod.extra.func.Function;
 import com.quartercode.classmod.extra.func.FunctionExecutor;
 import com.quartercode.classmod.extra.func.FunctionExecutorWrapper;
@@ -59,6 +60,14 @@ public interface CollectionPropertyDefinition<E, C extends Collection<E>> extend
      * @return The hiding flag of the definition.
      */
     public boolean isHidden();
+
+    /**
+     * Returns the persistence flag for all created {@link CollectionProperty} instances.
+     * See {@link Persistable#isPersistent()} for more information on that attribute.
+     * 
+     * @return The persistence flag of the definition.
+     */
+    public boolean isPersistent();
 
     /**
      * Returns {@link FunctionExecutorWrapper}s for the getter {@link FunctionExecutor}s that are registered for the given variant and all supervariants.

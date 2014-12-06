@@ -21,6 +21,7 @@ package com.quartercode.classmod.extra.prop;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.Hideable;
 import com.quartercode.classmod.base.Initializable;
+import com.quartercode.classmod.base.Persistable;
 
 /**
  * A property is a simple {@link Feature} which stores an object.
@@ -28,7 +29,7 @@ import com.quartercode.classmod.base.Initializable;
  * 
  * @param <T> The type of object that can be stored inside the property.
  */
-public interface Property<T> extends Feature, Hideable, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
+public interface Property<T> extends Feature, Hideable, Persistable, ValueSupplier<T>, Initializable<PropertyDefinition<T>> {
 
     /**
      * Returns the object which is stored inside the property.

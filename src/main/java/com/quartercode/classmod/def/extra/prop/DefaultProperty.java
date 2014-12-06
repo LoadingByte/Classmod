@@ -26,7 +26,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.Persistent;
 import com.quartercode.classmod.def.base.AbstractFeature;
 import com.quartercode.classmod.def.extra.func.DefaultFunctionExecutorWrapper;
 import com.quartercode.classmod.extra.ChildFeatureHolder;
@@ -40,7 +39,7 @@ import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
 
 /**
- * The {@link Persistent} default implementation of the {@link Property} interface.<br>
+ * The default implementation of the {@link Property} interface.<br>
  * <br>
  * The setter of every default property keeps track of {@link ChildFeatureHolder}s.
  * That means that the parent of a child feature holder value is set to the holder of the property.
@@ -49,7 +48,6 @@ import com.quartercode.classmod.extra.storage.Storage;
  * @param <T> The type of object that can be stored inside the default property.
  * @see Property
  */
-@Persistent
 @XmlRootElement
 public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
@@ -77,6 +75,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
     private boolean                     intialized;
     private boolean                     hidden;
+    private boolean                     persistent;
     private Function<T>                 getter;
     private Function<Void>              setter;
 
@@ -111,11 +110,18 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     }
 
     @Override
+    public boolean isPersistent() {
+
+        return persistent;
+    }
+
+    @Override
     public void initialize(PropertyDefinition<T> definition) {
 
         intialized = true;
 
         hidden = definition.isHidden();
+        persistent = definition.isPersistent();
 
         List<FunctionExecutorWrapper<T>> getterExecutors = new ArrayList<>();
         List<FunctionExecutorWrapper<Void>> setterExecutors = new ArrayList<>();
@@ -134,7 +140,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
         setter = new DummyFunction<>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
 
-        // See the comment on the "initialValue" field for more information on why this works
+        // See the comment on the "initialValue" field for more information about why this works
         if (initialValue != null) {
             set(initialValue);
             initialValue = null;
@@ -171,6 +177,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         final int prime = 31;
         int result = super.hashCode();
         result = prime * result + (hidden ? 1231 : 1237);
+        result = prime * result + (persistent ? 1231 : 1237);
         result = prime * result + (storage == null ? 0 : storage.hashCode());
         return result;
     }
@@ -184,7 +191,9 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
             return false;
         } else {
             DefaultProperty<?> other = (DefaultProperty<?>) obj;
-            return hidden == other.hidden && Objects.equals(storage, other.storage);
+            return hidden == other.hidden
+                    && persistent == other.persistent
+                    && Objects.equals(storage, other.storage);
         }
     }
 

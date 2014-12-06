@@ -28,7 +28,7 @@ import org.junit.Test;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.Persistent;
+import com.quartercode.classmod.base.Persistable;
 import com.quartercode.classmod.def.base.AbstractFeature;
 import com.quartercode.classmod.def.base.AbstractFeatureDefinition;
 import com.quartercode.classmod.def.base.DefaultFeatureHolder;
@@ -37,6 +37,7 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
 
     private static FeatureDefinition<TestFeature1> TEST_FEATURE_1;
     private static FeatureDefinition<TestFeature2> TEST_FEATURE_2;
+    private static FeatureDefinition<TestFeature3> TEST_FEATURE_3;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -60,6 +61,16 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
             }
 
         };
+
+        TEST_FEATURE_3 = new AbstractFeatureDefinition<TestFeature3>("testFeature3") {
+
+            @Override
+            public TestFeature3 create(FeatureHolder holder) {
+
+                return new TestFeature3(getName(), holder);
+            }
+
+        };
     }
 
     private DefaultFeatureHolder featureHolder;
@@ -76,9 +87,11 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
         // Add feature objects
         featureHolder.get(TEST_FEATURE_1);
         featureHolder.get(TEST_FEATURE_2);
+        featureHolder.get(TEST_FEATURE_3);
 
         assertTrue("Persistent features list doesn't contain TEST_FEATURE_1", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_1)));
         assertFalse("Persistent features list contains TEST_FEATURE_2", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_2)));
+        assertFalse("Persistent features list contains TEST_FEATURE_3", featureHolder.getPersistentFeatures().contains(featureHolder.get(TEST_FEATURE_3)));
     }
 
     @Test
@@ -99,19 +112,39 @@ public class DefaultFeatureHolderPersistentFeaturesTest {
         assertTrue("Persistent features list modification wasn't applied", expectedFeatures.equals(actualFeatures));
     }
 
-    @Persistent
-    private static class TestFeature1 extends AbstractFeature {
+    private static class TestFeature1 extends AbstractFeature implements Persistable {
 
         private TestFeature1(String name, FeatureHolder holder) {
 
             super(name, holder);
         }
 
+        @Override
+        public boolean isPersistent() {
+
+            return true;
+        }
+
     }
 
-    private static class TestFeature2 extends AbstractFeature {
+    private static class TestFeature2 extends AbstractFeature implements Persistable {
 
         private TestFeature2(String name, FeatureHolder holder) {
+
+            super(name, holder);
+        }
+
+        @Override
+        public boolean isPersistent() {
+
+            return false;
+        }
+
+    }
+
+    private static class TestFeature3 extends AbstractFeature {
+
+        private TestFeature3(String name, FeatureHolder holder) {
 
             super(name, holder);
         }

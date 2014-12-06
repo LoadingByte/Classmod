@@ -59,6 +59,8 @@ public class DefaultPropertyPersistenceTest {
 
             allowing(definition).isHidden();
                 will(returnValue(false));
+            allowing(definition).isPersistent();
+                will(returnValue(false));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(new HashMap<>()));
