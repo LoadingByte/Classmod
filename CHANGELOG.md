@@ -6,14 +6,18 @@
 * The new CFeatureHolder family integrates convenience methods like invoke() directly into the holder class removing the need for structures like holder.get(...).invoke(...).
 * Initializable features that provide an initialize() method for better custom feature definitions with persistence support.
 * Hidden features are excluded from the hashCode() and equals() methods of their parent feature holders.
+* Replaced the old @Persistent annotation with a new Persistable interface, allowing the persistence of a feature being dynamically changed during runtime.
 * JAXB contexts can be created with context paths and jaxb.index files supplied by Classmod.
+* A new "mocking" system allows to quickly create tests which mock function/property function executors. A JUnit rule mockery, which resets all mocks after the tests, is also supplied.
 * Properties now set the parents of stored child feature holders (The PropertyAccessorFactory used to do that).
 * Properties have persistence support for maps and arrays.
+* The new @NonPersistent annotation can be used to mark objects which should not be serialized when they are stored inside a persistent property or a persistent collection.
 * Properties now support getter and setter function executors; that removes the need for GET_X and SET_X functions.
 * Collection properties are normal properties with add() and remove() methods instead of the set() method.
 * The interface ValueSupplier abstracts the principle of a get() method and is extended by every property. It can be used whenever the type of property isn't known.
 * All property definitions can take ValueFactory instances which supply them with initial values/collections.
 * The storage system replaces the old property template method pattern.
+* Replaced the old priority annotation with new priority method parameters on addExecutor() etc. methods, allowing to programmatically change function executor priorities. 
 * The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
 * The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
 * ChildFeatureHolders must provide the type of their parent objects as a class object for more type-safety.
@@ -32,7 +36,7 @@
 * The DefaultFunctionInvocation implementation can now handle null arguments.
 * The DefaultFunctionInvocation implementation no longer throws unexpected exceptions if there are less arguments than parameters.
 * The DefaultFunctionInvocation implementation now transforms varargs into arrays (["testString", 0, 1, 2] -> ["testString", [0, 1, 2]]).
-* The JAXB persistence system actually works (a lot of bugfixes done here).
+* The JAXB persistence system actually works (a lot of bugfixing done here).
 * Listified everything because sets (especially HashSets) are not safe for modifiable objects.
 * Refactored a whole bunch of code based on automatic suggestions.
 
@@ -42,6 +46,7 @@
 * The update changed the parameter order of every add/removeExecutor method to (name, variant, executor) in order to logically conform the new function executor override feature. Code which uses the function system must be refactored.
 * Some setLocked() statements and all Lockable annotations must be removed in order to conform with the new update (see the removals section for further explanation why).
 * The new storage and factory systems force all definition code to be updated.
+* The whole package structure has been refactored for this update. Therefore, a lot of imports must be corrected.
 
 0.2.1
 -----
