@@ -37,7 +37,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @XmlRootElement
 public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Storage<C> {
 
-    @XmlElement (name = "referenceEntry")
+    @XmlElement (name = "referenceEntry", nillable = true)
     @XmlIDREF
     private C referenceCollection;
 

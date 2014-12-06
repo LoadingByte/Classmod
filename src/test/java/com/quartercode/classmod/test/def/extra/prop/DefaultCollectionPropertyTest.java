@@ -68,7 +68,7 @@ public class DefaultCollectionPropertyTest {
         // @formatter:on
     }
 
-    private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property, final boolean hidden, FunctionExecutor<C> getterExecutor, FunctionExecutor<Void> adderExecutor, FunctionExecutor<Void> removerExecutor) {
+    private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property, FunctionExecutor<C> getterExecutor, FunctionExecutor<Void> adderExecutor, FunctionExecutor<Void> removerExecutor) {
 
         final Map<String, FunctionExecutorWrapper<C>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
@@ -92,7 +92,7 @@ public class DefaultCollectionPropertyTest {
                 will(returnValue(new ArrayList<>()));
 
             allowing(definition).isHidden();
-                will(returnValue(hidden));
+                will(returnValue(false));
             allowing(definition).isPersistent();
                 will(returnValue(false));
 
@@ -125,7 +125,7 @@ public class DefaultCollectionPropertyTest {
         // @formatter:on
 
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
     }
 
     @Test
@@ -134,7 +134,7 @@ public class DefaultCollectionPropertyTest {
         final StorageInterface<List<String>> storage = context.mock(StorageInterface.class);
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -156,7 +156,7 @@ public class DefaultCollectionPropertyTest {
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
 
         final FunctionExecutor<List<String>> getterExecutor = context.mock(FunctionExecutor.class);
-        initializeCollectionProperty(collectionProperty, false, new DummyFunctionExecutor<>(getterExecutor, false), null, null);
+        initializeCollectionProperty(collectionProperty, new DummyFunctionExecutor<>(getterExecutor, false), null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -180,7 +180,7 @@ public class DefaultCollectionPropertyTest {
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
 
         final FunctionExecutor<List<String>> getterExecutor = context.mock(FunctionExecutor.class);
-        initializeCollectionProperty(collectionProperty, false, new DummyFunctionExecutor<>(getterExecutor, true), null, null);
+        initializeCollectionProperty(collectionProperty, new DummyFunctionExecutor<>(getterExecutor, true), null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -203,7 +203,7 @@ public class DefaultCollectionPropertyTest {
         final StorageInterface<List<String>> storage = context.mock(StorageInterface.class);
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -227,7 +227,7 @@ public class DefaultCollectionPropertyTest {
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
 
         final FunctionExecutor<Void> adderExecutor = context.mock(FunctionExecutor.class);
-        initializeCollectionProperty(collectionProperty, false, null, new DummyFunctionExecutor<>(adderExecutor, false), null);
+        initializeCollectionProperty(collectionProperty, null, new DummyFunctionExecutor<>(adderExecutor, false), null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -254,7 +254,7 @@ public class DefaultCollectionPropertyTest {
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<ChildFeatureHolder<FeatureHolder>, List<ChildFeatureHolder<FeatureHolder>>> collectionProperty;
         collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -284,7 +284,7 @@ public class DefaultCollectionPropertyTest {
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<ChildFeatureHolder<FeatureHolder>, List<ChildFeatureHolder<FeatureHolder>>> collectionProperty;
         collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -311,7 +311,7 @@ public class DefaultCollectionPropertyTest {
         final StorageInterface<List<String>> storage = context.mock(StorageInterface.class);
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -335,7 +335,7 @@ public class DefaultCollectionPropertyTest {
         CollectionProperty<String, List<String>> collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
 
         final FunctionExecutor<Void> removerExecutor = context.mock(FunctionExecutor.class);
-        initializeCollectionProperty(collectionProperty, false, null, null, new DummyFunctionExecutor<>(removerExecutor, false));
+        initializeCollectionProperty(collectionProperty, null, null, new DummyFunctionExecutor<>(removerExecutor, false));
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -362,7 +362,7 @@ public class DefaultCollectionPropertyTest {
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<ChildFeatureHolder<FeatureHolder>, List<ChildFeatureHolder<FeatureHolder>>> collectionProperty;
         collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -396,7 +396,7 @@ public class DefaultCollectionPropertyTest {
         addInitializeExpectationsToStorage(storage);
         CollectionProperty<ChildFeatureHolder<FeatureHolder>, List<ChildFeatureHolder<FeatureHolder>>> collectionProperty;
         collectionProperty = new DefaultCollectionProperty<>("collectionProperty", featureHolder, new StorageWrapper<>(storage));
-        initializeCollectionProperty(collectionProperty, false, null, null, null);
+        initializeCollectionProperty(collectionProperty, null, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{

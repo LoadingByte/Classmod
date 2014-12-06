@@ -241,12 +241,27 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         @SuppressWarnings ("unchecked")
         private C unmodifiable(C collection) {
 
+            /*
+             * TODO: Decisions related to the returned unmodifiable collection.
+             * 
+             * 1) Decide whether an unmodifiable view on queues should be returned for queues.
+             * It is important to note that a QueueProperty would be the only alternative for making the queue methods available.
+             * However, that would result in the need for another DequeueProperty.
+             * 
+             * 2) Another thing to note is that classes which implement both List and Queue (e.g. LinkedList) are returned as a list by the first if-clause.
+             * Therefore, the queue methods are not accessible on the return object.
+             * Another thing to consider might be to return one big "UnmodifiableCollection" class which implements delegations for all methods of all collections.
+             * It would implement all read methods from Collection, List, Set, SortedSet, Queue, Dequeue, ...
+             * However, only calls on valid methods for the wrapped collection (e.g. a list) are allowed.
+             * The advantage would be getting rid of this if-else-block and solving the problem mentioned above.
+             */
+
             if (collection instanceof List) {
-                return (C) Collections.unmodifiableList(new ArrayList<>(collection));
+                return (C) Collections.unmodifiableList((List<?>) collection);
             } else if (collection instanceof Set) {
-                return (C) Collections.unmodifiableSet(new HashSet<>(collection));
+                return (C) Collections.unmodifiableSet((Set<?>) collection);
             } else if (collection instanceof SortedSet) {
-                return (C) Collections.unmodifiableSortedSet(new TreeSet<>(collection));
+                return (C) Collections.unmodifiableSortedSet((SortedSet<?>) collection);
             } else {
                 return (C) Collections.unmodifiableCollection(collection);
             }

@@ -48,7 +48,7 @@ public class DefaultPropertyTest {
     @Mock
     private FeatureHolder   featureHolder;
 
-    private <T> void initializeProperty(Property<T> property, final boolean hidden, FunctionExecutor<T> getterExecutor, FunctionExecutor<Void> setterExecutor) {
+    private <T> void initializeProperty(Property<T> property, FunctionExecutor<T> getterExecutor, FunctionExecutor<Void> setterExecutor) {
 
         final Map<String, FunctionExecutorWrapper<T>> getterExecutors = new HashMap<>();
         if (getterExecutor != null) {
@@ -65,7 +65,7 @@ public class DefaultPropertyTest {
         context.checking(new Expectations() {{
 
             allowing(definition).isHidden();
-                will(returnValue(hidden));
+                will(returnValue(false));
             allowing(definition).isPersistent();
                 will(returnValue(false));
 
@@ -85,7 +85,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<String> storage = context.mock(StorageInterface.class);
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -106,7 +106,7 @@ public class DefaultPropertyTest {
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
 
         final FunctionExecutor<String> getterExecutor = context.mock(FunctionExecutor.class);
-        initializeProperty(property, false, new DummyFunctionExecutor<>(getterExecutor, false), null);
+        initializeProperty(property, new DummyFunctionExecutor<>(getterExecutor, false), null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -129,7 +129,7 @@ public class DefaultPropertyTest {
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
 
         final FunctionExecutor<String> getterExecutor = context.mock(FunctionExecutor.class);
-        initializeProperty(property, false, new DummyFunctionExecutor<>(getterExecutor, true), null);
+        initializeProperty(property, new DummyFunctionExecutor<>(getterExecutor, true), null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -151,7 +151,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<String> storage = context.mock(StorageInterface.class);
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -177,7 +177,7 @@ public class DefaultPropertyTest {
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
 
         final FunctionExecutor<Void> setterExecutor = context.mock(FunctionExecutor.class);
-        initializeProperty(property, false, null, new DummyFunctionExecutor<>(setterExecutor, false));
+        initializeProperty(property, null, new DummyFunctionExecutor<>(setterExecutor, false));
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -203,7 +203,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<ChildFeatureHolder<FeatureHolder>> storage = context.mock(StorageInterface.class);
         Property<ChildFeatureHolder<FeatureHolder>> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -232,7 +232,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<ChildFeatureHolder<FeatureHolder>> storage = context.mock(StorageInterface.class);
         Property<ChildFeatureHolder<FeatureHolder>> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -261,7 +261,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<ChildFeatureHolder<FeatureHolder>> storage = context.mock(StorageInterface.class);
         Property<ChildFeatureHolder<FeatureHolder>> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -293,7 +293,7 @@ public class DefaultPropertyTest {
 
         final StorageInterface<ChildFeatureHolder<FeatureHolder>> storage = context.mock(StorageInterface.class);
         Property<ChildFeatureHolder<FeatureHolder>> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), null);
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
 
         // @formatter:off
         context.checking(new Expectations() {{
@@ -335,7 +335,7 @@ public class DefaultPropertyTest {
         // @formatter:on
 
         Property<String> property = new DefaultProperty<>("property", featureHolder, new StorageWrapper<>(storage), "initialValue");
-        initializeProperty(property, false, null, null);
+        initializeProperty(property, null, null);
     }
 
     private static interface OtherFeatureHolder extends FeatureHolder {

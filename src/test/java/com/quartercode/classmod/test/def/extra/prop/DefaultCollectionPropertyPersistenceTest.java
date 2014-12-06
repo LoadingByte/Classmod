@@ -41,6 +41,7 @@ import com.quartercode.classmod.def.extra.prop.DefaultCollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 
+@SuppressWarnings ("unchecked")
 public class DefaultCollectionPropertyPersistenceTest {
 
     @Rule
@@ -52,7 +53,6 @@ public class DefaultCollectionPropertyPersistenceTest {
     private Marshaller      marshaller;
     private Unmarshaller    unmarshaller;
 
-    @SuppressWarnings ("unchecked")
     private <E, C extends Collection<E>> void initializeCollectionProperty(CollectionProperty<E, C> property) {
 
         final CollectionPropertyDefinition<E, C> definition = context.mock(CollectionPropertyDefinition.class, property.getName() + "Definition");
@@ -91,7 +91,6 @@ public class DefaultCollectionPropertyPersistenceTest {
         unmarshaller = context.createUnmarshaller();
     }
 
-    @SuppressWarnings ("unchecked")
     @Test
     public void test() throws JAXBException {
 
