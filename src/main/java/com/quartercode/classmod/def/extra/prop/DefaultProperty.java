@@ -75,8 +75,8 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     private T                           initialValue;
 
     private boolean                     intialized;
-    private boolean                     hidden;
-    private boolean                     persistent;
+    private boolean                     hidden            = false;
+    private boolean                     persistent        = true;
     private Function<T>                 getter;
     private Function<Void>              setter;
 

@@ -63,10 +63,11 @@ public class DefaultCollectionPropertyPersistenceTest {
             allowing(definition).newCollection();
                 will(returnValue(new ArrayList<>()));
 
+            // Mirror default settings of DefaultCollectionProperty
             allowing(definition).isHidden();
                 will(returnValue(false));
             allowing(definition).isPersistent();
-                will(returnValue(false)); // Return false because this flag should not affect the serialization of an isolated feature
+                will(returnValue(true));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(new HashMap<>()));

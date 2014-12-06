@@ -57,10 +57,11 @@ public class DefaultPropertyPersistenceTest {
         // @formatter:off
         context.checking(new Expectations() {{
 
+            // Mirror default settings of DefaultProperty
             allowing(definition).isHidden();
                 will(returnValue(false));
             allowing(definition).isPersistent();
-                will(returnValue(false));
+                will(returnValue(true));
 
             allowing(definition).getGetterExecutorsForVariant(with(any(Class.class)));
                 will(returnValue(new HashMap<>()));

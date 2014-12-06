@@ -70,8 +70,8 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     private Storage<C>                  storage;
 
     private boolean                     intialized;
-    private boolean                     hidden;
-    private boolean                     persistent;
+    private boolean                     hidden                   = false;
+    private boolean                     persistent               = true;
     private Function<C>                 getter;
     private Function<Void>              adder;
     private Function<Void>              remover;
