@@ -33,7 +33,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlID;
-import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -122,29 +121,6 @@ public class DefaultStoragesPersistenceTest {
 
         StorageContainer copy = (StorageContainer) unmarshaller.unmarshal(new StringReader(serialized.toString()));
         assertArrayEquals("Serialized-deserialized copy of the storages", storageContainer.getStorages(), copy.getStorages());
-    }
-
-    @XmlRootElement
-    private static class StorageContainer {
-
-        @XmlElement (name = "storage")
-        private Storage<?>[] storages;
-
-        // Default constructor for JAXB
-        private StorageContainer() {
-
-        }
-
-        private StorageContainer(Storage<?>[] storages) {
-
-            this.storages = storages;
-        }
-
-        private Storage<?>[] getStorages() {
-
-            return storages;
-        }
-
     }
 
     private static class DataObject {

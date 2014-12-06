@@ -20,7 +20,9 @@ package com.quartercode.classmod.extra.storage;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -33,6 +35,7 @@ import javax.xml.bind.annotation.adapters.XmlAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.quartercode.classmod.extra.XmlPassthroughElement;
+import com.quartercode.classmod.extra.prop.NonPersistent;
 
 /**
  * The object adapter is used for mapping an {@link Object} field.
@@ -51,6 +54,34 @@ import com.quartercode.classmod.extra.XmlPassthroughElement;
 class ObjectAdapter extends XmlAdapter<Object, Object> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ObjectAdapter.class);
+
+    // ----- Utility -----
+
+    private static boolean containsNonPersistentElements(Iterable<?> iterable) {
+
+        for (Object element : iterable) {
+            if (element != null && element.getClass().isAnnotationPresent(NonPersistent.class)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static int getPersistentOrNullElementCount(Iterable<?> iterable) {
+
+        int count = 0;
+
+        for (Object element : iterable) {
+            if (element == null || !element.getClass().isAnnotationPresent(NonPersistent.class)) {
+                count++;
+            }
+        }
+
+        return count;
+    }
+
+    // ----- Adapter -----
 
     @Override
     public Object unmarshal(Object v) {
@@ -79,6 +110,8 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
             return v;
         }
     }
+
+    // ----- Wrappers -----
 
     @XmlTransient
     private static abstract class Wrapper<T> implements XmlPassthroughElement {
@@ -127,30 +160,48 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     @XmlType (name = "array")
     private static class ArrayWrapper extends Wrapper<Object[]> {
 
-        @XmlElement (name = "item")
-        private Object[] object;
         @XmlElement
         private Class<?> componentType;
+        @XmlElement (name = "item", nillable = true)
+        private Object[] array;
 
         private ArrayWrapper() {
 
         }
 
-        private ArrayWrapper(Object[] object) {
+        private ArrayWrapper(Object[] array) {
 
-            this.object = object;
-            componentType = object.getClass().getComponentType();
+            componentType = array.getClass().getComponentType();
+
+            // Use all items because all items are persistent or null
+            if (!containsNonPersistentElements(Arrays.asList(array))) {
+                this.array = array;
+            }
+            // Only use persistent and null items
+            else {
+                // Retrieve the total number of persistent and null items and create a new array of that size
+                this.array = new Object[getPersistentOrNullElementCount(Arrays.asList(array))];
+
+                // Fill the array with the persistent and null items
+                int index = 0;
+                for (Object item : array) {
+                    if (item == null || !item.getClass().isAnnotationPresent(NonPersistent.class)) {
+                        this.array[index] = item;
+                        index++;
+                    }
+                }
+            }
         }
 
         @Override
         public Object[] getObject() {
 
             try {
-                Object[] array = (Object[]) Array.newInstance(componentType, object.length);
-                System.arraycopy(object, 0, array, 0, object.length);
-                return array;
+                Object[] returnArray = (Object[]) Array.newInstance(componentType, array.length);
+                System.arraycopy(array, 0, returnArray, 0, returnArray.length);
+                return returnArray;
             } catch (Exception e) {
-                LOGGER.warn("Cannot copy array {} to new instance with component type {}", object, componentType, e);
+                LOGGER.warn("Cannot create new array instance with component type {} for deserializing array '{}'", componentType, array, e);
                 return null;
             }
         }
@@ -162,7 +213,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
 
         @XmlElement
         private Class<?>      collectionType;
-        @XmlElement (name = "item")
+        @XmlElement (name = "item", nillable = true)
         private Collection<?> collection;
 
         private CollectionWrapper() {
@@ -176,7 +227,24 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
                 collectionType = collection.getClass();
             }
 
-            this.collection = collection;
+            // Use all elements because all elements are persistent or null
+            if (!containsNonPersistentElements(collection)) {
+                this.collection = collection;
+            }
+            // Only use persistent and null elements
+            else {
+                // Retrieve the total number of persistent and null elements and create a new collection of that size
+                Collection<Object> newCollection = new ArrayList<>(getPersistentOrNullElementCount(collection));
+
+                // Fill the collection with the persistent and null elements
+                for (Object element : collection) {
+                    if (element == null || !element.getClass().isAnnotationPresent(NonPersistent.class)) {
+                        newCollection.add(element);
+                    }
+                }
+
+                this.collection = newCollection;
+            }
         }
 
         @Override
@@ -225,11 +293,18 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
 
             entries = new ArrayList<>();
             for (Entry<?, ?> entry : map.entrySet()) {
-                MapEntry entryObject = new MapEntry();
-                entryObject.key = entry.getKey();
-                entryObject.value = entry.getValue();
-                entries.add(entryObject);
+                if (isPersistent(entry.getKey()) && isPersistent(entry.getValue())) {
+                    MapEntry entryObject = new MapEntry();
+                    entryObject.key = entry.getKey();
+                    entryObject.value = entry.getValue();
+                    entries.add(entryObject);
+                }
             }
+        }
+
+        private boolean isPersistent(Object object) {
+
+            return !object.getClass().isAnnotationPresent(NonPersistent.class);
         }
 
         @Override

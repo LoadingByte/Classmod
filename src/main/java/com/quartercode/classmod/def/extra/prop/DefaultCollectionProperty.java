@@ -40,6 +40,7 @@ import com.quartercode.classmod.extra.func.FunctionInvocation;
 import com.quartercode.classmod.extra.func.Priorities;
 import com.quartercode.classmod.extra.prop.CollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.NonPersistent;
 import com.quartercode.classmod.extra.storage.Storage;
 
 /**
@@ -106,7 +107,25 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     @Override
     public boolean isPersistent() {
 
-        return persistent;
+        // Non-persistent feature
+        if (!persistent) {
+            return false;
+        } else {
+            C collection = storage.get();
+
+            // Empty collection
+            if (collection == null || collection.isEmpty()) {
+                return false;
+            } else {
+                // Collection without persistent elements
+                for (E element : collection) {
+                    if (!element.getClass().isAnnotationPresent(NonPersistent.class)) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
     }
 
     @Override

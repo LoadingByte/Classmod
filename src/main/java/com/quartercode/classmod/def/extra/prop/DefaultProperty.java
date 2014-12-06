@@ -34,6 +34,7 @@ import com.quartercode.classmod.extra.func.FunctionExecutor;
 import com.quartercode.classmod.extra.func.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.func.FunctionInvocation;
 import com.quartercode.classmod.extra.func.Priorities;
+import com.quartercode.classmod.extra.prop.NonPersistent;
 import com.quartercode.classmod.extra.prop.Property;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
@@ -112,7 +113,12 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public boolean isPersistent() {
 
-        return persistent;
+        if (!persistent) {
+            return false;
+        } else {
+            T value = storage.get();
+            return value != null && !value.getClass().isAnnotationPresent(NonPersistent.class);
+        }
     }
 
     @Override

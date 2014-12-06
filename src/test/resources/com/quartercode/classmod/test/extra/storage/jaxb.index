@@ -1,2 +1,3 @@
-DefaultStoragesPersistenceTest$StorageContainer
 DefaultStoragesPersistenceTest$DataObject
+StandardStoragePartialCollectionPersistenceTest$NonPersistentDataObject
+StorageContainer
