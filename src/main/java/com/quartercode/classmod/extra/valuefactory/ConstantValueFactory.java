@@ -18,8 +18,6 @@
 
 package com.quartercode.classmod.extra.valuefactory;
 
-import com.quartercode.classmod.extra.ValueFactory;
-
 /**
  * The constant value factory returns the same provided value every time {@link #get()} is called.
  * 

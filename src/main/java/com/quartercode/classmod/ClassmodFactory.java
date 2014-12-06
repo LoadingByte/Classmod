@@ -19,9 +19,9 @@
 package com.quartercode.classmod;
 
 import org.apache.commons.lang3.reflect.Typed;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionDefinition;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.func.FunctionDefinition;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.factory.FactoryManager;
 
 /**

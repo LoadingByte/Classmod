@@ -20,10 +20,10 @@ package com.quartercode.classmod;
 
 import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.Function;
-import com.quartercode.classmod.extra.FunctionDefinition;
-import com.quartercode.classmod.extra.def.AbstractFunctionDefinition;
-import com.quartercode.classmod.extra.def.DefaultFunction;
+import com.quartercode.classmod.def.extra.func.AbstractFunctionDefinition;
+import com.quartercode.classmod.def.extra.func.DefaultFunction;
+import com.quartercode.classmod.extra.func.Function;
+import com.quartercode.classmod.extra.func.FunctionDefinition;
 import com.quartercode.classmod.factory.Factory;
 
 /**

@@ -19,7 +19,6 @@
 package com.quartercode.classmod.extra.valuefactory;
 
 import org.apache.commons.lang3.ObjectUtils;
-import com.quartercode.classmod.extra.ValueFactory;
 
 /**
  * A clone value factory clones a provided template every time the {@link #get()} method is called.

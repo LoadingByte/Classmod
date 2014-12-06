@@ -43,10 +43,10 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.Classmod;
-import com.quartercode.classmod.extra.Storage;
 import com.quartercode.classmod.extra.storage.ReferenceCollectionStorage;
 import com.quartercode.classmod.extra.storage.ReferenceStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
+import com.quartercode.classmod.extra.storage.Storage;
 
 @RunWith (Parameterized.class)
 public class DefaultStoragesPersistenceTest {
@@ -105,7 +105,7 @@ public class DefaultStoragesPersistenceTest {
     @Before
     public void setUp() throws JAXBException {
 
-        JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + DefaultStoragesPersistenceTest.class.getPackage().getName());
+        JAXBContext context = JAXBContext.newInstance(Classmod.CONTEXT_PATH + ":" + getClass().getPackage().getName());
         marshaller = context.createMarshaller();
         // Only enable for debugging
         // marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);

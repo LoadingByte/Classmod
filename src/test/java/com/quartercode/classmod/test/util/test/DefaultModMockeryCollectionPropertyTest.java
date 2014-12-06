@@ -19,7 +19,7 @@
 package com.quartercode.classmod.test.util.test;
 
 import static com.quartercode.classmod.ClassmodFactory.create;
-import static com.quartercode.classmod.extra.Priorities.LEVEL_7;
+import static com.quartercode.classmod.extra.func.Priorities.LEVEL_7;
 import static com.quartercode.classmod.test.ExtraAssert.assertListEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,10 +30,10 @@ import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.After;
 import org.junit.Rule;
 import org.junit.Test;
-import com.quartercode.classmod.base.def.DefaultFeatureHolder;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionInvocation;
+import com.quartercode.classmod.def.base.DefaultFeatureHolder;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.func.FunctionInvocation;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.extra.valuefactory.CloneValueFactory;
 import com.quartercode.classmod.util.test.DefaultModMockery;

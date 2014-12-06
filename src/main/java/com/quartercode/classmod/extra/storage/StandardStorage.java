@@ -22,7 +22,6 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import com.quartercode.classmod.extra.Storage;
 
 /**
  * The standard storage stores objects in a plain member variable and makes them serializable.

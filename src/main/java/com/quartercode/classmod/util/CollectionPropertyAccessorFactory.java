@@ -28,11 +28,11 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.extra.CollectionProperty;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Property;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.func.FunctionInvocation;
+import com.quartercode.classmod.extra.prop.CollectionProperty;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.Property;
 
 /**
  * A utility class for creating {@link FunctionExecutor}s which can access simple {@link Collection} {@link Property}s.

@@ -21,11 +21,11 @@ package com.quartercode.classmod.util.test;
 import java.util.Collection;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.Priorities;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.func.FunctionDefinition;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.func.Priorities;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
 
 /**
  * A mod mockery is able to temporarily change {@link FeatureDefinition}s for testing purposes.

@@ -28,7 +28,7 @@ import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.base.Initializable;
-import com.quartercode.classmod.extra.ValueSupplier;
+import com.quartercode.classmod.extra.prop.ValueSupplier;
 
 /**
  * The tree initializer walks over a tree of {@link FeatureHolder}s and invokes the {@link FeatureHolder#get(FeatureDefinition)} method with predefined {@link FeatureDefinition}s.

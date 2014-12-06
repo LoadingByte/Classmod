@@ -21,13 +21,13 @@ package com.quartercode.classmod;
 import java.util.Collection;
 import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.CollectionProperty;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.Storage;
-import com.quartercode.classmod.extra.ValueFactory;
-import com.quartercode.classmod.extra.def.AbstractCollectionPropertyDefinition;
-import com.quartercode.classmod.extra.def.DefaultCollectionProperty;
-import com.quartercode.classmod.extra.def.TransientCollectionProperty;
+import com.quartercode.classmod.def.extra.prop.AbstractCollectionPropertyDefinition;
+import com.quartercode.classmod.def.extra.prop.DefaultCollectionProperty;
+import com.quartercode.classmod.def.extra.prop.TransientCollectionProperty;
+import com.quartercode.classmod.extra.prop.CollectionProperty;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.storage.Storage;
+import com.quartercode.classmod.extra.valuefactory.ValueFactory;
 import com.quartercode.classmod.factory.Factory;
 
 /**

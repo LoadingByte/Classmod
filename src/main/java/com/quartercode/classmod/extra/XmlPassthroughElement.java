@@ -20,7 +20,7 @@ package com.quartercode.classmod.extra;
 
 /**
  * Classes that implement this interface represent a "passthrough" between two essential elements in the xml tree.
- * For example, the {@link Storage} class implements it because it just represents a "passthrough" between a feature and a stored object.<br>
+ * For example, the {@code Storage} class implements it because it just represents a "passthrough" between a feature and a stored object.<br>
  * <br>
  * Internally, "passthrough" elements are used to retrieve the parent feature of some object.
  * Each "passthrough" element must implement the {@code beforeUnmarshal()} listener and store its parent object.

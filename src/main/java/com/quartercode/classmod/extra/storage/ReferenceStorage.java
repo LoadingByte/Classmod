@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ToStringBuilder;
-import com.quartercode.classmod.extra.Storage;
 
 /**
  * The reference storage stores objects in a plain member variable and only serializes their {@link XmlID} references.

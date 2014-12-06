@@ -34,7 +34,7 @@ import org.junit.Test;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.ValueSupplier;
+import com.quartercode.classmod.extra.prop.ValueSupplier;
 import com.quartercode.classmod.util.TreeInitializer;
 
 public class TreeInitializerTest {

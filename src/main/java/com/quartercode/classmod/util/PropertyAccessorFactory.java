@@ -19,10 +19,10 @@
 package com.quartercode.classmod.util;
 
 import com.quartercode.classmod.base.FeatureDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.FunctionInvocation;
-import com.quartercode.classmod.extra.Property;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.func.FunctionInvocation;
+import com.quartercode.classmod.extra.prop.Property;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
 
 /**
  * A utility class for creating {@link FunctionExecutor}s which can access simple {@link Property}s (like getters or setters).

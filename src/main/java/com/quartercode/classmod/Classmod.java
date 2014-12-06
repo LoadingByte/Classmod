@@ -27,14 +27,30 @@ import javax.xml.bind.JAXBContext;
  */
 public class Classmod {
 
-    private static final String PACKAGE      = "com.quartercode.classmod";
-
     /**
      * The JAXB context path for classmod you can use in {@link JAXBContext#newInstance(String)}.
      * The constant doesn't has a ":" seperator at the start or the end.
-     * The actual value is {@value #CONTEXT_PATH}.
      */
-    public static final String  CONTEXT_PATH = PACKAGE + ".base.def:" + PACKAGE + ".extra.def:" + PACKAGE + ".extra.storage";
+    public static final String CONTEXT_PATH;
+
+    static {
+
+        String basePackage = "com.quartercode.classmod";
+        String contextPath = "";
+
+        // Base Implementation
+        contextPath += basePackage + ".def.base:";
+
+        // Extra API
+        contextPath += basePackage + ".extra.storage:";
+
+        // Extra Implementation
+        contextPath += basePackage + ".def.extra.conv:";
+        contextPath += basePackage + ".def.extra.prop:";
+
+        CONTEXT_PATH = contextPath;
+
+    }
 
     private Classmod() {
 

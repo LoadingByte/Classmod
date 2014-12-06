@@ -22,10 +22,10 @@ import java.util.Collection;
 import org.junit.Rule;
 import org.junit.rules.ExternalResource;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.func.FunctionDefinition;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
 
 /**
  * A JUnit {@link Rule} that provides methods for a {@link ModMockery} and automatically closes the underlying mockery after the test.

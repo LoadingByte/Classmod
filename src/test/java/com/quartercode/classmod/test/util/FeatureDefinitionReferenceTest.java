@@ -34,8 +34,8 @@ import org.junit.runners.Parameterized.Parameters;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.base.def.AbstractFeatureDefinition;
-import com.quartercode.classmod.base.def.DefaultFeatureHolder;
+import com.quartercode.classmod.def.base.AbstractFeatureDefinition;
+import com.quartercode.classmod.def.base.DefaultFeatureHolder;
 import com.quartercode.classmod.util.FeatureDefinitionReference;
 
 @RunWith (Parameterized.class)

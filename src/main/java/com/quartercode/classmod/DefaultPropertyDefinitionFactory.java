@@ -20,13 +20,13 @@ package com.quartercode.classmod;
 
 import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.Property;
-import com.quartercode.classmod.extra.PropertyDefinition;
-import com.quartercode.classmod.extra.Storage;
-import com.quartercode.classmod.extra.ValueFactory;
-import com.quartercode.classmod.extra.def.AbstractPropertyDefinition;
-import com.quartercode.classmod.extra.def.DefaultProperty;
-import com.quartercode.classmod.extra.def.TransientProperty;
+import com.quartercode.classmod.def.extra.prop.AbstractPropertyDefinition;
+import com.quartercode.classmod.def.extra.prop.DefaultProperty;
+import com.quartercode.classmod.def.extra.prop.TransientProperty;
+import com.quartercode.classmod.extra.prop.Property;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
+import com.quartercode.classmod.extra.storage.Storage;
+import com.quartercode.classmod.extra.valuefactory.ValueFactory;
 import com.quartercode.classmod.factory.Factory;
 
 /**

@@ -23,11 +23,11 @@ import java.util.Collection;
 import java.util.List;
 import org.apache.commons.lang3.tuple.Pair;
 import com.quartercode.classmod.base.FeatureHolder;
-import com.quartercode.classmod.extra.CollectionPropertyDefinition;
-import com.quartercode.classmod.extra.FunctionDefinition;
-import com.quartercode.classmod.extra.FunctionExecutor;
-import com.quartercode.classmod.extra.Priorities;
-import com.quartercode.classmod.extra.PropertyDefinition;
+import com.quartercode.classmod.extra.func.FunctionDefinition;
+import com.quartercode.classmod.extra.func.FunctionExecutor;
+import com.quartercode.classmod.extra.func.Priorities;
+import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
+import com.quartercode.classmod.extra.prop.PropertyDefinition;
 
 /**
  * The default implementation of the {@link ModMockery} interface.
