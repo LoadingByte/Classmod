@@ -135,7 +135,8 @@ class DummyFunction<R> extends AbstractFeature implements Function<R> {
             return false;
         } else {
             DummyFunction<?> other = (DummyFunction<?>) obj;
-            return Objects.equals(dummyParameters, other.dummyParameters) && Objects.equals(dummyExecutors, other.dummyExecutors);
+            return Objects.equals(dummyParameters, other.dummyParameters)
+                    && Objects.equals(dummyExecutors, other.dummyExecutors);
         }
     }
 

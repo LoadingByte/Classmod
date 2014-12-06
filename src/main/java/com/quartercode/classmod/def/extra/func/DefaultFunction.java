@@ -142,7 +142,8 @@ public class DefaultFunction<R> extends AbstractFeature implements Function<R> {
             return false;
         } else {
             DefaultFunction<?> other = (DefaultFunction<?>) obj;
-            return Objects.equals(parameters, other.parameters) && Objects.equals(executors, other.executors);
+            return Objects.equals(parameters, other.parameters)
+                    && Objects.equals(executors, other.executors);
         }
     }
 

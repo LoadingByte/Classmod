@@ -188,7 +188,8 @@ public class DefaultFunctionInvocation<R> implements FunctionInvocation<R> {
             return false;
         } else {
             DefaultFunctionInvocation<?> other = (DefaultFunctionInvocation<?>) obj;
-            return Objects.equals(remainingExecutors, other.remainingExecutors) && Objects.equals(source, other.source);
+            return Objects.equals(remainingExecutors, other.remainingExecutors)
+                    && Objects.equals(source, other.source);
         }
     }
 

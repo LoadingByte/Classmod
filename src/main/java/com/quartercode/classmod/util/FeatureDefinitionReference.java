@@ -195,7 +195,8 @@ public class FeatureDefinitionReference<D extends FeatureDefinition<?>> implemen
             return false;
         } else {
             FeatureDefinitionReference<?> other = (FeatureDefinitionReference<?>) obj;
-            return definitionClass == other.definitionClass && Objects.equals(definitionFieldName, other.definitionFieldName);
+            return definitionClass == other.definitionClass
+                    && Objects.equals(definitionFieldName, other.definitionFieldName);
         }
     }
 

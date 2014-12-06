@@ -77,7 +77,8 @@ public class DefaultFunctionExecutorWrapper<R> implements FunctionExecutorWrappe
             return false;
         } else {
             DefaultFunctionExecutorWrapper<?> other = (DefaultFunctionExecutorWrapper<?>) obj;
-            return priority == other.priority && Objects.equals(executor, other.executor);
+            return priority == other.priority
+                    && Objects.equals(executor, other.executor);
         }
     }
 
