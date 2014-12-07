@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod;
+package com.quartercode.classmod.factory.def;
 
 import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -26,20 +26,41 @@ import com.quartercode.classmod.extra.prop.Property;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
 import com.quartercode.classmod.extra.valuefactory.ValueFactory;
-import com.quartercode.classmod.factory.Factory;
+import com.quartercode.classmod.factory.PropertyDefinitionFactory;
 
 /**
- * A factory for {@link AbstractPropertyDefinition}s that can create {@link DefaultProperty} objects.
+ * The default factory implementation provider for the {@link PropertyDefinitionFactory}.
+ * 
+ * @see PropertyDefinitionFactory
  */
-class DefaultPropertyDefinitionFactory {
+public class DefaultPropertyDefinitionFactory implements PropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "initialValue", "hidden", "transient" })
-    public <T> PropertyDefinition<T> create(String name, Storage<T> storageTemplate, ValueFactory<T> initialValueFactory, boolean hidden, boolean trans) {
+    @Override
+    public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate) {
+
+        return create(name, storageTemplate, null, PropertyDefinition.HIDDEN_DEFAULT, PropertyDefinition.PERSISTENT_DEFAULT);
+    }
+
+    @Override
+    public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate, ValueFactory<?> initialValueFactory) {
+
+        return create(name, storageTemplate, initialValueFactory, PropertyDefinition.HIDDEN_DEFAULT, PropertyDefinition.PERSISTENT_DEFAULT);
+    }
+
+    @Override
+    public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate, boolean hidden, boolean persistent) {
+
+        return create(name, storageTemplate, null, hidden, persistent);
+    }
+
+    @Override
+    @SuppressWarnings ("unchecked")
+    public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate, ValueFactory<?> initialValueFactory, boolean hidden, boolean persistent) {
 
         Validate.notNull(name, "Name of new property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new property definition cannot be null");
 
-        return new AbstractPropertyDefinition<T>(name, storageTemplate, initialValueFactory, hidden, !trans) {
+        return new AbstractPropertyDefinition<T>(name, (Storage<T>) storageTemplate, (ValueFactory<T>) initialValueFactory, hidden, persistent) {
 
             @Override
             public Property<T> create(FeatureHolder holder) {

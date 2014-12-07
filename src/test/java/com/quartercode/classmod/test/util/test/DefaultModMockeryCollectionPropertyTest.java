@@ -18,13 +18,12 @@
 
 package com.quartercode.classmod.test.util.test;
 
-import static com.quartercode.classmod.ClassmodFactory.create;
 import static com.quartercode.classmod.extra.func.Priorities.LEVEL_7;
+import static com.quartercode.classmod.factory.ClassmodFactory.factory;
 import static com.quartercode.classmod.test.ExtraAssert.assertListEquals;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.After;
@@ -36,6 +35,7 @@ import com.quartercode.classmod.extra.func.FunctionInvocation;
 import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.extra.valuefactory.CloneValueFactory;
+import com.quartercode.classmod.factory.CollectionPropertyDefinitionFactory;
 import com.quartercode.classmod.util.test.DefaultModMockery;
 
 @SuppressWarnings ("unchecked")
@@ -249,7 +249,7 @@ public class DefaultModMockeryCollectionPropertyTest {
 
         static {
 
-            COLL_PROP = create(new TypeLiteral<CollectionPropertyDefinition<String, List<String>>>() {}, "name", "collProp", "storage", new StandardStorage<>(), "collection", new CloneValueFactory<>(new ArrayList<>()));
+            COLL_PROP = factory(CollectionPropertyDefinitionFactory.class).create("collProp", new StandardStorage<>(), new CloneValueFactory<>(new ArrayList<>()));
 
         }
 

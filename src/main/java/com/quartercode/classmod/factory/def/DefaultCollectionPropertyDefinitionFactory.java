@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod;
+package com.quartercode.classmod.factory.def;
 
 import java.util.Collection;
 import org.apache.commons.lang3.Validate;
@@ -27,21 +27,30 @@ import com.quartercode.classmod.extra.prop.CollectionProperty;
 import com.quartercode.classmod.extra.prop.CollectionPropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
 import com.quartercode.classmod.extra.valuefactory.ValueFactory;
-import com.quartercode.classmod.factory.Factory;
+import com.quartercode.classmod.factory.CollectionPropertyDefinitionFactory;
 
 /**
- * A factory for {@link AbstractCollectionPropertyDefinition}s that can create {@link DefaultCollectionProperty} objects.
+ * The default factory implementation provider for the {@link CollectionPropertyDefinitionFactory}.
+ * 
+ * @see CollectionPropertyDefinitionFactory
  */
-class DefaultCollectionPropertyDefinitionFactory {
+public class DefaultCollectionPropertyDefinitionFactory implements CollectionPropertyDefinitionFactory {
 
-    @Factory (parameters = { "name", "storage", "collection", "hidden", "transient" })
-    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<C> storageTemplate, ValueFactory<C> collectionFactory, boolean hidden, boolean trans) {
+    @Override
+    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<?> storageTemplate, ValueFactory<?> collectionFactory) {
+
+        return create(name, storageTemplate, collectionFactory, CollectionPropertyDefinition.HIDDEN_DEFAULT, CollectionPropertyDefinition.PERSISTENT_DEFAULT);
+    }
+
+    @Override
+    @SuppressWarnings ("unchecked")
+    public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<?> storageTemplate, ValueFactory<?> collectionFactory, boolean hidden, boolean persistent) {
 
         Validate.notNull(name, "Name of new collection property definition cannot be null");
         Validate.notNull(storageTemplate, "Storage template of new collection property definition cannot be null");
         Validate.notNull(collectionFactory, "Collection factory of new collection property definition cannot be null");
 
-        return new AbstractCollectionPropertyDefinition<E, C>(name, storageTemplate, collectionFactory, hidden, !trans) {
+        return new AbstractCollectionPropertyDefinition<E, C>(name, (Storage<C>) storageTemplate, (ValueFactory<C>) collectionFactory, hidden, persistent) {
 
             @Override
             public CollectionProperty<E, C> create(FeatureHolder holder) {

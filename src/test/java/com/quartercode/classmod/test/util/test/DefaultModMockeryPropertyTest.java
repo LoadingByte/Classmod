@@ -18,10 +18,9 @@
 
 package com.quartercode.classmod.test.util.test;
 
-import static com.quartercode.classmod.ClassmodFactory.create;
 import static com.quartercode.classmod.extra.func.Priorities.LEVEL_7;
+import static com.quartercode.classmod.factory.ClassmodFactory.factory;
 import static org.junit.Assert.assertEquals;
-import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.After;
@@ -32,6 +31,7 @@ import com.quartercode.classmod.extra.func.FunctionExecutor;
 import com.quartercode.classmod.extra.func.FunctionInvocation;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.StandardStorage;
+import com.quartercode.classmod.factory.PropertyDefinitionFactory;
 import com.quartercode.classmod.util.test.DefaultModMockery;
 
 @SuppressWarnings ("unchecked")
@@ -185,7 +185,7 @@ public class DefaultModMockeryPropertyTest {
 
         static {
 
-            PROP = create(new TypeLiteral<PropertyDefinition<String>>() {}, "name", "prop", "storage", new StandardStorage<>());
+            PROP = factory(PropertyDefinitionFactory.class).create("prop", new StandardStorage<>());
 
         }
 

@@ -16,7 +16,7 @@
  * License along with Classmod. If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.quartercode.classmod;
+package com.quartercode.classmod.factory.def;
 
 import org.apache.commons.lang3.Validate;
 import com.quartercode.classmod.base.FeatureHolder;
@@ -24,14 +24,16 @@ import com.quartercode.classmod.def.extra.func.AbstractFunctionDefinition;
 import com.quartercode.classmod.def.extra.func.DefaultFunction;
 import com.quartercode.classmod.extra.func.Function;
 import com.quartercode.classmod.extra.func.FunctionDefinition;
-import com.quartercode.classmod.factory.Factory;
+import com.quartercode.classmod.factory.FunctionDefinitionFactory;
 
 /**
- * A factory for {@link AbstractFunctionDefinition}s that can create {@link DefaultFunction} objects.
+ * The default factory implementation provider for the {@link FunctionDefinitionFactory}.
+ * 
+ * @see FunctionDefinitionFactory
  */
-class DefaultFunctionDefinitionFactory {
+public class DefaultFunctionDefinitionFactory implements FunctionDefinitionFactory {
 
-    @Factory (parameters = { "name", "parameters" })
+    @Override
     public <R> FunctionDefinition<R> create(String name, Class<?>[] parameters) {
 
         Validate.notNull(name, "Name of new function definition cannot be null");

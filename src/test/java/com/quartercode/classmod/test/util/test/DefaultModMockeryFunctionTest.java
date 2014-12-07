@@ -18,10 +18,9 @@
 
 package com.quartercode.classmod.test.util.test;
 
-import static com.quartercode.classmod.ClassmodFactory.create;
 import static com.quartercode.classmod.extra.func.Priorities.LEVEL_7;
+import static com.quartercode.classmod.factory.ClassmodFactory.factory;
 import static org.junit.Assert.assertEquals;
-import org.apache.commons.lang3.reflect.TypeLiteral;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
 import org.junit.After;
@@ -31,6 +30,7 @@ import com.quartercode.classmod.def.base.DefaultFeatureHolder;
 import com.quartercode.classmod.extra.func.FunctionDefinition;
 import com.quartercode.classmod.extra.func.FunctionExecutor;
 import com.quartercode.classmod.extra.func.FunctionInvocation;
+import com.quartercode.classmod.factory.FunctionDefinitionFactory;
 import com.quartercode.classmod.util.test.DefaultModMockery;
 
 @SuppressWarnings ("unchecked")
@@ -113,7 +113,7 @@ public class DefaultModMockeryFunctionTest {
 
         static {
 
-            FUNC = create(new TypeLiteral<FunctionDefinition<String>>() {}, "name", "func", "parameters", new Class[] { String.class });
+            FUNC = factory(FunctionDefinitionFactory.class).create("func", new Class[] { String.class });
 
             // Add a default executor (priority level 7) which is executed before the mock ones
             FUNC.addExecutor("default", TestFH.class, new FunctionExecutor<String>() {
