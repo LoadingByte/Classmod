@@ -46,6 +46,18 @@ import com.quartercode.classmod.extra.func.Priorities;
 public interface CollectionPropertyDefinition<E, C extends Collection<E>> extends FeatureDefinition<CollectionProperty<E, C>>, ValueSupplierDefinition<C, CollectionProperty<E, C>> {
 
     /**
+     * The default value of the {@link #isHidden() hiding flag}.
+     * It should be used when no hiding flag is explicitly specified or a {@link CollectionProperty} hasn't been initialized yet.
+     */
+    public static final boolean HIDDEN_DEFAULT     = false;
+
+    /**
+     * The default value of the {@link #isPersistent() persistence flag}.
+     * It should be used when no persistence flag is explicitly specified or a {@link CollectionProperty} hasn't been initialized yet.
+     */
+    public static final boolean PERSISTENT_DEFAULT = true;
+
+    /**
      * Returns a {@link Collection} instance that can be used by a {@link CollectionProperty}.
      * This method should always create a new object, so the same entries are not shared through different properties (that would be a monostate).
      * 
@@ -58,6 +70,7 @@ public interface CollectionPropertyDefinition<E, C extends Collection<E>> extend
      * See {@link Hideable#isHidden()} for more information on that attribute.
      * 
      * @return The hiding flag of the definition.
+     * @see #HIDDEN_DEFAULT
      */
     public boolean isHidden();
 
@@ -66,6 +79,7 @@ public interface CollectionPropertyDefinition<E, C extends Collection<E>> extend
      * See {@link Persistable#isPersistent()} for more information on that attribute.
      * 
      * @return The persistence flag of the definition.
+     * @see #PERSISTENT_DEFAULT
      */
     public boolean isPersistent();
 
