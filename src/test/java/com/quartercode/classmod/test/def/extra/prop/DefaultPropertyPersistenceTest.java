@@ -38,6 +38,7 @@ import com.quartercode.classmod.def.extra.prop.DefaultProperty;
 import com.quartercode.classmod.extra.prop.Property;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 
+@SuppressWarnings ("unchecked")
 public class DefaultPropertyPersistenceTest {
 
     @Rule
@@ -49,7 +50,6 @@ public class DefaultPropertyPersistenceTest {
     private Marshaller      marshaller;
     private Unmarshaller    unmarshaller;
 
-    @SuppressWarnings ("unchecked")
     private <T> void initializeProperty(Property<T> property) {
 
         final PropertyDefinition<T> definition = context.mock(PropertyDefinition.class, property.getName() + "Definition");
@@ -84,7 +84,6 @@ public class DefaultPropertyPersistenceTest {
         unmarshaller = context.createUnmarshaller();
     }
 
-    @SuppressWarnings ("unchecked")
     @Test
     public void test() throws JAXBException {
 

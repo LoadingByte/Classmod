@@ -51,13 +51,13 @@ public class Priorities {
     /**
      * {@link FunctionExecutor}s with the priority level 4 are invoked sixthly.
      * The priority level sets the tier of the function executor.
+     * Level four is the default level.
      */
     public static final int LEVEL_4    = 40;
 
     /**
      * {@link FunctionExecutor}s with the priority level 5 are invoked fifthly.
      * The priority level sets the tier of the function executor.
-     * Level five is the default level.
      */
     public static final int LEVEL_5    = 50;
 
