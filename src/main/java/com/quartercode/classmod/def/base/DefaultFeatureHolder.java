@@ -74,15 +74,18 @@ public class DefaultFeatureHolder implements FeatureHolder {
         }
 
         // Initialize the feature and update the unhidden features list
-        updateFeature(definition, feature);
+        initializeFeatureIfNecessary(definition, feature);
+        updateFeatureHiding(feature);
 
         return feature;
     }
 
+    /*
+     * Initializes the feature if it hasn't been done yet.
+     */
     @SuppressWarnings ("unchecked")
-    private <F extends Feature> void updateFeature(FeatureDefinition<F> definition, F feature) {
+    private <F extends Feature> void initializeFeatureIfNecessary(FeatureDefinition<F> definition, F feature) {
 
-        // Initialize the feature if it hasn't been done yet
         if (feature instanceof Initializable && ! ((Initializable<?>) feature).isInitialized()) {
             try {
                 ((Initializable<FeatureDefinition<F>>) feature).initialize(definition);
@@ -90,9 +93,15 @@ public class DefaultFeatureHolder implements FeatureHolder {
                 throw new IllegalArgumentException("Unknown generics error with feature definition '" + definition.getName() + "' and its created feature (Initializable cast)", e);
             }
         }
+    }
 
-        // Update the unhiddenFeatures list with the feature
+    /*
+     * Updates the unhiddenFeatures list with the feature.
+     */
+    private <F extends Feature> void updateFeatureHiding(F feature) {
+
         boolean presentInUnhiddenList = unhiddenFeatures.contains(feature);
+
         if (feature instanceof Hideable) {
             boolean hidden = ((Hideable) feature).isHidden();
 
@@ -196,7 +205,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
         public boolean add(Feature feature) {
 
             featureHolder.features.put(feature.getName(), feature);
-            featureHolder.unhiddenFeatures.add(feature);
+            featureHolder.updateFeatureHiding(feature);
 
             return super.add(feature);
         }
