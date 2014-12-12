@@ -196,6 +196,15 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
     }
 
     @Override
+    public void clear() {
+
+        // Cannot use one iterator because that would cause a ConcurrentModificationException
+        while (!storage.get().isEmpty()) {
+            remove(storage.get().iterator().next());
+        }
+    }
+
+    @Override
     public int hashCode() {
 
         final int prime = 31;

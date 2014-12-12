@@ -61,4 +61,12 @@ public interface CollectionProperty<E, C extends Collection<E>> extends Feature,
      */
     public void remove(E element);
 
+    /**
+     * Removes all elements from the {@link Collection} which is stored inside the property.
+     * Note that all remover function executors are invoked on all existing elements when this is called.
+     * 
+     * @throws RuntimeException A remover function executor throws a custom remover-related exception.
+     */
+    public void clear();
+
 }
