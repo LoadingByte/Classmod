@@ -76,11 +76,11 @@ public class DefaultStoragesPersistenceTest {
         DataObject referenced2 = new DataObject(300, "Test2");
         data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referenced1), fillStorage(new StandardStorage<>(), referenced1) } });
         data.add(new Object[] { new Storage[] { fillStorage(new ReferenceStorage<>(), referenced1), fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))) } });
-        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1))), fillStorage(new StandardStorage<>(), referenced1) } });
-        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))), fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1))), fillStorage(new StandardStorage<>(), referenced1) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<List<DataObject>>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))), fillStorage(new StandardStorage<>(), new ArrayList<>(Arrays.asList(referenced1, referenced2))) } });
         // Reference to the same collection
         List<DataObject> referencedCollection = new ArrayList<>(Arrays.asList(referenced1, referenced2));
-        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<DataObject, List<DataObject>>(), referencedCollection), fillStorage(new StandardStorage<>(), referencedCollection) } });
+        data.add(new Object[] { new Storage[] { fillStorage(new ReferenceCollectionStorage<List<DataObject>>(), referencedCollection), fillStorage(new StandardStorage<>(), referencedCollection) } });
 
         return data;
     }

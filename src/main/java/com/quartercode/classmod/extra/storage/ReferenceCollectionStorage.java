@@ -30,12 +30,11 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * The reference collection storage stores multiple objects, whose {@link XmlID} references are serialized, in a plain member variable {@link Collection}.
  * That means that the referenced collection entries objects must have a {@link XmlID} annotation.
  * 
- * @param <E> The type of object that can be referenced inside the reference collection.
  * @param <C> The type of collection that can be stored by the reference collection storage.
  * @see Storage
  */
 @XmlRootElement
-public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Storage<C> {
+public class ReferenceCollectionStorage<C extends Collection<?>> extends Storage<C> {
 
     @XmlElement (name = "referenceEntry", nillable = true)
     @XmlIDREF
@@ -56,7 +55,7 @@ public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Stor
     @Override
     public Storage<C> reproduce() {
 
-        return new ReferenceCollectionStorage<E, C>();
+        return new ReferenceCollectionStorage<>();
     }
 
     @Override
@@ -76,7 +75,7 @@ public class ReferenceCollectionStorage<E, C extends Collection<E>> extends Stor
         } else if (obj == null || ! (obj instanceof ReferenceCollectionStorage)) {
             return false;
         } else {
-            ReferenceCollectionStorage<?, ?> other = (ReferenceCollectionStorage<?, ?>) obj;
+            ReferenceCollectionStorage<?> other = (ReferenceCollectionStorage<?>) obj;
             return Objects.equals(referenceCollection, other.referenceCollection);
         }
     }
