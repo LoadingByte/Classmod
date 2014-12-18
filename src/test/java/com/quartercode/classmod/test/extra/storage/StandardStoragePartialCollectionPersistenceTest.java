@@ -29,6 +29,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlID;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -36,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import com.quartercode.classmod.Classmod;
 import com.quartercode.classmod.extra.prop.NonPersistent;
+import com.quartercode.classmod.extra.storage.ReferenceCollectionStorage;
 import com.quartercode.classmod.extra.storage.StandardStorage;
 import com.quartercode.classmod.extra.storage.Storage;
 
@@ -55,15 +57,23 @@ public class StandardStoragePartialCollectionPersistenceTest {
     }
 
     @SuppressWarnings ("unchecked")
-    private <T> Storage<T> roundtrip(Storage<T> storage) throws JAXBException {
+    @SafeVarargs
+    private final <T> Storage<T>[] roundtrip(Storage<T>... storages) throws JAXBException {
 
-        StorageContainer container = new StorageContainer(new Storage[] { storage });
+        StorageContainer container = new StorageContainer(storages);
 
         StringWriter serialized = new StringWriter();
         marshaller.marshal(container, serialized);
 
         StorageContainer containerCopy = (StorageContainer) unmarshaller.unmarshal(new StringReader(serialized.toString()));
-        return (Storage<T>) containerCopy.getStorages()[0];
+
+        // Copy "roundtriped" storages into new array
+        Storage<T>[] storagesCopy = storages.clone();
+        for (int index = 0; index < storagesCopy.length; index++) {
+            storagesCopy[index] = (Storage<T>) containerCopy.getStorages()[index];
+        }
+
+        return storagesCopy;
     }
 
     @Test
@@ -72,15 +82,15 @@ public class StandardStoragePartialCollectionPersistenceTest {
         StandardStorage<Object[]> storage = new StandardStorage<>();
         storage.set(new Object[5]);
 
-        storage.get()[0] = "teststring1";
+        storage.get()[0] = new PersistentDataObject("teststring1");
         storage.get()[1] = new NonPersistentDataObject("teststring2");
         storage.get()[2] = null;
-        storage.get()[3] = "teststring3";
+        storage.get()[3] = new PersistentDataObject("teststring3");
         storage.get()[4] = new NonPersistentDataObject("teststring4");
 
-        Storage<Object[]> copy = roundtrip(storage);
+        Storage<Object[]>[] copy = roundtrip(storage);
 
-        assertArrayEquals("Serialized-deserialized copy of StandardStorage contains non-persistent elements", new Object[] { "teststring1", null, "teststring3" }, copy.get());
+        assertArrayEquals("Serialized-deserialized copy of StandardStorage contains non-persistent elements", new Object[] { new PersistentDataObject("teststring1"), null, new PersistentDataObject("teststring3") }, copy[0].get());
     }
 
     @Test
@@ -89,29 +99,54 @@ public class StandardStoragePartialCollectionPersistenceTest {
         StandardStorage<List<Object>> storage = new StandardStorage<>();
         storage.set(new ArrayList<>());
 
-        storage.get().add("teststring1");
+        storage.get().add(new PersistentDataObject("teststring1"));
         storage.get().add(new NonPersistentDataObject("teststring2"));
         storage.get().add(null);
-        storage.get().add("teststring3");
+        storage.get().add(new PersistentDataObject("teststring3"));
         storage.get().add(new NonPersistentDataObject("teststring4"));
 
-        Storage<List<Object>> copy = roundtrip(storage);
+        Storage<List<Object>>[] copy = roundtrip(storage);
 
-        assertListEquals("Serialized-deserialized copy of StandardStorage contains non-persistent elements", copy.get(), "teststring1", null, "teststring3");
+        assertListEquals("Serialized-deserialized copy of StandardStorage contains non-persistent elements", copy[0].get(), new PersistentDataObject("teststring1"), null, new PersistentDataObject("teststring3"));
     }
 
-    @NonPersistent
-    private static class NonPersistentDataObject {
+    @Test
+    public void testCollectionWithNonPersistentReferences() throws JAXBException {
+
+        StandardStorage<List<Object>> mainStorage = new StandardStorage<>();
+        mainStorage.set(new ArrayList<>());
+
+        mainStorage.get().add(new PersistentDataObject("teststring1"));
+        mainStorage.get().add(new NonPersistentDataObject("teststring2"));
+        mainStorage.get().add(new PersistentDataObject("teststring3"));
+        mainStorage.get().add(new NonPersistentDataObject("teststring4"));
+
+        ReferenceCollectionStorage<List<Object>> refStorage = new ReferenceCollectionStorage<>();
+        refStorage.set(new ArrayList<>());
+
+        refStorage.get().add(new PersistentDataObject("teststring1"));
+        refStorage.get().add(new NonPersistentDataObject("teststring2"));
+        refStorage.get().add(new PersistentDataObject("teststring3"));
+        refStorage.get().add(new NonPersistentDataObject("teststring4"));
+
+        Storage<List<Object>>[] copy = roundtrip(mainStorage, refStorage);
+
+        assertListEquals("Serialized-deserialized copy of main StandardStorage contains non-persistent elements", copy[0].get(), new PersistentDataObject("teststring1"), new PersistentDataObject("teststring3"));
+        assertListEquals("Serialized-deserialized copy of ReferenceCollectionStorage contains non-persistent elements", copy[1].get(), new PersistentDataObject("teststring1"), new PersistentDataObject("teststring3"));
+    }
+
+    private static class PersistentDataObject {
 
         @XmlElement
+        @XmlID
         private String value;
 
         // Default constructor for JAXB
-        private NonPersistentDataObject() {
+        private PersistentDataObject() {
 
         }
 
-        private NonPersistentDataObject(String value) {
+        private PersistentDataObject(String value) {
 
             this.value = value;
         }
@@ -132,6 +167,21 @@ public class StandardStoragePartialCollectionPersistenceTest {
         public String toString() {
 
             return ToStringBuilder.reflectionToString(this);
+        }
+
+    }
+
+    @NonPersistent
+    private static class NonPersistentDataObject extends PersistentDataObject {
+
+        // Default constructor for JAXB
+        private NonPersistentDataObject() {
+
+        }
+
+        private NonPersistentDataObject(String value) {
+
+            super(value);
         }
 
     }

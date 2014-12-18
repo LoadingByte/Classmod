@@ -34,7 +34,6 @@ import com.quartercode.classmod.extra.func.FunctionExecutor;
 import com.quartercode.classmod.extra.func.FunctionExecutorWrapper;
 import com.quartercode.classmod.extra.func.FunctionInvocation;
 import com.quartercode.classmod.extra.func.Priorities;
-import com.quartercode.classmod.extra.prop.NonPersistent;
 import com.quartercode.classmod.extra.prop.Property;
 import com.quartercode.classmod.extra.prop.PropertyDefinition;
 import com.quartercode.classmod.extra.storage.Storage;
@@ -113,12 +112,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public boolean isPersistent() {
 
-        if (!persistent) {
-            return false;
-        } else {
-            T value = storage.get();
-            return value != null && !value.getClass().isAnnotationPresent(NonPersistent.class);
-        }
+        return persistent;
     }
 
     @Override
@@ -165,7 +159,7 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         if (getter != null) {
             return getter.invoke();
         } else {
-            // Allow to retrieve the stored value even if the feature wasn't initialized yet
+            // Allow to retrieve the stored value even if the feature hasn't been initialized yet
             // That is needed for FeatureHolder tree walkers to be able to retrieve children from ValueSupplier objects
             return storage.get();
         }

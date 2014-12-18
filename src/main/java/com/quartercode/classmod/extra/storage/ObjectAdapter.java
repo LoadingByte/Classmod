@@ -96,7 +96,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
     @Override
     public Object marshal(Object v) {
 
-        if (v == null) {
+        if (v == null || v.getClass().isAnnotationPresent(NonPersistent.class)) {
             return null;
         } else if (v instanceof Class) {
             return new ClassWrapper((Class<?>) v);
