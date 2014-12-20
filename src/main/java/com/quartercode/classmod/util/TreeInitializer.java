@@ -73,7 +73,6 @@ public class TreeInitializer {
         if (visitedHolders.contains(currentHolder)) {
             return;
         }
-
         visitedHolders.add(currentHolder);
 
         // Initialize all features of the current holder if there are initialization definitions available for the holder type
@@ -88,8 +87,8 @@ public class TreeInitializer {
 
                 if (value instanceof FeatureHolder) {
                     apply((FeatureHolder) value, visitedHolders);
-                } else if (value instanceof List) {
-                    for (Object entry : (List<?>) value) {
+                } else if (value instanceof Iterable) {
+                    for (Object entry : (Iterable<?>) value) {
                         if (entry instanceof FeatureHolder) {
                             apply((FeatureHolder) entry, visitedHolders);
                         }
