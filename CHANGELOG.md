@@ -21,6 +21,7 @@
 * The AbstractFunctionDefinition implementation supports overriding executors (two executors with the same name, but with different variants).
 * The DefaultFunctionInvocation and the AbstractFunction classes operate faster because they skip the argument validation process when there are no arguments and no parameters.
 * ChildFeatureHolders must provide the type of their parent objects as a class object for more type-safety.
+* The new TreeWalker utility allows to walk over FeatureHolder trees and visit all encountered holders using a custom callback class.
 * The new TreeInitializer utility allows to walk over FeatureHolder trees and call the FeatureHolder.get() method with predefined definitions. That enables to initialize features after deserialization.
 * FeatureDefinitionReference objects allow to create serializable references to feature definitions.
 
