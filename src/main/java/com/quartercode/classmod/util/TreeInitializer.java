@@ -18,10 +18,8 @@
 
 package com.quartercode.classmod.util;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import com.quartercode.classmod.base.Feature;
@@ -61,41 +59,24 @@ public class TreeInitializer {
      * Actually, the algorithm works recursively and finds all holders on all levels in the tree.
      * See {@link TreeInitializer} for more information on the functionality of this method.
      * 
-     * @param root The root feature holder where the algorithm should start.
+     * @param start The root feature holder where the algorithm should start.
      */
-    public void apply(FeatureHolder root) {
+    public void apply(FeatureHolder start) {
 
-        apply(root, new ArrayList<FeatureHolder>());
-    }
+        TreeWalker.walk(start, new FeatureHolderVisitorAdapter() {
 
-    private void apply(FeatureHolder currentHolder, List<FeatureHolder> visitedHolders) {
+            @Override
+            public VisitResult preVisit(FeatureHolder holder) {
 
-        if (visitedHolders.contains(currentHolder)) {
-            return;
-        }
-        visitedHolders.add(currentHolder);
-
-        // Initialize all features of the current holder if there are initialization definitions available for the holder type
-        if (initializationDefinitions.containsKey(currentHolder.getClass())) {
-            initialize(currentHolder);
-        }
-
-        // Iterate over the current feature holder's features and look for any ValueSuppliers with child features
-        for (Feature feature : currentHolder) {
-            if (feature instanceof ValueSupplier) {
-                Object value = ((ValueSupplier<?>) feature).get();
-
-                if (value instanceof FeatureHolder) {
-                    apply((FeatureHolder) value, visitedHolders);
-                } else if (value instanceof Iterable) {
-                    for (Object entry : (Iterable<?>) value) {
-                        if (entry instanceof FeatureHolder) {
-                            apply((FeatureHolder) entry, visitedHolders);
-                        }
-                    }
+                // Initialize all features of the current holder if there are initialization definitions available for the holder type
+                if (initializationDefinitions.containsKey(holder.getClass())) {
+                    initialize(holder);
                 }
+
+                return VisitResult.CONTINUE;
             }
-        }
+
+        });
     }
 
     private void initialize(FeatureHolder holder) {
