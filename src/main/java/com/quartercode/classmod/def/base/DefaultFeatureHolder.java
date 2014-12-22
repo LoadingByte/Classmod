@@ -24,9 +24,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlID;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureDefinition;
@@ -47,10 +49,31 @@ import com.quartercode.classmod.base.Persistable;
  */
 public class DefaultFeatureHolder implements FeatureHolder {
 
+    private UUID                       uuid;
     private final Map<String, Feature> features         = new HashMap<>();
 
     // Performance: Cache for all unhidden features in order to make the hashCode() and equals() methods faster
     private final List<Feature>        unhiddenFeatures = new ArrayList<>();
+
+    @Override
+    @XmlAttribute
+    @XmlID
+    @XmlJavaTypeAdapter (UUIDAdapter.class)
+    public UUID getUUID() {
+
+        // Needs to be lazy for JAXB to be able to set the unmarshalled UUID before a new one is generated
+        if (uuid == null) {
+            uuid = UUID.randomUUID();
+        }
+
+        return uuid;
+    }
+
+    // JAXB setter
+    protected void setUUID(UUID uuid) {
+
+        this.uuid = uuid;
+    }
 
     /*
      * If one of the unchecked casts doesn't succeed, we throw an IllegalArgumentException
@@ -133,19 +156,6 @@ public class DefaultFeatureHolder implements FeatureHolder {
 
         // The value collection of a HashMap is unmodifiable
         return features.values().iterator();
-    }
-
-    /**
-     * Returns the unique serialization id for the default feature holder.
-     * The id is just the identity hash code ({@link System#identityHashCode(Object)}) of the object as a hexadecimal string.
-     * 
-     * @return The unique serialization id for the default feature holder.
-     */
-    @XmlAttribute
-    @XmlID
-    public String getId() {
-
-        return Integer.toHexString(System.identityHashCode(this));
     }
 
     @Override

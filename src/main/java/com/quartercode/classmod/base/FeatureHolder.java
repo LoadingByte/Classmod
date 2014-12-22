@@ -18,6 +18,8 @@
 
 package com.quartercode.classmod.base;
 
+import java.util.UUID;
+
 /**
  * A feature holder is a class which is modifiable through {@link Feature}s.
  * A user can retrieve features through the central access method {@link #get(FeatureDefinition)}.
@@ -27,6 +29,14 @@ package com.quartercode.classmod.base;
  * @see FeatureDefinition
  */
 public interface FeatureHolder extends Iterable<Feature> {
+
+    /**
+     * Returns the {@link UUID} of the feature holder.
+     * It has been generated using {@link UUID#randomUUID()} on object creation and is persistent.
+     * 
+     * @return The unique feature holder id.
+     */
+    public UUID getUUID();
 
     /**
      * Returns the {@link Feature} which is defined by the given {@link FeatureDefinition}.
