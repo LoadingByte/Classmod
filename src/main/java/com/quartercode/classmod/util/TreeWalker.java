@@ -18,8 +18,9 @@
 
 package com.quartercode.classmod.util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 import com.quartercode.classmod.base.Feature;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.extra.prop.ValueSupplier;
@@ -40,24 +41,26 @@ public class TreeWalker {
      * 
      * @param start The root feature holder where the tree for walking starts.
      * @param visitor The visitor which is called with all encountered holders.
-     *        It is also able to control the behavior of the tree walker using {@link VisitResult return codes}
+     *        It is also able to control the behavior of the tree walker using {@link VisitResult return codes}.
+     * @param callPost Whether the {@link FeatureHolderVisitor#postVisit(FeatureHolder)} method should be called.
+     *        Setting this to {@code false} if the method is not needed significantly improves performance.
      */
-    public static void walk(FeatureHolder start, FeatureHolderVisitor visitor) {
+    public static void walk(FeatureHolder start, FeatureHolderVisitor visitor, boolean callPost) {
 
         try {
-            walk(start, visitor, new ArrayList<FeatureHolder>());
+            walk(start, visitor, new HashSet<UUID>(), callPost);
         } catch (ExitStackException e) {
             // Ignore (the exception is only used to exit the recursion)
         }
     }
 
-    private static void walk(FeatureHolder currentHolder, FeatureHolderVisitor visitor, List<FeatureHolder> visitedHolders) throws ExitStackException {
+    private static void walk(FeatureHolder currentHolder, FeatureHolderVisitor visitor, Set<UUID> visitedHolders, boolean callPost) throws ExitStackException {
 
-        // Avoid loops resulting from cycles
-        if (containsWithIdentity(visitedHolders, currentHolder)) {
+        // Avoid stack overflows resulting from cycles
+        if (visitedHolders.contains(currentHolder.getUUID())) {
             return;
         }
-        visitedHolders.add(currentHolder);
+        visitedHolders.add(currentHolder.getUUID());
 
         // Call the pre-visiting callback
         VisitResult preResult = visitor.preVisit(currentHolder);
@@ -72,11 +75,11 @@ public class TreeWalker {
                     Object value = ((ValueSupplier<?>) feature).get();
 
                     if (value instanceof FeatureHolder) {
-                        walk((FeatureHolder) value, visitor, visitedHolders);
+                        walk((FeatureHolder) value, visitor, visitedHolders, callPost);
                     } else if (value instanceof Iterable) {
                         for (Object entry : (Iterable<?>) value) {
                             if (entry instanceof FeatureHolder) {
-                                walk((FeatureHolder) entry, visitor, visitedHolders);
+                                walk((FeatureHolder) entry, visitor, visitedHolders, callPost);
                             }
                         }
                     }
@@ -84,22 +87,13 @@ public class TreeWalker {
             }
         }
 
-        // Call the post-visiting callback
-        if (visitor.postVisit(currentHolder) == VisitResult.TERMINATE) {
-            // Terminate the recursion by exiting the stack
-            throw new ExitStackException();
-        }
-    }
-
-    private static boolean containsWithIdentity(List<?> list, Object element) {
-
-        for (Object actualElement : list) {
-            if (actualElement == element) {
-                return true;
+        if (callPost) {
+            // Call the post-visiting callback
+            if (visitor.postVisit(currentHolder) == VisitResult.TERMINATE) {
+                // Terminate the recursion by exiting the stack
+                throw new ExitStackException();
             }
         }
-
-        return false;
     }
 
     @SuppressWarnings ("serial")

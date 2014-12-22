@@ -76,7 +76,7 @@ public class TreeInitializer {
                 return VisitResult.CONTINUE;
             }
 
-        });
+        }, false);
     }
 
     private void initialize(FeatureHolder holder) {
