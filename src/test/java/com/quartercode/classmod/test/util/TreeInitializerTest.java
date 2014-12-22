@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jmock.Expectations;
 import org.jmock.integration.junit4.JUnitRuleMockery;
@@ -42,7 +43,7 @@ public class TreeInitializerTest {
     @Rule
     public JUnitRuleMockery context = new JUnitRuleMockery();
 
-    private FeatureDefinition<?> preapreFeature(final Feature feature, final String name, DummyFeatureHolder holder) {
+    private FeatureDefinition<?> prepareFeature(final Feature feature, final String name, DummyFeatureHolder holder) {
 
         final FeatureDefinition<?> definition = context.mock(FeatureDefinition.class, name + "Definition");
 
@@ -67,13 +68,13 @@ public class TreeInitializerTest {
     private Pair<FeatureDefinition<?>, Feature> createFeature(final String name, DummyFeatureHolder holder) {
 
         Feature feature = context.mock(Feature.class, name);
-        return Pair.<FeatureDefinition<?>, Feature> of(preapreFeature(feature, name, holder), feature);
+        return Pair.<FeatureDefinition<?>, Feature> of(prepareFeature(feature, name, holder), feature);
     }
 
     private Pair<FeatureDefinition<?>, ValueSupplier<?>> createValueSupplier(final String name, DummyFeatureHolder holder) {
 
         ValueSupplier<?> feature = context.mock(ValueSupplier.class, name);
-        return Pair.<FeatureDefinition<?>, ValueSupplier<?>> of(preapreFeature(feature, name, holder), feature);
+        return Pair.<FeatureDefinition<?>, ValueSupplier<?>> of(prepareFeature(feature, name, holder), feature);
     }
 
     @Test
@@ -283,12 +284,20 @@ public class TreeInitializerTest {
 
     private static class DummyFeatureHolder implements FeatureHolder {
 
+        private final UUID                                 uuid             = UUID.randomUUID();
+
         protected final Map<FeatureDefinition<?>, Feature> features         = new HashMap<>();
         protected final List<FeatureDefinition<?>>         expectedGetCalls = new ArrayList<>();
 
         protected void checkExpected() {
 
             assertTrue("Not all expected " + getClass().getSimpleName() + ".get() calls were made; remaining: " + expectedGetCalls, expectedGetCalls.isEmpty());
+        }
+
+        @Override
+        public UUID getUUID() {
+
+            return uuid;
         }
 
         @SuppressWarnings ("unchecked")
