@@ -40,7 +40,7 @@ import com.quartercode.classmod.base.FeatureDefinition;
  */
 public class FeatureDefinitionReference<D extends FeatureDefinition<?>> implements Serializable {
 
-    private static final long serialVersionUID = -7405840006826808957L;
+    private static final long serialVersionUID = -5183995498366917029L;
 
     // Cache for the actual feature definition object
     private transient D       definition;
