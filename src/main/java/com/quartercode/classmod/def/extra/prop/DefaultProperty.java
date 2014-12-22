@@ -19,12 +19,14 @@
 package com.quartercode.classmod.def.extra.prop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
-import org.apache.commons.lang3.reflect.TypeUtils;
 import com.quartercode.classmod.base.FeatureHolder;
 import com.quartercode.classmod.def.base.AbstractFeature;
 import com.quartercode.classmod.def.extra.func.DefaultFunctionExecutorWrapper;
@@ -51,14 +53,8 @@ import com.quartercode.classmod.extra.storage.Storage;
 @XmlRootElement
 public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
 
-    private static final List<Class<?>> GETTER_PARAMETERS = new ArrayList<>();
-    private static final List<Class<?>> SETTER_PARAMETERS = new ArrayList<>();
-
-    static {
-
-        SETTER_PARAMETERS.add(Object.class);
-
-    }
+    private static final List<Class<?>> GETTER_PARAMETERS = Collections.emptyList();
+    private static final List<Class<?>> SETTER_PARAMETERS = Arrays.<Class<?>> asList(Object.class);
 
     @XmlAnyElement (lax = true)
     private Storage<T>                  storage;
@@ -123,27 +119,44 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         hidden = definition.isHidden();
         persistent = definition.isPersistent();
 
-        List<FunctionExecutorWrapper<T>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutorWrapper<Void>> setterExecutors = new ArrayList<>();
-
-        // Add the custom getter/setter executors
-        getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
-        setterExecutors.addAll(definition.getSetterExecutorsForVariant(getHolder().getClass()).values());
-
-        // Add default executor
-        getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
-        setterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultSetterFunctionExecutor(), Priorities.DEFAULT));
-
-        /*
-         * Create the dummy getter/setter functions
-         */
-        getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
-        setter = new DummyFunction<>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
+        // Try to initialize the getter/setter functions; if no custom getter/setter executors are available, no function is created for that accessor
+        initializeGetter(definition);
+        initializeSetter(definition);
 
         // See the comment on the "initialValue" field for more information about why this works
         if (initialValue != null) {
             set(initialValue);
             initialValue = null;
+        }
+    }
+
+    private void initializeGetter(PropertyDefinition<T> definition) {
+
+        // Retrieve the custom getter executors
+        Collection<FunctionExecutorWrapper<T>> definitionGetterExecutors = definition.getGetterExecutorsForVariant(getHolder().getClass()).values();
+
+        if (!definitionGetterExecutors.isEmpty()) {
+            // Add the custom getter executors
+            List<FunctionExecutorWrapper<T>> getterExecutors = new ArrayList<>(definitionGetterExecutors);
+            // Add the default getter executor
+            getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
+            // Create the dummy getter function
+            getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        }
+    }
+
+    private void initializeSetter(PropertyDefinition<T> definition) {
+
+        // Retrieve the custom setter executors
+        Collection<FunctionExecutorWrapper<Void>> definitionSetterExecutors = definition.getSetterExecutorsForVariant(getHolder().getClass()).values();
+
+        if (!definitionSetterExecutors.isEmpty()) {
+            // Add the custom setter executors
+            List<FunctionExecutorWrapper<Void>> setterExecutors = new ArrayList<>(definitionSetterExecutors);
+            // Add the default setter executor
+            setterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultSetterFunctionExecutor(), Priorities.DEFAULT));
+            // Create the dummy setter function
+            setter = new DummyFunction<>("set", getHolder(), SETTER_PARAMETERS, setterExecutors);
         }
     }
 
@@ -156,19 +169,51 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
     @Override
     public T get() {
 
+        // The getter function is null if no custom getter executors are available; in that case, the unnecessary function calling overhead is avoided
         if (getter != null) {
             return getter.invoke();
         } else {
-            // Allow to retrieve the stored value even if the feature hasn't been initialized yet
-            // That is needed for FeatureHolder tree walkers to be able to retrieve children from ValueSupplier objects
-            return storage.get();
+            return getInternal();
         }
     }
 
     @Override
     public void set(T value) {
 
-        setter.invoke(value);
+        // The setter function is null if no custom setter executors are available; in that case, the unnecessary function calling overhead is avoided
+        if (setter != null) {
+            setter.invoke(value);
+        } else {
+            setInternal(value);
+        }
+    }
+
+    private T getInternal() {
+
+        return storage.get();
+    }
+
+    private void setInternal(T value) {
+
+        // Set the parent of any old stored ChildFeatureHolder if its parent is the holder of this property
+        T oldValue = storage.get();
+        if (oldValue instanceof ChildFeatureHolder) {
+            Object oldValueParent = ((ChildFeatureHolder<?>) oldValue).getParent();
+
+            if (oldValueParent != null && oldValueParent.equals(getHolder())) {
+                ((ChildFeatureHolder<?>) oldValue).setParent(null);
+            }
+        }
+
+        // Set the parent of any new ChildFeatureHolder to the holder of this property
+        if (value instanceof ChildFeatureHolder && ((ChildFeatureHolder<?>) value).getParentType().isInstance(getHolder())) {
+            // This cast is always valid because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
+            @SuppressWarnings ("unchecked")
+            ChildFeatureHolder<FeatureHolder> childFH = (ChildFeatureHolder<FeatureHolder>) value;
+            childFH.setParent(getHolder());
+        }
+
+        storage.set(value);
     }
 
     @Override
@@ -208,7 +253,8 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         @Override
         public T invoke(FunctionInvocation<T> invocation, Object... arguments) {
 
-            T value = storage.get();
+            T value = getInternal();
+
             invocation.next(arguments);
             return value;
         }
@@ -220,26 +266,10 @@ public class DefaultProperty<T> extends AbstractFeature implements Property<T> {
         @Override
         public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-            T oldValue = storage.get();
-            if (oldValue instanceof ChildFeatureHolder) {
-                Object parent = ((ChildFeatureHolder<?>) oldValue).getParent();
-                if (parent != null && parent.equals(getHolder())) {
-                    ((ChildFeatureHolder<?>) oldValue).setParent(null);
-                }
-            }
-
-            // The only caller (set()) verified the type by a compiler-safe generic parameter
+            // The only caller (set()) verified the type by the compiler-safe generic parameter <T>
             @SuppressWarnings ("unchecked")
             T value = (T) arguments[0];
-
-            if (value instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) value).getParentType())) {
-                // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
-                @SuppressWarnings ("unchecked")
-                ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) value;
-                childFeatureHolder.setParent(getHolder());
-            }
-
-            storage.set(value);
+            setInternal(value);
 
             return invocation.next(arguments);
         }

@@ -19,6 +19,7 @@
 package com.quartercode.classmod.def.extra.prop;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -56,21 +57,15 @@ import com.quartercode.classmod.extra.storage.Storage;
 @XmlRootElement
 public class DefaultCollectionProperty<E, C extends Collection<E>> extends AbstractFeature implements CollectionProperty<E, C> {
 
-    private static final List<Class<?>> GETTER_PARAMETERS        = new ArrayList<>();
-    private static final List<Class<?>> ADDER_REMOVER_PARAMETERS = new ArrayList<>();
-
-    static {
-
-        ADDER_REMOVER_PARAMETERS.add(Object.class);
-
-    }
+    private static final List<Class<?>> GETTER_PARAMETERS            = Collections.emptyList();
+    private static final List<Class<?>> ADDER_AND_REMOVER_PARAMETERS = Arrays.<Class<?>> asList(Object.class);
 
     @XmlAnyElement (lax = true)
     private Storage<C>                  storage;
 
     private boolean                     intialized;
-    private boolean                     hidden                   = CollectionPropertyDefinition.HIDDEN_DEFAULT;
-    private boolean                     persistent               = CollectionPropertyDefinition.PERSISTENT_DEFAULT;
+    private boolean                     hidden                       = CollectionPropertyDefinition.HIDDEN_DEFAULT;
+    private boolean                     persistent                   = CollectionPropertyDefinition.PERSISTENT_DEFAULT;
     private Function<C>                 getter;
     private Function<Void>              adder;
     private Function<Void>              remover;
@@ -124,26 +119,55 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         }
         storage.set(newCollection);
 
-        List<FunctionExecutorWrapper<C>> getterExecutors = new ArrayList<>();
-        List<FunctionExecutorWrapper<Void>> adderExecutors = new ArrayList<>();
-        List<FunctionExecutorWrapper<Void>> removerExecutors = new ArrayList<>();
+        // Try to initialize the getter/adder/remover functions; if no custom getter/adder/remover executors are available, no function is created for that accessor
+        initializeGetter(definition);
+        initializeAdder(definition);
+        initializeRemover(definition);
+    }
 
-        // Add the custom getter/adder/remover executors
-        getterExecutors.addAll(definition.getGetterExecutorsForVariant(getHolder().getClass()).values());
-        adderExecutors.addAll(definition.getAdderExecutorsForVariant(getHolder().getClass()).values());
-        removerExecutors.addAll(definition.getRemoverExecutorsForVariant(getHolder().getClass()).values());
+    private void initializeGetter(CollectionPropertyDefinition<E, C> definition) {
 
-        // Add default executors
-        getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
-        adderExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultAdderFunctionExecutor(), Priorities.DEFAULT));
-        removerExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultRemoverFunctionExecutor(), Priorities.DEFAULT));
+        // Retrieve the custom getter executors
+        Collection<FunctionExecutorWrapper<C>> definitionGetterExecutors = definition.getGetterExecutorsForVariant(getHolder().getClass()).values();
 
-        /*
-         * Create the dummy getter/adder/remover functions
-         */
-        getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
-        adder = new DummyFunction<>("add", getHolder(), ADDER_REMOVER_PARAMETERS, adderExecutors);
-        remover = new DummyFunction<>("remove", getHolder(), ADDER_REMOVER_PARAMETERS, removerExecutors);
+        if (!definitionGetterExecutors.isEmpty()) {
+            // Add the custom getter executors
+            List<FunctionExecutorWrapper<C>> getterExecutors = new ArrayList<>(definitionGetterExecutors);
+            // Add the default getter executor
+            getterExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultGetterFunctionExecutor(), Priorities.DEFAULT));
+            // Create the dummy getter function
+            getter = new DummyFunction<>("get", getHolder(), GETTER_PARAMETERS, getterExecutors);
+        }
+    }
+
+    private void initializeAdder(CollectionPropertyDefinition<E, C> definition) {
+
+        // Retrieve the custom adder executors
+        Collection<FunctionExecutorWrapper<Void>> definitionAdderExecutors = definition.getAdderExecutorsForVariant(getHolder().getClass()).values();
+
+        if (!definitionAdderExecutors.isEmpty()) {
+            // Add the custom adder executors
+            List<FunctionExecutorWrapper<Void>> adderExecutors = new ArrayList<>(definitionAdderExecutors);
+            // Add the default adder executor
+            adderExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultAdderFunctionExecutor(), Priorities.DEFAULT));
+            // Create the dummy adder function
+            adder = new DummyFunction<>("add", getHolder(), ADDER_AND_REMOVER_PARAMETERS, adderExecutors);
+        }
+    }
+
+    private void initializeRemover(CollectionPropertyDefinition<E, C> definition) {
+
+        // Retrieve the custom remover executors
+        Collection<FunctionExecutorWrapper<Void>> definitionRemoverExecutors = definition.getRemoverExecutorsForVariant(getHolder().getClass()).values();
+
+        if (!definitionRemoverExecutors.isEmpty()) {
+            // Add the custom remover executors
+            List<FunctionExecutorWrapper<Void>> removerExecutors = new ArrayList<>(definitionRemoverExecutors);
+            // Add the default remover executor
+            removerExecutors.add(new DefaultFunctionExecutorWrapper<>(new DefaultRemoverFunctionExecutor(), Priorities.DEFAULT));
+            // Create the dummy remover function
+            remover = new DummyFunction<>("remove", getHolder(), ADDER_AND_REMOVER_PARAMETERS, removerExecutors);
+        }
     }
 
     @Override
@@ -158,22 +182,94 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         if (getter != null) {
             return getter.invoke();
         } else {
-            // Allow to retrieve the stored value even if the feature wasn't initialized yet
-            // That is needed for FeatureHolder tree walkers to be able to retrieve children from ValueSupplier objects
-            return storage.get();
+            return getInternal();
         }
     }
 
     @Override
     public void add(E element) {
 
-        adder.invoke(element);
+        if (adder != null) {
+            adder.invoke(element);
+        } else {
+            addInternal(element);
+        }
     }
 
     @Override
     public void remove(E element) {
 
-        remover.invoke(element);
+        if (remover != null) {
+            remover.invoke(element);
+        } else {
+            removeInternal(element);
+        }
+    }
+
+    @SuppressWarnings ("unchecked")
+    private C getInternal() {
+
+        C collection = storage.get();
+
+        /*
+         * TODO: Decisions related to the returned unmodifiable collection.
+         * 
+         * 1) Decide whether an unmodifiable view on queues should be returned for queues.
+         * It is important to note that a QueueProperty would be the only alternative for making the queue methods available.
+         * However, that would result in the need for another DequeueProperty.
+         * 
+         * 2) Another thing to note is that classes which implement both List and Queue (e.g. LinkedList) are returned as a list by the first if-clause.
+         * Therefore, the queue methods are not accessible on the return object.
+         * Another thing to consider might be to return one big "UnmodifiableCollection" class which implements delegations for all methods of all collections.
+         * It would implement all read methods from Collection, List, Set, SortedSet, Queue, Dequeue, ...
+         * However, only calls on valid methods for the wrapped collection (e.g. a list) are allowed.
+         * The advantage would be getting rid of this if-else-block and solving the problem mentioned above.
+         */
+
+        if (collection instanceof List) {
+            return (C) Collections.unmodifiableList((List<?>) collection);
+        } else if (collection instanceof Set) {
+            return (C) Collections.unmodifiableSet((Set<?>) collection);
+        } else if (collection instanceof SortedSet) {
+            return (C) Collections.unmodifiableSortedSet((SortedSet<?>) collection);
+        } else {
+            return (C) Collections.unmodifiableCollection(collection);
+        }
+    }
+
+    private void addInternal(E element) {
+
+        C collection = storage.get();
+
+        // Set the parent of any new ChildFeatureHolder to the holder of this property
+        if (element instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) element).getParentType())) {
+            // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
+            @SuppressWarnings ("unchecked")
+            ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;
+            childFeatureHolder.setParent(getHolder());
+        }
+
+        collection.add(element);
+        storage.set(collection);
+    }
+
+    private void removeInternal(E element) {
+
+        C collection = storage.get();
+
+        if (collection.contains(element)) {
+            // Set the parent of any old stored ChildFeatureHolder if its parent is the holder of this property
+            if (element instanceof ChildFeatureHolder) {
+                Object parent = ((ChildFeatureHolder<?>) element).getParent();
+
+                if (parent != null && parent.equals(getHolder())) {
+                    ((ChildFeatureHolder<?>) element).setParent(null);
+                }
+            }
+
+            collection.remove(element);
+            storage.set(collection);
+        }
     }
 
     @Override
@@ -222,39 +318,10 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         @Override
         public C invoke(FunctionInvocation<C> invocation, Object... arguments) {
 
-            C collection = unmodifiable(storage.get());
+            C collection = getInternal();
+
             invocation.next(arguments);
             return collection;
-        }
-
-        // The casts always return the right value if C is no implementation (e.g. ArrayList instead of just List)
-        @SuppressWarnings ("unchecked")
-        private C unmodifiable(C collection) {
-
-            /*
-             * TODO: Decisions related to the returned unmodifiable collection.
-             * 
-             * 1) Decide whether an unmodifiable view on queues should be returned for queues.
-             * It is important to note that a QueueProperty would be the only alternative for making the queue methods available.
-             * However, that would result in the need for another DequeueProperty.
-             * 
-             * 2) Another thing to note is that classes which implement both List and Queue (e.g. LinkedList) are returned as a list by the first if-clause.
-             * Therefore, the queue methods are not accessible on the return object.
-             * Another thing to consider might be to return one big "UnmodifiableCollection" class which implements delegations for all methods of all collections.
-             * It would implement all read methods from Collection, List, Set, SortedSet, Queue, Dequeue, ...
-             * However, only calls on valid methods for the wrapped collection (e.g. a list) are allowed.
-             * The advantage would be getting rid of this if-else-block and solving the problem mentioned above.
-             */
-
-            if (collection instanceof List) {
-                return (C) Collections.unmodifiableList((List<?>) collection);
-            } else if (collection instanceof Set) {
-                return (C) Collections.unmodifiableSet((Set<?>) collection);
-            } else if (collection instanceof SortedSet) {
-                return (C) Collections.unmodifiableSortedSet((SortedSet<?>) collection);
-            } else {
-                return (C) Collections.unmodifiableCollection(collection);
-            }
         }
 
     }
@@ -264,20 +331,10 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         @Override
         public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-            C collection = storage.get();
-            // The only caller (add()) verified the type by a compiler-safe generic parameter
+            // The only caller (add()) verified the type by the compiler-safe generic parameter <E>
             @SuppressWarnings ("unchecked")
             E element = (E) arguments[0];
-
-            if (element instanceof ChildFeatureHolder && TypeUtils.isInstance(getHolder(), ((ChildFeatureHolder<?>) element).getParentType())) {
-                // This cast is always true because the generic type parameter of ChildFeatureHolder must extend FeatureHolder
-                @SuppressWarnings ("unchecked")
-                ChildFeatureHolder<FeatureHolder> childFeatureHolder = (ChildFeatureHolder<FeatureHolder>) element;
-                childFeatureHolder.setParent(getHolder());
-            }
-
-            collection.add(element);
-            storage.set(collection);
+            addInternal(element);
 
             return invocation.next(arguments);
         }
@@ -289,22 +346,10 @@ public class DefaultCollectionProperty<E, C extends Collection<E>> extends Abstr
         @Override
         public Void invoke(FunctionInvocation<Void> invocation, Object... arguments) {
 
-            C collection = storage.get();
-            // The only caller (remove()) verified the type by a compiler-safe generic parameter
+            // The only caller (remove()) verified the type by the compiler-safe generic parameter <E>
             @SuppressWarnings ("unchecked")
             E element = (E) arguments[0];
-
-            if (collection.contains(element)) {
-                if (element instanceof ChildFeatureHolder) {
-                    Object parent = ((ChildFeatureHolder<?>) element).getParent();
-                    if (parent != null && parent.equals(getHolder())) {
-                        ((ChildFeatureHolder<?>) element).setParent(null);
-                    }
-                }
-
-                collection.remove(element);
-                storage.set(collection);
-            }
+            removeInternal(element);
 
             return invocation.next(arguments);
         }
