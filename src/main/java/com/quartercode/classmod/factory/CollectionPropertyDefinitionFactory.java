@@ -34,7 +34,7 @@ import com.quartercode.classmod.extra.valuefactory.ValueFactory;
 public interface CollectionPropertyDefinitionFactory {
 
     /**
-     * Creates a new {@link CollectionPropertyDefinition} for defining a {@link CollectionProperty} with the given name and {@link Storage} implementation.
+     * Creates a new {@link CollectionPropertyDefinition} for defining a <b>persistent and unhidden</b> {@link CollectionProperty} with the given name and {@link Storage} implementation.
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.
@@ -44,7 +44,7 @@ public interface CollectionPropertyDefinitionFactory {
     public <E, C extends Collection<E>> CollectionPropertyDefinition<E, C> create(String name, Storage<?> storageTemplate, ValueFactory<?> collectionFactory);
 
     /**
-     * Creates a new {@link CollectionPropertyDefinition} for defining a {@link CollectionProperty} with the given name, {@link Storage} implementation, and hiding flag.
+     * Creates a new {@link CollectionPropertyDefinition} for defining a {@link CollectionProperty} with the given name, {@link Storage} implementation, <b>hiding flag, and persistence flag</b>.
      * Also sets a template {@link Collection} whose clones are used by collection property instances.
      * 
      * @param name The name of the defined collection property.

@@ -33,7 +33,7 @@ import com.quartercode.classmod.extra.valuefactory.ValueFactory;
 public interface PropertyDefinitionFactory {
 
     /**
-     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name.
+     * Creates a new {@link PropertyDefinition} for defining a <b>persistent and unhidden</b> {@link Property} with the given name (<b>without an initial value</b>).
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
@@ -41,7 +41,7 @@ public interface PropertyDefinitionFactory {
     public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate);
 
     /**
-     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name and initial value.
+     * Creates a new {@link PropertyDefinition} for defining a <b>persistent and unhidden</b> {@link Property} with the given name and <b>initial value</b>.
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
@@ -50,7 +50,7 @@ public interface PropertyDefinitionFactory {
     public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate, ValueFactory<?> initialValueFactory);
 
     /**
-     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name, hiding flag, and persistent flag.
+     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name, <b>hiding flag, and persistence flag</b> (<b>without an initial value</b>).
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
@@ -62,7 +62,7 @@ public interface PropertyDefinitionFactory {
     public <T> PropertyDefinition<T> create(String name, Storage<?> storageTemplate, boolean hidden, boolean persistent);
 
     /**
-     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name, initial value, hiding flag, and persistent flag.
+     * Creates a new {@link PropertyDefinition} for defining a {@link Property} with the given name, <b>initial value, hiding flag, and persistence flag</b>.
      * 
      * @param name The name of the defined property.
      * @param storageTemplate A {@link Storage} implementation that should be reproduced and used by every created property for storing values.
