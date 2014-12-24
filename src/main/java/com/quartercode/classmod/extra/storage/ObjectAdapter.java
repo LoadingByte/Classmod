@@ -251,7 +251,7 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
         public Collection<?> getObject() {
 
             // Consider the default collection type (ArrayList) if no specific collection type is set and and ArrayList has been unmarshalled by JAXB
-            if (collectionType == null && collection.getClass() == ArrayList.class) {
+            if (collectionType == null && collection != null && collection.getClass() == ArrayList.class) {
                 return collection;
             }
             // Otherwise, create a new collection of the specified type and copy all elements into it
@@ -261,7 +261,12 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
                 try {
                     @SuppressWarnings ("unchecked")
                     Collection<Object> returnCollection = (Collection<Object>) effectiveCollectionType.newInstance();
-                    returnCollection.addAll(collection);
+
+                    // "collection" might be null if the collection was empty
+                    if (collection != null) {
+                        returnCollection.addAll(collection);
+                    }
+
                     return returnCollection;
                 } catch (InstantiationException | IllegalAccessException e) {
                     LOGGER.warn("Cannot instantiate collection type '{}'", effectiveCollectionType.getName(), e);
@@ -316,9 +321,14 @@ class ObjectAdapter extends XmlAdapter<Object, Object> {
             try {
                 @SuppressWarnings ("unchecked")
                 Map<Object, Object> returnMap = (Map<Object, Object>) effectiveMapType.newInstance();
-                for (MapEntry entry : entries) {
-                    returnMap.put(entry.key, entry.value);
+
+                // "entries" might be null if the map was empty
+                if (entries != null) {
+                    for (MapEntry entry : entries) {
+                        returnMap.put(entry.key, entry.value);
+                    }
                 }
+
                 return returnMap;
             } catch (InstantiationException | IllegalAccessException e) {
                 LOGGER.warn("Cannot instantiate map type '{}'", effectiveMapType.getName(), e);

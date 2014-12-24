@@ -18,9 +18,11 @@
 
 package com.quartercode.classmod.extra.storage;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlID;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -28,7 +30,10 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 
 /**
  * The reference collection storage stores multiple objects, whose {@link XmlID} references are serialized, in a plain member variable {@link Collection}.
- * That means that the referenced collection entries objects must have a {@link XmlID} annotation.
+ * That means that the referenced collection entries objects must have a {@link XmlID} annotation.<br>
+ * <br>
+ * TODO: Note that the reference collection storage only supports {@link ArrayList} as a persistent list at the moment.
+ * All other collection implementations will transform into an {@link ArrayList} during (de)serialization.
  * 
  * @param <C> The type of collection that can be stored by the reference collection storage.
  * @see Storage
@@ -36,6 +41,9 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 @XmlRootElement
 public class ReferenceCollectionStorage<C extends Collection<?>> extends Storage<C> {
 
+    // The wrapper is required because this field might be null after deserialization if the collection was empty
+    // Using the wrapper, JAXB automatically creates a new collection if the old one was empty
+    @XmlElementWrapper
     @XmlElement (name = "referenceEntry", nillable = true)
     @XmlIDREF
     private C referenceCollection;
