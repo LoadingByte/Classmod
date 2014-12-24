@@ -35,7 +35,7 @@ import com.quartercode.classmod.factory.def.DefaultPropertyDefinitionFactory;
  * public static final PropertyDefinition&lt;String&gt; ID;
  * 
  * static {
- *     ID as= factory(PropertyDefinitionFactory.class).create("id", new StandardStorage&lt;&gt;(), new ConstantValueFactory&lt;&gt;("defaultId"));;
+ *     ID = factory(PropertyDefinitionFactory.class).create("id", new StandardStorage&lt;&gt;(), new ConstantValueFactory&lt;&gt;("defaultId"));
  * }
  * </pre>
  * 
