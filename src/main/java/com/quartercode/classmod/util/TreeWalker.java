@@ -96,6 +96,10 @@ public class TreeWalker {
         }
     }
 
+    private TreeWalker() {
+
+    }
+
     @SuppressWarnings ("serial")
     private static class ExitStackException extends Exception {
 
