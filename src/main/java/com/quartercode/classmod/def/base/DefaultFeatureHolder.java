@@ -105,7 +105,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
     }
 
     /*
-     * Initializes the feature if it hasn't been done yet.
+     * Initializes the feature if it hasn't been initialized yet.
      */
     @SuppressWarnings ("unchecked")
     private <F extends Feature> void initializeFeatureIfNecessary(FeatureDefinition<F> definition, F feature) {
@@ -120,9 +120,9 @@ public class DefaultFeatureHolder implements FeatureHolder {
     }
 
     /*
-     * Updates the unhiddenFeatures list with the feature.
+     * Updates the "unhiddenFeatures" collection with the given feature.
      */
-    private <F extends Feature> void updateFeatureHiding(F feature) {
+    private void updateFeatureHiding(Feature feature) {
 
         int indexInUnhiddenList = indexOfWithIdentity(unhiddenFeatures, feature);
         boolean presentInUnhiddenList = indexInUnhiddenList != -1;
