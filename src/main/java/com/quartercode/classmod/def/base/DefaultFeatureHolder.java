@@ -53,6 +53,7 @@ public class DefaultFeatureHolder implements FeatureHolder {
     private final Map<String, Feature> features         = new HashMap<>();
 
     // Performance: Cache for all unhidden features in order to make the hashCode() and equals() methods faster
+    // Note that this list is internally accessed using identity-aware methods
     private final List<Feature>        unhiddenFeatures = new ArrayList<>();
 
     @Override
@@ -123,19 +124,31 @@ public class DefaultFeatureHolder implements FeatureHolder {
      */
     private <F extends Feature> void updateFeatureHiding(F feature) {
 
-        boolean presentInUnhiddenList = unhiddenFeatures.contains(feature);
+        int indexInUnhiddenList = indexOfWithIdentity(unhiddenFeatures, feature);
+        boolean presentInUnhiddenList = indexInUnhiddenList != -1;
 
         if (feature instanceof Hideable) {
             boolean hidden = ((Hideable) feature).isHidden();
 
             if (hidden && presentInUnhiddenList) {
-                unhiddenFeatures.remove(feature);
+                unhiddenFeatures.remove(indexInUnhiddenList);
             } else if (!hidden && !presentInUnhiddenList) {
                 unhiddenFeatures.add(feature);
             }
         } else if (!presentInUnhiddenList) {
             unhiddenFeatures.add(feature);
         }
+    }
+
+    private int indexOfWithIdentity(List<?> collection, Object object) {
+
+        for (int index = 0; index < collection.size(); index++) {
+            if (collection.get(index) == object) {
+                return index;
+            }
+        }
+
+        return -1;
     }
 
     /**
