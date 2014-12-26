@@ -126,6 +126,7 @@ public class CollectionPropertyAccessorFactory {
                 for (E element : invocation.getHolder().get(propertyDefinition).get()) {
                     if (matcher.matches(element, arguments)) {
                         result = element;
+                        break;
                     }
                 }
 
