@@ -2,12 +2,12 @@ Classmod
 ========
 
 Classmod is a library for creating classes which can be modified at runtime.
-More information can be found on the [wiki page](http://quartercode.com/wiki/index.php?title=Classmod).
+More information can be found on the [wiki page](http://quartercode.com/wiki/Classmod).
 
 License
 -------
 
-Copyright (c) 2014 QuarterCode <http://www.quartercode.com/>
+Copyright (c) 2014 QuarterCode <http://quartercode.com/>
 
 Classmod may be used under the terms of the GNU Lesser General Public License (LGPL) v3.0. See the LICENSE.md file or https://www.gnu.org/licenses/lgpl-3.0.txt for details.
 

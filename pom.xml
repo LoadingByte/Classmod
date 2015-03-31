@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
 
     <name>Classmod</name>
-    <url>http://www.quartercode.com</url>
+    <url>http://quartercode.com/wiki/Classmod</url>
     <description>Classmod is a library for creating classes which can be modified at runtime.</description>
     <inceptionYear>2014</inceptionYear>
 
@@ -23,7 +23,7 @@
 
     <organization>
         <name>QuarterCode</name>
-        <url>http://www.quartercode.com</url>
+        <url>http://quartercode.com</url>
     </organization>
 
     <developers>
